@@ -137,7 +137,7 @@ julia> diameter(weighted)
 3.0
 ```
 
-MetaGraphsNext inherit many methods from LightGraphs. In general, inherited methods refer to
+MetaGraphs inherit many methods from LightGraphs. In general, inherited methods refer to
 vertices by codes, not labels.
 
 ```jldoctest example
@@ -196,7 +196,7 @@ julia> SimpleGraph(colors)
 {2, 0} undirected simple Int64 graph
 ```
 
-You can seemlessly make MetaGraphsNext based on DiGraphs as well.
+You can seemlessly make MetaGraphs based on DiGraphs as well.
 
 ```jldoctest example
 julia> rock_paper_scissors = MetaGraph(DiGraph(), Label = Symbol, EdgeMeta = Symbol);

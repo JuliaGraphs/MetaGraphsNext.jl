@@ -11,14 +11,8 @@ function reverse(mg::MetaDiGraph)
         reprops[(v, u)] = mg.eprops[(u, v)]
     end
 
-    rmg = MetaGraph(rg,
-        rvprops,
-        reprops,
-        rgprops,
-        rweightfunction,
-        rdefaultweight,
-        rindices
-    )
+    rmg =
+        MetaGraph(rg, rvprops, reprops, rgprops, rweightfunction, rdefaultweight, rindices)
 
     return rmg
 end

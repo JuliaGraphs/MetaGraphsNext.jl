@@ -3,37 +3,57 @@ using LightGraphs
 using JLD2
 
 import Base:
-    eltype, show, ==,
-    Tuple, copy, length, size,
-    issubset, zero, getindex, haskey, setindex!, delete!
+    eltype,
+    show,
+    ==,
+    Tuple,
+    copy,
+    length,
+    size,
+    issubset,
+    zero,
+    getindex,
+    haskey,
+    setindex!,
+    delete!
 
 import LightGraphs:
-    AbstractGraph, edgetype, nv,
-    ne, vertices, edges, is_directed,
-    add_vertex!, add_edge!, rem_vertex!, rem_edge!,
-    has_vertex, has_edge, inneighbors, outneighbors,
+    AbstractGraph,
+    edgetype,
+    nv,
+    ne,
+    vertices,
+    edges,
+    is_directed,
+    add_vertex!,
+    add_edge!,
+    rem_vertex!,
+    rem_edge!,
+    has_vertex,
+    has_edge,
+    inneighbors,
+    outneighbors,
     weights,
     induced_subgraph,
-    loadgraph, savegraph, AbstractGraphFormat,
+    loadgraph,
+    savegraph,
+    AbstractGraphFormat,
     reverse
 
-import LightGraphs.SimpleGraphs:
-    SimpleGraph, SimpleDiGraph,
-    fadj, badj
+import LightGraphs.SimpleGraphs: SimpleGraph, SimpleDiGraph, fadj, badj
 
-export
-    MetaGraph,
-    weighttype,
-    defaultweight,
-    weightfunction,
-    MGFormat,
-    DOTFormat,
-    reverse
+export MetaGraph, weighttype, defaultweight, weightfunction, MGFormat, DOTFormat, reverse
 
 include("metagraph.jl")
 
-function show(io::IO, g::MetaGraph{<: Any, Label, <: Any, VertexMeta, EdgeMeta}) where {Label, VertexMeta, EdgeMeta}
-    print(io, "Meta graph based on a $(g.graph) with vertices indexed by $Label(s), $VertexMeta(s) vertex metadata, $EdgeMeta(s) edge metadata, $(repr(g.gprops)) as graph metadata, and default weight $(g.defaultweight)")
+function show(
+    io::IO,
+    g::MetaGraph{<:Any,Label,<:Any,VertexMeta,EdgeMeta},
+) where {Label,VertexMeta,EdgeMeta}
+    print(
+        io,
+        "Meta graph based on a $(g.graph) with vertices indexed by $Label(s), $VertexMeta(s) vertex metadata, $EdgeMeta(s) edge metadata, $(repr(g.gprops)) as graph metadata, and default weight $(g.defaultweight)",
+    )
 end
 
 @inline fadj(g::MetaGraph, x...) = fadj(g.graph, x...)
@@ -54,7 +74,7 @@ has_vertex(g::MetaGraph, x...) = has_vertex(g.graph, x...)
 inneighbors(g::MetaGraph, v::Integer) = inneighbors(g.graph, v)
 outneighbors(g::MetaGraph, v::Integer) = fadj(g.graph, v)
 
-issubset(g::T, h::T) where T <: MetaGraph = issubset(g.graph, h.graph)
+issubset(g::T, h::T) where {T<:MetaGraph} = issubset(g.graph, h.graph)
 
 """
     add_edge!(g, u, v, val)
@@ -105,7 +125,7 @@ function _rem_vertex!(g, label, v)
         delete!(eprops, arrange(g, label, metaindex[n], v, n))
     end
     for n in inneighbors(g, v)
-        delete!(eprops, arrange(g, metaindex[n], label,  n, v))
+        delete!(eprops, arrange(g, metaindex[n], label, n, v))
     end
     removed = rem_vertex!(g.graph, v)
     if removed
@@ -130,7 +150,7 @@ function rem_vertex!(g::MetaGraph, v::Integer)
     end
 end
 
-struct MetaWeights{InnerMetaGraph, U <: Real} <: AbstractMatrix{U}
+struct MetaWeights{InnerMetaGraph,U<:Real} <: AbstractMatrix{U}
     meta_graph::InnerMetaGraph
 end
 
@@ -220,7 +240,7 @@ julia> weighttype(MetaGraph(Graph(), defaultweight = 1.0))
 Float64
 ```
 """
-weighttype(g::MetaGraph{<: Any, <: Any, <: Any, <: Any, <: Any, <: Any, <:Any, Weight}) where {Weight} =
+weighttype(g::MetaGraph{<:Any,<:Any,<:Any,<:Any,<:Any,<:Any,<:Any,Weight}) where {Weight} =
     Weight
 
 """
@@ -255,7 +275,7 @@ julia> defaultweight(MetaGraph(Graph(), defaultweight = 2))
 """
 defaultweight(g::MetaGraph) = g.defaultweight
 
-function _copy_props!(oldg::T, newg::T, vmap) where T <: MetaGraph
+function _copy_props!(oldg::T, newg::T, vmap) where {T<:MetaGraph}
     for (newv, oldv) in enumerate(vmap)
         oldl = oldg.metaindex[oldv]
         _, meta = oldg.vprops[oldl]
@@ -267,22 +287,26 @@ function _copy_props!(oldg::T, newg::T, vmap) where T <: MetaGraph
         u, v = Tuple(newe)
         label_1 = metaindex[u]
         label_2 = metaindex[v]
-        newg.eprops[arrange(newg, label_1, label_2, u, v)] = oldg.eprops[arrange(oldg, label_1, label_2)]
+        newg.eprops[arrange(newg, label_1, label_2, u, v)] =
+            oldg.eprops[arrange(oldg, label_1, label_2)]
     end
     return nothing
 end
 
-function induced_subgraph(g::T, v::AbstractVector{U}) where T <: MetaGraph where U <: Integer
+function induced_subgraph(
+    g::T,
+    v::AbstractVector{U},
+) where {T<:MetaGraph} where {U<:Integer}
     inducedgraph, vmap = induced_subgraph(g.graph, v)
-    newg =
-        MetaGraph(inducedgraph,
-            empty(g.vprops),
-            empty(g.eprops),
-            g.gprops,
-            g.weightfunction,
-            g.defaultweight,
-            empty(g.metaindex)
-        )
+    newg = MetaGraph(
+        inducedgraph,
+        empty(g.vprops),
+        empty(g.eprops),
+        g.gprops,
+        g.weightfunction,
+        g.defaultweight,
+        empty(g.metaindex),
+    )
     _copy_props!(g, newg, vmap)
     return newg, vmap
 end
@@ -293,7 +317,7 @@ end
 
 ==(x::MetaGraph, y::MetaGraph) = x.graph == y.graph
 
-copy(g::T) where T <: MetaGraph = deepcopy(g)
+copy(g::T) where {T<:MetaGraph} = deepcopy(g)
 
 include("metadigraph.jl")
 include("overrides.jl")

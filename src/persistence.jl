@@ -82,7 +82,7 @@ function savemg(fn::AbstractString, g::MetaGraph)
 end
 
 loadgraph(fn::AbstractString, gname::String, ::MGFormat) = loadmg(fn)
-savegraph(fn::AbstractString, g::MetaGraph) =  savemg(fn, g)
+savegraph(fn::AbstractString, g::MetaGraph) = savemg(fn, g)
 
 function show_meta_list(io::IO, meta)
     if meta !== nothing && length(meta) > 0

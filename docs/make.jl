@@ -1,5 +1,5 @@
 using Pkg: develop, instantiate, PackageSpec
-develop(PackageSpec(path=pwd()))
+develop(PackageSpec(path = pwd()))
 
 using MetaGraphs
 

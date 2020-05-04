@@ -233,7 +233,7 @@ function MetaGraph(
     gprops = nothing,
     weightfunction = eprops -> 1.0,
     defaultweight = 1.0,
-) where {Vertex, T}
+) where {Vertex,T}
     MetaGraph(
         g,
         Dict{Label,Tuple{T,VertexMeta}}(),
@@ -241,11 +241,11 @@ function MetaGraph(
         gprops,
         weightfunction,
         defaultweight,
-        Dict{T,Label}()
+        Dict{T,Label}(),
     )
 end
 
-const MetaUndirectedGraph = MetaGraph{<:Any, <:Any, <:SimpleGraph}
+const MetaUndirectedGraph = MetaGraph{<:Any,<:Any,<:SimpleGraph}
 
 SimpleGraph(g::MetaUndirectedGraph) = g.graph
 
@@ -264,12 +264,14 @@ function arrange(g::MetaUndirectedGraph, label_1, label_2, u, v)
     end
 end
 
-zero(g::MetaGraph{T, Label, Graph, VertexMeta, EdgeMeta, GraphMeta}) where {T, Label, Graph, VertexMeta, EdgeMeta, GraphMeta} =
-    MetaGraph(Graph();
-        Label = Label,
-        VertexMeta = VertexMeta,
-        EdgeMeta = EdgeMeta,
-        gprops = g.gprops,
-        weightfunction = g.weightfunction,
-        defaultweight = g.defaultweight
-    )
+zero(
+    g::MetaGraph{T,Label,Graph,VertexMeta,EdgeMeta,GraphMeta},
+) where {T,Label,Graph,VertexMeta,EdgeMeta,GraphMeta} = MetaGraph(
+    Graph();
+    Label = Label,
+    VertexMeta = VertexMeta,
+    EdgeMeta = EdgeMeta,
+    gprops = g.gprops,
+    weightfunction = g.weightfunction,
+    defaultweight = g.defaultweight,
+)

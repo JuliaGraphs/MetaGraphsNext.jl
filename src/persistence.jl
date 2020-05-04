@@ -6,7 +6,7 @@
 You can save `MetaGraph`s in a `MGFormat`, currently based on `JLD2`.
 
 ```jldoctest
-julia> using MetaGraphs
+julia> using MetaGraphsNext
 
 julia> using LightGraphs: Edge, Graph,  loadgraph, savegraph
 
@@ -27,7 +27,7 @@ struct MGFormat <: AbstractGraphFormat end
 If all metadata types support `pairs` or are `nothing`, you can save `MetaGraph`s in `DOTFormat`.
 
 ```jldoctest DotFormat
-julia> using MetaGraphs
+julia> using MetaGraphsNext
 
 julia> using LightGraphs
 

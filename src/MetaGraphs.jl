@@ -1,4 +1,4 @@
-module MetaGraphs
+module MetaGraphsNext
 using LightGraphs
 using JLD2
 
@@ -232,7 +232,7 @@ end
 Return the weight type for metagraph `g`.
 
 ```jldoctest
-julia> using MetaGraphs
+julia> using MetaGraphsNext
 
 julia> using LightGraphs: Graph
 
@@ -249,7 +249,7 @@ weighttype(g::MetaGraph{<:Any,<:Any,<:Any,<:Any,<:Any,<:Any,<:Any,Weight}) where
 Return the weight function for metagraph `g`.
 
 ```jldoctest
-julia> using MetaGraphs
+julia> using MetaGraphsNext
 
 julia> using LightGraphs: Graph
 
@@ -265,7 +265,7 @@ weightfunction(g::MetaGraph) = g.weightfunction
 Return the default weight for metagraph `g`.
 
 ```jldoctest
-julia> using MetaGraphs
+julia> using MetaGraphsNext
 
 julia> using LightGraphs: Graph
 

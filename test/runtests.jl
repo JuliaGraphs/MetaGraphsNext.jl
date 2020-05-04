@@ -1,7 +1,4 @@
-using MetaGraphs
-using LightGraphs
-using LightGraphs.SimpleGraphs: fadj, badj
+using MetaGraphsNext
 import Documenter: doctest
-import Test: @testset, @test, @test_broken
 
-doctest(MetaGraphs)
+doctest(MetaGraphsNext)

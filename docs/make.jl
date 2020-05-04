@@ -1,11 +1,4 @@
-using Pkg: develop, instantiate, PackageSpec
-develop(PackageSpec(path = pwd()))
-
-using MetaGraphs
-
-instantiate()
-
+using MetaGraphsNext
 using Documenter: deploydocs, makedocs
-
-makedocs(sitename = "MetaGraphs.jl", modules = [MetaGraphs], doctest = false)
-deploydocs(repo = "github.com/JuliaGraphs/MetaGraphs.jl.git", push_preview = true)
+makedocs(sitename = "MetaGraphsNext.jl", modules = [MetaGraphsNext], doctest = false)
+deploydocs(repo = "github.com/bramtayl/MetaGraphsNext.jl.git")

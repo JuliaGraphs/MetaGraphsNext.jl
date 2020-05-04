@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>MetaGraphsNext.jl · MetaGraphsNext.jl</title><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="assets/documenter.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">MetaGraphsNext.jl</span></div><form class="docs-search" action="search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li class="is-active"><a class="tocitem" href>MetaGraphsNext.jl</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>MetaGraphsNext.jl</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>MetaGraphsNext.jl</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/bramtayl/MetaGraphsNext.jl/blob/master/docs/src/index.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="MetaGraphsNext.jl-1"><a class="docs-heading-anchor" href="#MetaGraphsNext.jl-1">MetaGraphsNext.jl</a><a class="docs-heading-anchor-permalink" href="#MetaGraphsNext.jl-1" title="Permalink"></a></h1><ul><li><a href="#MetaGraphsNext.DOTFormat"><code>MetaGraphsNext.DOTFormat</code></a></li><li><a href="#MetaGraphsNext.MGFormat"><code>MetaGraphsNext.MGFormat</code></a></li><li><a href="#MetaGraphsNext.MetaGraph-Union{Tuple{LightGraphs.AbstractGraph{T}}, Tuple{T}, Tuple{Vertex}} where T where Vertex"><code>MetaGraphsNext.MetaGraph</code></a></li><li><a href="#MetaGraphsNext.defaultweight-Tuple{MetaGraph}"><code>MetaGraphsNext.defaultweight</code></a></li><li><a href="#MetaGraphsNext.weightfunction-Tuple{MetaGraph}"><code>MetaGraphsNext.weightfunction</code></a></li><li><a href="#MetaGraphsNext.weighttype-Union{Tuple{MetaGraph{#s20,#s21,#s22,#s23,#s24,#s25,#s26,Weight} where #s26 where #s25 where #s24 where #s23 where #s22 where #s21 where #s20}, Tuple{Weight}} where Weight"><code>MetaGraphsNext.weighttype</code></a></li></ul><article class="docstring"><header><a class="docstring-binding" id="MetaGraphsNext.DOTFormat" href="#MetaGraphsNext.DOTFormat"><code>MetaGraphsNext.DOTFormat</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia">struct DOTFormat &lt;: AbstractGraphFormat end</code></pre><p>If all metadata types support <code>pairs</code> or are <code>nothing</code>, you can save <code>MetaGraph</code>s in <code>DOTFormat</code>.</p><pre><code class="language-julia-repl">julia&gt; using MetaGraphs
+
+julia&gt; using LightGraphs
+
+julia&gt; simple = MetaGraph(Graph());
+
+julia&gt; simple[:a] = nothing; simple[:b] = nothing; simple[:a, :b] = nothing;
+
+julia&gt; mktemp() do file, io
+            savegraph(file, simple, DOTFormat())
+            print(read(file, String))
+        end
+graph T {
+    a
+    b
+    a -- b
+}
+
+julia&gt; complicated = MetaGraph(DiGraph(),
+            VertexMeta = Dict{Symbol, Int},
+            EdgeMeta = Dict{Symbol, Int},
+            gprops = (tagged = true,)
+        );
+
+julia&gt; complicated[:a] = Dict(:code_1 =&gt; 1, :code_2 =&gt; 2);
+
+julia&gt; complicated[:b] = Dict(:code =&gt; 2);
+
+julia&gt; complicated[:a, :b] = Dict(:code =&gt; 12);
+
+julia&gt; mktemp() do file, io
+            savegraph(file, complicated, DOTFormat())
+            print(read(file, String))
+        end
+digraph G {
+    tagged = true
+    a [code_1 = 1, code_2 = 2]
+    b [code = 2]
+    a -&gt; b [code = 12]
+}</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/bramtayl/MetaGraphsNext.jl/blob/3fdabb4966ba6ca38c93ae87e04e0b7e6be1dd5f/src/persistence.jl#L24-L71">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="MetaGraphsNext.MGFormat" href="#MetaGraphsNext.MGFormat"><code>MetaGraphsNext.MGFormat</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia">struct MGFormat &lt;: AbstractGraphFormat end</code></pre><p>You can save <code>MetaGraph</code>s in a <code>MGFormat</code>, currently based on <code>JLD2</code>.</p><pre><code class="language-julia-repl">julia&gt; using MetaGraphs
+
+julia&gt; using LightGraphs: Edge, Graph,  loadgraph, savegraph
+
+julia&gt; complicated = MetaGraph(Graph());
+
+julia&gt; mktemp() do file, io
+            savegraph(file, complicated)
+            loadgraph(file, &quot;something&quot;, MGFormat()) == complicated
+        end
+true</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/bramtayl/MetaGraphsNext.jl/blob/3fdabb4966ba6ca38c93ae87e04e0b7e6be1dd5f/src/persistence.jl#L3-L21">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="MetaGraphsNext.MetaGraph-Union{Tuple{LightGraphs.AbstractGraph{T}}, Tuple{T}, Tuple{Vertex}} where T where Vertex" href="#MetaGraphsNext.MetaGraph-Union{Tuple{LightGraphs.AbstractGraph{T}}, Tuple{T}, Tuple{Vertex}} where T where Vertex"><code>MetaGraphsNext.MetaGraph</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">MetaGraph(g;
+    Label = Symbol,
+    VertexMeta = nothing,
+    EdgeMeta = nothing,
+    gprops = nothing,
+    weightfunction = eprops -&gt; 1.0,
+    defaultweight = 1.0
+)</code></pre><p>Construct a new meta graph based on <code>g</code>, where <code>Label</code> is the type of the vertex labels, <code>VertexMeta</code> is the type of the metadata at a vertex, and <code>EdgeMeta</code> is the type of the metadata at an edge. You can also attach arbitrary graph level metadata as <code>gprops</code>.</p><pre><code class="language-julia-repl">julia&gt; using LightGraphs
+
+julia&gt; using MetaGraphs
+
+julia&gt; colors = MetaGraph(Graph(), VertexMeta = Int, EdgeMeta = Symbol, gprops = &quot;special&quot;)
+Meta graph based on a {0, 0} undirected simple Int64 graph with vertices indexed by Symbol(s), Int64(s) vertex metadata, Symbol(s) edge metadata, &quot;special&quot; as graph metadata, and default weight 1.0</code></pre><p>Use <code>setindex!</code> to add a new vertex with the given metadata.</p><pre><code class="language-julia-repl">julia&gt; colors[:red] = 1;
+
+julia&gt; colors[:yellow] = 2;
+
+julia&gt; colors[:blue] = 3;</code></pre><p>You can access and change the metadata using indexing: zero arguments for graph metadata, one label for vertex metadata, and two labels for edge metadata.</p><pre><code class="language-julia-repl">julia&gt; colors[]
+&quot;special&quot;
+
+julia&gt; colors[:blue] = 4;
+
+julia&gt; colors[:blue]
+4
+
+julia&gt; colors[:red, :yellow] = :orange;
+
+julia&gt; colors[:red, :yellow]
+:orange</code></pre><p>You can delete vertices and edges with <code>delete!</code>.</p><pre><code class="language-julia-repl">julia&gt; delete!(colors, :red, :yellow);
+
+julia&gt; delete!(colors, :blue);</code></pre><p>You can use the <code>weightfunction</code> keyword to specify a function which will transform vertex metadata into a weight. This weight must always be the same type as the <code>defaultweight</code>.</p><pre><code class="language-julia-repl">julia&gt; weighted = MetaGraph(Graph(), EdgeMeta = Float64, weightfunction = identity);
+
+julia&gt; weighted[:red] = nothing; weighted[:blue] = nothing; weighted[:yellow] = nothing;
+
+julia&gt; weighted[:red, :blue] = 1.0; weighted[:blue, :yellow] = 2.0;
+
+julia&gt; the_weights = LightGraphs.weights(weighted)
+metaweights
+
+julia&gt; size(the_weights)
+(3, 3)
+
+julia&gt; the_weights[1, 3]
+1.0
+
+julia&gt; diameter(weighted)
+3.0</code></pre><p>MetaGraphs inherit many methods from LightGraphs. In general, inherited methods refer to vertices by codes, not labels.</p><pre><code class="language-julia-repl">julia&gt; is_directed(colors)
+false
+
+julia&gt; nv(zero(colors))
+0
+
+julia&gt; ne(copy(colors))
+0
+
+julia&gt; add_vertex!(colors, :white, 4)
+true
+
+julia&gt; add_edge!(colors, 1, 3, :pink)
+true
+
+julia&gt; rem_edge!(colors, 1, 3)
+true
+
+julia&gt; rem_vertex!(colors, 3)
+true
+
+julia&gt; rem_vertex!(colors, 3)
+false
+
+julia&gt; eltype(colors) == Int
+true
+
+julia&gt; edgetype(colors) == Edge{Int}
+true
+
+julia&gt; vertices(colors)
+Base.OneTo(2)
+
+julia&gt; has_edge(colors, 1, 2)
+false
+
+julia&gt; has_vertex(colors, 1)
+true
+
+julia&gt; LightGraphs.SimpleGraphs.fadj(colors, 1) == Int[]
+true
+
+julia&gt; LightGraphs.SimpleGraphs.badj(colors, 1) == Int[]
+true
+
+julia&gt; colors == colors
+true
+
+julia&gt; issubset(colors, colors)
+true
+
+julia&gt; SimpleGraph(colors)
+{2, 0} undirected simple Int64 graph</code></pre><p>You can seemlessly make MetaGraphs based on DiGraphs as well.</p><pre><code class="language-julia-repl">julia&gt; rock_paper_scissors = MetaGraph(DiGraph(), Label = Symbol, EdgeMeta = Symbol);
+
+julia&gt; rock_paper_scissors[:rock] = nothing; rock_paper_scissors[:paper] = nothing; rock_paper_scissors[:scissors] = nothing;
+
+julia&gt; rock_paper_scissors[:rock, :scissors] = :rock_beats_scissors; rock_paper_scissors[:scissors, :paper] = :scissors_beats_paper; rock_paper_scissors[:paper, :rock] = :paper_beats_rock;
+
+julia&gt; is_directed(rock_paper_scissors)
+true
+
+julia&gt; haskey(reverse(rock_paper_scissors), :scissors, :rock)
+true
+
+julia&gt; SimpleDiGraph(rock_paper_scissors)
+{3, 3} directed simple Int64 graph
+
+julia&gt; sub_graph, _ = induced_subgraph(rock_paper_scissors, [1, 3]);
+
+julia&gt; haskey(sub_graph, :rock, :scissors)
+true
+
+julia&gt; delete!(rock_paper_scissors, :paper);
+
+julia&gt; rock_paper_scissors[:rock, :scissors]
+:rock_beats_scissors</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/bramtayl/MetaGraphsNext.jl/blob/3fdabb4966ba6ca38c93ae87e04e0b7e6be1dd5f/src/metagraph.jl#L57-L227">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="MetaGraphsNext.defaultweight-Tuple{MetaGraph}" href="#MetaGraphsNext.defaultweight-Tuple{MetaGraph}"><code>MetaGraphsNext.defaultweight</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">defaultweight(g)</code></pre><p>Return the default weight for metagraph <code>g</code>.</p><pre><code class="language-julia-repl">julia&gt; using MetaGraphsNext
+
+julia&gt; using LightGraphs: Graph
+
+julia&gt; defaultweight(MetaGraph(Graph(), defaultweight = 2))
+2</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/bramtayl/MetaGraphsNext.jl/blob/3fdabb4966ba6ca38c93ae87e04e0b7e6be1dd5f/src/MetaGraphsNext.jl#L262-L275">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="MetaGraphsNext.weightfunction-Tuple{MetaGraph}" href="#MetaGraphsNext.weightfunction-Tuple{MetaGraph}"><code>MetaGraphsNext.weightfunction</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">weightfunction(g)</code></pre><p>Return the weight function for metagraph <code>g</code>.</p><pre><code class="language-julia-repl">julia&gt; using MetaGraphsNext
+
+julia&gt; using LightGraphs: Graph
+
+julia&gt; weightfunction(MetaGraph(Graph(), weightfunction = identity))(0)
+0</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/bramtayl/MetaGraphsNext.jl/blob/3fdabb4966ba6ca38c93ae87e04e0b7e6be1dd5f/src/MetaGraphsNext.jl#L246-L259">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="MetaGraphsNext.weighttype-Union{Tuple{MetaGraph{#s20,#s21,#s22,#s23,#s24,#s25,#s26,Weight} where #s26 where #s25 where #s24 where #s23 where #s22 where #s21 where #s20}, Tuple{Weight}} where Weight" href="#MetaGraphsNext.weighttype-Union{Tuple{MetaGraph{#s20,#s21,#s22,#s23,#s24,#s25,#s26,Weight} where #s26 where #s25 where #s24 where #s23 where #s22 where #s21 where #s20}, Tuple{Weight}} where Weight"><code>MetaGraphsNext.weighttype</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">weighttype(g)</code></pre><p>Return the weight type for metagraph <code>g</code>.</p><pre><code class="language-julia-repl">julia&gt; using MetaGraphsNext
+
+julia&gt; using LightGraphs: Graph
+
+julia&gt; weighttype(MetaGraph(Graph(), defaultweight = 1.0))
+Float64</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/bramtayl/MetaGraphsNext.jl/blob/3fdabb4966ba6ca38c93ae87e04e0b7e6be1dd5f/src/MetaGraphsNext.jl#L229-L242">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LightGraphs.SimpleGraphs.add_edge!-Tuple{MetaGraph,Integer,Integer,Any}" href="#LightGraphs.SimpleGraphs.add_edge!-Tuple{MetaGraph,Integer,Integer,Any}"><code>LightGraphs.SimpleGraphs.add_edge!</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">add_edge!(g, u, v, val)</code></pre><p>Add an edge <code>(u, v)</code> to MetaGraph <code>g</code> having value <code>val</code>.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/bramtayl/MetaGraphsNext.jl/blob/3fdabb4966ba6ca38c93ae87e04e0b7e6be1dd5f/src/MetaGraphsNext.jl#L79-L83">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="LightGraphs.SimpleGraphs.add_vertex!-Tuple{MetaGraph,Any,Any}" href="#LightGraphs.SimpleGraphs.add_vertex!-Tuple{MetaGraph,Any,Any}"><code>LightGraphs.SimpleGraphs.add_vertex!</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia">add_vertex!(g, label, val)</code></pre><p>Add a vertex to MetaGraph <code>g</code> with label <code>label</code> having value <code>val</code>.</p><p>return true if the vertex has been added, false otherwise.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/bramtayl/MetaGraphsNext.jl/blob/3fdabb4966ba6ca38c93ae87e04e0b7e6be1dd5f/src/MetaGraphsNext.jl#L102-L108">source</a></section></article></article></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Monday 4 May 2020 01:48">Monday 4 May 2020</span>. Using Julia version 1.3.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

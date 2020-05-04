@@ -1,0 +1,31 @@
+name: test
+on:
+  - push
+  - pull_request
+jobs:
+  test:
+    name: ${{ matrix.version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version:
+          - '1.0'
+          - '1.4'
+          - 'nightly'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@latest
+        with:
+          version: ${{ matrix.version }}
+      - uses: julia-actions/julia-buildpkg@latest
+      - uses: julia-actions/julia-runtest@latest
+      - uses: julia-actions/julia-processcoverage@v1
+        env:
+          DISABLE_AMEND_COVERAGE_FROM_SRC: yes
+      - uses: codecov/codecov-action@v1
+        with:
+          file: ./lcov.info
+      - uses: domluna/JuliaFormatter-action@master
+        with:
+          args: -v .
+        continue-on-error: true

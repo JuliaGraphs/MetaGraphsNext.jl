@@ -1,9 +1,9 @@
-# MetaGraphs
+# MetaGraphsNext.jl
 
 ```@index
-Modules = [MetaGraphs]
+Modules = [MetaGraphsNext]
 ```
 
 ```@autodocs
-Modules = [MetaGraphs]
+Modules = [MetaGraphsNext]
 ```

@@ -71,7 +71,7 @@ edge. You can also attach arbitrary graph level metadata as `gprops`.
 ```jldoctest example
 julia> using LightGraphs
 
-julia> using MetaGraphs
+julia> using MetaGraphsNext
 
 julia> colors = MetaGraph(Graph(), VertexMeta = Int, EdgeMeta = Symbol, gprops = "special")
 Meta graph based on a {0, 0} undirected simple Int64 graph with vertices indexed by Symbol(s), Int64(s) vertex metadata, Symbol(s) edge metadata, "special" as graph metadata, and default weight 1.0
@@ -137,7 +137,7 @@ julia> diameter(weighted)
 3.0
 ```
 
-MetaGraphs inherit many methods from LightGraphs. In general, inherited methods refer to
+MetaGraphsNext inherit many methods from LightGraphs. In general, inherited methods refer to
 vertices by codes, not labels.
 
 ```jldoctest example
@@ -196,7 +196,7 @@ julia> SimpleGraph(colors)
 {2, 0} undirected simple Int64 graph
 ```
 
-You can seemlessly make MetaGraphs based on DiGraphs as well.
+You can seemlessly make MetaGraphsNext based on DiGraphs as well.
 
 ```jldoctest example
 julia> rock_paper_scissors = MetaGraph(DiGraph(), Label = Symbol, EdgeMeta = Symbol);

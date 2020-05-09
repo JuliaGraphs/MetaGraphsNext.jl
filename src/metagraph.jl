@@ -139,7 +139,8 @@ julia> diameter(weighted)
 ```
 
 MetaGraphs inherit many methods from LightGraphs. In general, inherited methods refer to
-vertices by codes, not labels.
+vertices by codes, not labels, for compatibility with AbstractGraph. Vertex codes get
+reassigned after `rem_vertex!`, so I recommend using label indexing if possible.
 
 ```jldoctest example
 julia> is_directed(colors)

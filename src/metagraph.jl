@@ -66,7 +66,8 @@ end
 
 Construct a new meta graph based on `g`, where `Label` is the type of the vertex labels, `VertexMeta` is the type
 of the metadata at a vertex, and `EdgeMeta` is the type of the metadata at an
-edge. You can also attach arbitrary graph level metadata as `gprops`.
+edge. You can also attach arbitrary graph level metadata as `gprops`. It is recommended not
+to set `Label` to `Int` to avoid confusion between vertex labels and codes.
 
 ```jldoctest example
 julia> using LightGraphs

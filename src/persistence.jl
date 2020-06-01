@@ -10,11 +10,11 @@ julia> using MetaGraphsNext
 
 julia> using LightGraphs: Edge, Graph,  loadgraph, savegraph
 
-julia> complicated = MetaGraph(Graph());
+julia> example = MetaGraph(Graph());
 
 julia> mktemp() do file, io
-            savegraph(file, complicated)
-            loadgraph(file, "something", MGFormat()) == complicated
+            savegraph(file, simple)
+            loadgraph(file, "something", MGFormat()) == example
         end
 true
 ```

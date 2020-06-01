@@ -80,6 +80,8 @@ issubset(g::T, h::T) where {T<:MetaGraph} = issubset(g.graph, h.graph)
     add_edge!(g, u, v, val)
 
 Add an edge `(u, v)` to MetaGraph `g` having value `val`.
+
+Return true if the edge has been added, false otherwise.
 """
 function add_edge!(g::MetaGraph, u::Integer, v::Integer, val)
     added = add_edge!(g.graph, u, v)
@@ -104,7 +106,7 @@ end
 
 Add a vertex to MetaGraph `g` with label `label` having value `val`.
 
-return true if the vertex has been added, false otherwise.
+Return true if the vertex has been added, false otherwise.
 """
 function add_vertex!(g::MetaGraph, label, val)
     added = add_vertex!(g.graph)

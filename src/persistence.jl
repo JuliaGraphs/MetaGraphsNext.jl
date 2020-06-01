@@ -13,7 +13,7 @@ julia> using LightGraphs: Edge, Graph,  loadgraph, savegraph
 julia> example = MetaGraph(Graph());
 
 julia> mktemp() do file, io
-            savegraph(file, simple)
+            savegraph(file, example)
             loadgraph(file, "something", MGFormat()) == example
         end
 true

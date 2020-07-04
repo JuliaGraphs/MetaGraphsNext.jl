@@ -78,7 +78,9 @@ julia> colors = MetaGraph(Graph(), VertexMeta = Int, EdgeMeta = Symbol, gprops =
 Meta graph based on a {0, 0} undirected simple Int64 graph with vertices indexed by Symbol(s), Int64(s) vertex metadata, Symbol(s) edge metadata, "special" as graph metadata, and default weight 1.0
 ```
 
-Use `setindex!` to add a new vertex with the given metadata.
+Use `setindex!` to add a new vertex with the given metadata. If a vertex with the given
+index does not exist, it will be created automatically; otherwise, `setindex!` will modify
+the metadata for the existing vertex.
 
 ```jldoctest example
 julia> colors[:red] = 1;

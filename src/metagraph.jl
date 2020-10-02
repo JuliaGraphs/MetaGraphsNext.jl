@@ -74,8 +74,8 @@ julia> using LightGraphs
 
 julia> using MetaGraphsNext
 
-julia> colors = MetaGraph(Graph(), VertexMeta = Int, EdgeMeta = Symbol, gprops = "special")
-Meta graph based on a {0, 0} undirected simple Int64 graph with vertices indexed by Symbol(s), Int64(s) vertex metadata, Symbol(s) edge metadata, "special" as graph metadata, and default weight 1.0
+julia> colors = MetaGraph(Graph(), VertexMeta = String, EdgeMeta = Symbol, gprops = "special")
+Meta graph based on a {0, 0} undirected simple Int64 graph with vertices indexed by Symbol(s), String(s) vertex metadata, Symbol(s) edge metadata, "special" as graph metadata, and default weight 1.0
 ```
 
 Use `setindex!` to add a new vertex with the given metadata. If a vertex with the given
@@ -83,11 +83,11 @@ index does not exist, it will be created automatically; otherwise, `setindex!` w
 the metadata for the existing vertex.
 
 ```jldoctest example
-julia> colors[:red] = 1;
+julia> colors[:red] = "warm";
 
-julia> colors[:yellow] = 2;
+julia> colors[:yellow] = "warm";
 
-julia> colors[:blue] = 3;
+julia> colors[:blue] = "cool";
 ```
 
 You can access and change the metadata using indexing: zero arguments for graph metadata,
@@ -97,10 +97,10 @@ one label for vertex metadata, and two labels for edge metadata.
 julia> colors[]
 "special"
 
-julia> colors[:blue] = 4;
+julia> colors[:blue] = "very cool";
 
 julia> colors[:blue]
-4
+"very cool"
 
 julia> colors[:red, :yellow] = :orange;
 
@@ -154,7 +154,7 @@ julia> nv(zero(colors))
 julia> ne(copy(colors))
 0
 
-julia> add_vertex!(colors, :white, 4)
+julia> add_vertex!(colors, :white, "neutral")
 true
 
 julia> add_edge!(colors, 1, 3, :pink)

@@ -324,7 +324,7 @@ copy(g::T) where {T<:MetaGraph} = deepcopy(g)
 """
     code_for(meta::MetaGraph, vertex_label)
 
-Find the code for associated with a vertex with `vertex_label`. This can be useful to pass
+Find the code associated with a `vertex_label`. This can be useful to pass
 to methods inherited from `LightGraphs`. Note, however, that vertex codes could be
 reassigned after vertex deletion.
 
@@ -346,6 +346,30 @@ function code_for(meta::MetaGraph, vertex_label)
     code
 end
 export code_for
+
+"""
+    label_for(meta::MetaGraph, vertex_code)
+
+Find the label associated with a `vertex_code`. This can be useful to interpret the results of methods
+inherited from `LightGraphs`. Note, however, that vertex codes could be reassigned after vertex deletion.
+
+```jldoctest
+julia> using MetaGraphsNext
+
+julia> using LightGraphs: Graph
+
+julia> meta = MetaGraph(Graph());
+
+julia> meta[:a] = nothing
+
+julia> label_for(meta, 1)
+:a
+```
+"""
+function label_for(meta::MetaGraph, vertex_code)
+    meta.metaindex[vertex_code]
+end
+export label_for
 
 include("metadigraph.jl")
 include("overrides.jl")

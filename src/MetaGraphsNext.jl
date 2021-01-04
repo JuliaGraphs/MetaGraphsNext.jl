@@ -185,8 +185,45 @@ function getindex(g::MetaGraph, label)
 end
 getindex(g::MetaGraph, label_1, label_2) = g.eprops[arrange(g, label_1, label_2)]
 
+"""
+    haskey(g, :label)
+
+Determine whether a graph `g` contains the vertex `:label`.
+
+```jldoctest; setup = :(using MetaGraphsNext; using LightGraphs: Graph)
+julia> colors = MetaGraph(Graph(), VertexMeta = String, EdgeMeta = Symbol, gprops = "special");
+
+julia> colors[:red] = "warm";
+
+julia> haskey(colors, :red)
+true
+
+julia> haskey(colors, :blue)
+false
+```
+"""
 haskey(g::MetaGraph, label) = haskey(g.vprops, label)
-haskey(g::MetaGraph, label_1, label_2) = haskey(g.eprops, arrange(g, label_1, label_2))
+
+"""
+    haskey(g, :v1, :v2)
+
+Determine whether a graph `g` contains an edge from `:v1` to `:v2`. The order of `:v1` and `:v2`
+only matters if `g` is a digraph.
+
+```jldoctest; setup = :(using MetaGraphsNext; using LightGraphs: Graph)
+julia> colors = MetaGraph(Graph(), VertexMeta = String, EdgeMeta = Symbol, gprops = "special");
+
+julia> colors[:red] = "warm"; colors[:blue] = "cool"; colors[:red, :blue] = :purple
+:purple
+
+julia> haskey(colors, :red, :blue) && haskey(colors, :blue, :red)
+true
+
+julia> haskey(colors, :red, :yellow)
+false
+```
+"""
+haskey(g::MetaGraph, label_1, label_2) = haskey(g, label_1) && haskey(g, label_2) && haskey(g.eprops, arrange(g, label_1, label_2))
 
 function setindex!(g::MetaGraph, val, label)
     vprops = g.vprops

@@ -106,6 +106,12 @@ julia> colors[:red, :yellow] = :orange;
 
 julia> colors[:red, :yellow]
 :orange
+
+julia> haskey(colors, :red, :yellow)
+true
+
+julia> haskey(colors, :yellow, :red) # undirected graph, so vertex order doesn't matter
+true
 ```
 
 You can delete vertices and edges with `delete!`.
@@ -211,6 +217,9 @@ julia> rock_paper_scissors[:rock, :scissors] = :rock_beats_scissors; rock_paper_
 
 julia> is_directed(rock_paper_scissors)
 true
+
+julia> haskey(rock_paper_scissors, :scissors, :rock)
+false
 
 julia> haskey(reverse(rock_paper_scissors), :scissors, :rock)
 true

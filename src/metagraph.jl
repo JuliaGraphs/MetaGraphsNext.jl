@@ -288,3 +288,24 @@ zero(
     weightfunction = g.weightfunction,
     defaultweight = g.defaultweight,
 )
+
+"""
+Create a new meta-graph (Copy by reference) where user can specify fields they
+want to change along with the new values
+"""
+function reuse(g::MetaGraph, replacements::Dict{Symbol, Any})
+    # @assert all(keys(replacements) in fieldnames(MetaGraph)) "One or more invalid fieldnames"
+    newfields = Dict{Any, Any}()
+    for field in fieldnames(MetaGraph)
+        newfields[field] = getproperty(g, field)
+    end
+    for field in keys(replacements)
+        if field ∉ fieldnames(MetaGraph)
+            error("Invalid fieldname: $field")
+        end
+        newfields[field] = replacements[field]
+    end
+    # Splattering is a good trick, not sure if it will work for non kwargs
+    newg = MetaGraph(;newfields)
+    return newg
+end

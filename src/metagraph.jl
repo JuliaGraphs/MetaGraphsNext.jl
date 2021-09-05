@@ -258,25 +258,6 @@ function MetaGraph(
     )
 end
 
-const MetaUndirectedGraph = MetaGraph{<:Any,<:Any,<:SimpleGraph}
-
-SimpleGraph(g::MetaUndirectedGraph) = g.graph
-
-is_directed(::Type{<:MetaUndirectedGraph}) = false
-
-function arrange(g::MetaUndirectedGraph, label_1, label_2)
-    vprops = g.vprops
-    arrange(g::MetaUndirectedGraph, label_1, label_2, vprops[label_1], vprops[label_2])
-end
-
-function arrange(g::MetaUndirectedGraph, label_1, label_2, u, v)
-    if u > v
-        (label_2, label_1)
-    else
-        (label_1, label_2)
-    end
-end
-
 zero(
     g::MetaGraph{T,Label,Graph,VertexMeta,EdgeMeta,GraphMeta},
 ) where {T,Label,Graph,VertexMeta,EdgeMeta,GraphMeta} = MetaGraph(
@@ -288,3 +269,17 @@ zero(
     weightfunction = g.weightfunction,
     defaultweight = g.defaultweight,
 )
+
+==(x::MetaGraph, y::MetaGraph) = x.graph == y.graph
+
+copy(g::T) where {T<:MetaGraph} = deepcopy(g)
+
+function show(
+    io::IO,
+    g::MetaGraph{<:Any,Label,<:Any,VertexMeta,EdgeMeta},
+) where {Label,VertexMeta,EdgeMeta}
+    print(
+        io,
+        "Meta graph based on a $(g.graph) with vertices indexed by $Label(s), $VertexMeta(s) vertex metadata, $EdgeMeta(s) edge metadata, $(repr(g.gprops)) as graph metadata, and default weight $(g.defaultweight)",
+    )
+end

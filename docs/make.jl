@@ -15,7 +15,7 @@ makedocs(
         "Tutorial" => [
             "Basics" => "tutorial_basics.md",
             "LightGraphs.jl interface" => "tutorial_lightgraphs.md",
-            "Read / write" => "tutorial_files.md"
+            "Reading / writing" => "tutorial_files.md",
         ],
         "API reference" => "api.md",
     ]

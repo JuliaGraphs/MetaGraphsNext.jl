@@ -7,21 +7,15 @@ Modules = [MetaGraphsNext]
 Pages = ["metagraph.jl"]
 ```
 
-### Undirected and directed versions
-
 ```@autodocs
 Modules = [MetaGraphsNext]
 Pages = ["metaundigraph.jl", "metadigraph.jl"]
 ```
 
-### Dictionary utilities
-
 ```@autodocs
 Modules = [MetaGraphsNext]
 Pages = ["dict_utils.jl"]
 ```
-
-### Weights
 
 ```@autodocs
 Modules = [MetaGraphsNext]
@@ -34,8 +28,6 @@ Pages = ["weights.jl"]
 Modules = [MetaGraphsNext]
 Pages = ["lightgraphs.jl"]
 ```
-
-### Overrides
 
 ```@autodocs
 Modules = [MetaGraphsNext]

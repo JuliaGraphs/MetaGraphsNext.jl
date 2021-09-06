@@ -11,39 +11,13 @@ getindex(g::MetaGraph, label_1, label_2) = g.eprops[arrange(g, label_1, label_2)
     haskey(g, :label)
 
 Determine whether a graph `g` contains the vertex `:label`.
-
-```jldoctest; setup = :(using MetaGraphsNext; using LightGraphs: Graph)
-julia> colors = MetaGraph(Graph(), VertexMeta = String, EdgeMeta = Symbol, gprops = "special");
-
-julia> colors[:red] = "warm";
-
-julia> haskey(colors, :red)
-true
-
-julia> haskey(colors, :blue)
-false
-```
 """
 haskey(g::MetaGraph, label) = haskey(g.vprops, label)
 
 """
     haskey(g, :v1, :v2)
 
-Determine whether a graph `g` contains an edge from `:v1` to `:v2`. The order of `:v1` and `:v2`
-only matters if `g` is a digraph.
-
-```jldoctest; setup = :(using MetaGraphsNext; using LightGraphs: Graph)
-julia> colors = MetaGraph(Graph(), VertexMeta = String, EdgeMeta = Symbol, gprops = "special");
-
-julia> colors[:red] = "warm"; colors[:blue] = "cool"; colors[:red, :blue] = :purple
-:purple
-
-julia> haskey(colors, :red, :blue) && haskey(colors, :blue, :red)
-true
-
-julia> haskey(colors, :red, :yellow)
-false
-```
+Determine whether a graph `g` contains an edge from `:v1` to `:v2`. The order of `:v1` and `:v2` only matters if `g` is a digraph.
 """
 function haskey(g::MetaGraph, label_1, label_2)
     return (
@@ -119,22 +93,8 @@ end
 """
     code_for(meta::MetaGraph, vertex_label)
 
-Find the code associated with a `vertex_label`. This can be useful to pass
-to methods inherited from `LightGraphs`. Note, however, that vertex codes could be
+Find the code associated with a `vertex_label`. This can be useful to pass to methods inherited from `LightGraphs`. Note, however, that vertex codes could be
 reassigned after vertex deletion.
-
-```jldoctest
-julia> using MetaGraphsNext
-
-julia> using LightGraphs: Graph
-
-julia> meta = MetaGraph(Graph());
-
-julia> meta[:a] = nothing
-
-julia> code_for(meta, :a)
-1
-```
 """
 function code_for(meta::MetaGraph, vertex_label)
     code, _ = meta.vprops[vertex_label]
@@ -144,21 +104,7 @@ end
 """
     label_for(meta::MetaGraph, vertex_code)
 
-Find the label associated with a `vertex_code`. This can be useful to interpret the results of methods
-inherited from `LightGraphs`. Note, however, that vertex codes could be reassigned after vertex deletion.
-
-```jldoctest
-julia> using MetaGraphsNext
-
-julia> using LightGraphs: Graph
-
-julia> meta = MetaGraph(Graph());
-
-julia> meta[:a] = nothing
-
-julia> label_for(meta, 1)
-:a
-```
+Find the label associated with a `vertex_code`. This can be useful to interpret the results of methods inherited from `LightGraphs`. Note, however, that vertex codes could be reassigned after vertex deletion.
 """
 function label_for(meta::MetaGraph, vertex_code)
     meta.metaindex[vertex_code]

@@ -24,20 +24,10 @@ end
 
 weights(g::MetaGraph) = MetaWeights(g)
 
-
 """
     weighttype(g)
 
 Return the weight type for metagraph `g`.
-
-```jldoctest
-julia> using MetaGraphsNext
-
-julia> using LightGraphs: Graph
-
-julia> weighttype(MetaGraph(Graph(), defaultweight = 1.0))
-Float64
-```
 """
 weighttype(g::MetaGraph{<:Any,<:Any,<:Any,<:Any,<:Any,<:Any,<:Any,Weight}) where {Weight} =
     Weight
@@ -46,15 +36,6 @@ weighttype(g::MetaGraph{<:Any,<:Any,<:Any,<:Any,<:Any,<:Any,<:Any,Weight}) where
     weightfunction(g)
 
 Return the weight function for metagraph `g`.
-
-```jldoctest
-julia> using MetaGraphsNext
-
-julia> using LightGraphs: Graph
-
-julia> weightfunction(MetaGraph(Graph(), weightfunction = identity))(0)
-0
-```
 """
 weightfunction(g::MetaGraph) = g.weightfunction
 
@@ -62,14 +43,5 @@ weightfunction(g::MetaGraph) = g.weightfunction
     defaultweight(g)
 
 Return the default weight for metagraph `g`.
-
-```jldoctest
-julia> using MetaGraphsNext
-
-julia> using LightGraphs: Graph
-
-julia> defaultweight(MetaGraph(Graph(), defaultweight = 2))
-2
-```
 """
 defaultweight(g::MetaGraph) = g.defaultweight

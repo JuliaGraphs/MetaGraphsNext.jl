@@ -42,7 +42,7 @@ Modules = [MetaGraphsNext]
 Pages = ["overrides.jl"]
 ```
 
-## Read / write
+## Reading / writing
 
 ```@autodocs
 Modules = [MetaGraphsNext]

@@ -1,4 +1,4 @@
-using Documenter: deploydocs, makedocs
+using Documenter
 using MetaGraphsNext
 
 makedocs(

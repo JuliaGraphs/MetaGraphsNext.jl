@@ -1,11 +1,11 @@
-using Documenter: deploydocs, makedocs
+using Documenter: deploydocs, HTML, makedocs
 using MetaGraphsNext
 
 makedocs(
     sitename = "MetaGraphsNext.jl",
     modules = [MetaGraphsNext],
     doctest = true,
-    format = Documenter.HTML(;
+    format = HTML(;
         prettyurls = get(ENV, "CI", "false") == "true",
         canonical = "https://juliagraphs.org/MetaGraphsNext.jl/dev/",
         assets = String[],

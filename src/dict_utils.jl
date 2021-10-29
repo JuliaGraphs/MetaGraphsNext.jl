@@ -93,7 +93,7 @@ end
 """
     code_for(meta::MetaGraph, vertex_label)
 
-Find the code associated with a `vertex_label`. This can be useful to pass to methods inherited from `LightGraphs`. Note, however, that vertex codes could be
+Find the code associated with a `vertex_label`. This can be useful to pass to methods inherited from `Graphs`. Note, however, that vertex codes could be
 reassigned after vertex deletion.
 """
 function code_for(meta::MetaGraph, vertex_label)
@@ -104,7 +104,7 @@ end
 """
     label_for(meta::MetaGraph, vertex_code)
 
-Find the label associated with a `vertex_code`. This can be useful to interpret the results of methods inherited from `LightGraphs`. Note, however, that vertex codes could be reassigned after vertex deletion.
+Find the label associated with a `vertex_code`. This can be useful to interpret the results of methods inherited from `Graphs`. Note, however, that vertex codes could be reassigned after vertex deletion.
 """
 function label_for(meta::MetaGraph, vertex_code)
     meta.metaindex[vertex_code]

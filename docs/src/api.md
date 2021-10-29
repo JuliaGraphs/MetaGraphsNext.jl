@@ -22,11 +22,11 @@ Modules = [MetaGraphsNext]
 Pages = ["weights.jl"]
 ```
 
-## LightGraphs.jl interface
+## Graphs.jl interface
 
 ```@autodocs
 Modules = [MetaGraphsNext]
-Pages = ["lightgraphs.jl"]
+Pages = ["graphs.jl"]
 ```
 
 ```@autodocs

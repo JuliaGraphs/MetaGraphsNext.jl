@@ -10,7 +10,7 @@ jobs:
       matrix:
         version:
           - '1.0'
-          - '1.4'
+          - '1'
           - 'nightly'
     steps:
       - uses: actions/checkout@v2
@@ -25,7 +25,3 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           file: ./lcov.info
-      - uses: domluna/JuliaFormatter-action@master
-        with:
-          args: -v .
-        continue-on-error: true

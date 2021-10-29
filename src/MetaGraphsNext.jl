@@ -1,7 +1,7 @@
 module MetaGraphsNext
 
 using JLD2
-using LightGraphs
+using Graphs
 
 import Base:
     Tuple,
@@ -18,7 +18,7 @@ import Base:
     size,
     zero
 
-import LightGraphs:
+import Graphs:
     AbstractGraph,
     AbstractGraphFormat,
     add_edge!,
@@ -41,7 +41,7 @@ import LightGraphs:
     vertices,
     weights
 
-import LightGraphs.SimpleGraphs: SimpleGraph, SimpleDiGraph, fadj, badj
+import Graphs.SimpleGraphs: SimpleGraph, SimpleDiGraph, fadj, badj
 
 export MetaGraph, weighttype, defaultweight, weightfunction
 export MGFormat, DOTFormat
@@ -51,7 +51,7 @@ export label_for, code_for
 include("metagraph.jl")
 include("metaundigraph.jl")
 include("metadigraph.jl")
-include("lightgraphs.jl")
+include("graphs.jl")
 include("weights.jl")
 include("dict_utils.jl")
 include("overrides.jl")

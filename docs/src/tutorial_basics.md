@@ -1,7 +1,7 @@
 # Working with metagraphs
 
 ```jldoctest example
-julia> using LightGraphs
+julia> using Graphs
 
 julia> using MetaGraphsNext
 ```
@@ -120,7 +120,7 @@ julia> weighted[:red] = nothing; weighted[:blue] = nothing; weighted[:yellow] = 
 
 julia> weighted[:red, :blue] = 1.0; weighted[:blue, :yellow] = 2.0;
 
-julia> the_weights = LightGraphs.weights(weighted)
+julia> the_weights = Graphs.weights(weighted)
 metaweights
 
 julia> size(the_weights)

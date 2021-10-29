@@ -1,16 +1,16 @@
-# LightGraphs.jl  interface
+# Graphs.jl  interface
 
-```jldoctest lightgraphs
-julia> using LightGraphs
+```jldoctest graphs
+julia> using Graphs
 
 julia> using MetaGraphsNext
 ```
 
-`MetaGraph`s inherit many methods from LightGraphs.jl. In general, inherited methods refer to vertices by codes, not labels, for compatibility with AbstractGraph. Vertex codes get reassigned after `rem_vertex!` to remain contiguous, so we recommend using labels if possible.
+`MetaGraph`s inherit many methods from Graphs.jl. In general, inherited methods refer to vertices by codes, not labels, for compatibility with AbstractGraph. Vertex codes get reassigned after `rem_vertex!` to remain contiguous, so we recommend using labels if possible.
 
 ## Undirected graphs
 
-```jldoctest lightgraphs
+```jldoctest graphs
 julia> colors = MetaGraph(Graph(), VertexMeta = String, EdgeMeta = Symbol, gprops = "special");
 
 julia> colors[:red] = "warm";
@@ -56,10 +56,10 @@ false
 julia> has_vertex(colors, 1)
 true
 
-julia> LightGraphs.SimpleGraphs.fadj(colors, 1) == Int[]
+julia> Graphs.SimpleGraphs.fadj(colors, 1) == Int[]
 true
 
-julia> LightGraphs.SimpleGraphs.badj(colors, 1) == Int[]
+julia> Graphs.SimpleGraphs.badj(colors, 1) == Int[]
 true
 
 julia> colors == colors
@@ -76,7 +76,7 @@ julia> SimpleGraph(colors)
 
 You can seemlessly make MetaGraphs based on DiGraphs as well.
 
-```jldoctest lightgraphs
+```jldoctest graphs
 julia> rock_paper_scissors = MetaGraph(DiGraph(), Label = Symbol, EdgeMeta = Symbol);
 
 julia> rock_paper_scissors[:rock] = nothing; rock_paper_scissors[:paper] = nothing; rock_paper_scissors[:scissors] = nothing;

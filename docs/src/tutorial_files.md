@@ -1,7 +1,7 @@
 # Read / write
 
 ```jldoctest readwrite
-julia> using LightGraphs
+julia> using Graphs
 
 julia> using MetaGraphsNext
 ```

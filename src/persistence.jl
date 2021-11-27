@@ -5,14 +5,14 @@
 
 You can save `MetaGraph`s in a `MGFormat`, currently based on `JLD2`.
 """
-struct MGFormat <: AbstractGraphFormat end
+struct MGFormat <: Graphs.AbstractGraphFormat end
 
 """
     struct DOTFormat <: AbstractGraphFormat end
 
 If all metadata types support `pairs` or are `nothing`, you can save `MetaGraph`s in `DOTFormat`.
 """
-struct DOTFormat <: AbstractGraphFormat end
+struct DOTFormat <: Graphs.AbstractGraphFormat end
 
 function loadmg(fn::AbstractString)
     @load fn g

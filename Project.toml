@@ -1,14 +1,14 @@
 name = "MetaGraphsNext"
 uuid = "fa8bd995-216d-47f1-8a91-f3b68fbeb377"
-version = "0.2"
+version = "0.2.0"
 
 [deps]
-JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
+JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 
 [compat]
-JLD2 = "0.1.11, 0.2, 0.3, 0.4"
 Graphs = "1.4.1"
+JLD2 = "0.1.11, 0.2, 0.3, 0.4"
 julia = "1"
 
 [extras]

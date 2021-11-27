@@ -14,11 +14,6 @@ Pages = ["metaundigraph.jl", "metadigraph.jl"]
 
 ```@autodocs
 Modules = [MetaGraphsNext]
-Pages = ["dict_utils.jl"]
-```
-
-```@autodocs
-Modules = [MetaGraphsNext]
 Pages = ["weights.jl"]
 ```
 
@@ -31,7 +26,7 @@ Pages = ["graphs.jl"]
 
 ```@autodocs
 Modules = [MetaGraphsNext]
-Pages = ["overrides.jl"]
+Pages = ["dict_utils.jl"]
 ```
 
 ## Reading / writing

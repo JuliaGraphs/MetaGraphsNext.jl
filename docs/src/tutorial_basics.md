@@ -12,7 +12,7 @@ We provide a default constructor in which you only need to specify types:
 
 ```jldoctest example
 julia> colors = MetaGraph(Graph(), VertexMeta = String, EdgeMeta = Symbol, gprops = "special")
-Meta graph based on a {0, 0} undirected simple Int64 graph with vertices indexed by Symbol(s), String(s) vertex metadata, Symbol(s) edge metadata, "special" as graph metadata, and default weight 1.0
+Meta graph based on a {0, 0} undirected simple Int64 graph with vertices indexed by Symbol(s), vertex metadata of type String, edge metadata of type Symbol, graph metadata given by "special", and default weight 1.0
 ```
 
 ## Adding and modifying vertices
@@ -109,9 +109,7 @@ julia> weighttype(MetaGraph(Graph(), defaultweight = 2))
 Int64
 ```
 
-You can use the `weightfunction` keyword to specify a function which will
-transform edge metadata into a weight. This weight must always be the same
-type as the `defaultweight`.
+You can use the `weightfunction` keyword to specify a function which will transform edge metadata into a weight. This weight must always be the same type as the `defaultweight`.
 
 ```jldoctest example
 julia> weighted = MetaGraph(Graph(), EdgeMeta = Float64, weightfunction = identity);
@@ -121,7 +119,7 @@ julia> weighted[:red] = nothing; weighted[:blue] = nothing; weighted[:yellow] = 
 julia> weighted[:red, :blue] = 1.0; weighted[:blue, :yellow] = 2.0;
 
 julia> the_weights = Graphs.weights(weighted)
-metaweights
+MetaWeights of size (3, 3)
 
 julia> size(the_weights)
 (3, 3)

@@ -96,11 +96,6 @@ function Base.show(
 ) where {Label,VertexMeta,EdgeMeta}
     return print(
         io,
-        "Meta graph based on a $(g.graph)
-        with vertices indexed by $Label(s),
-        vertex metadata of type $VertexMeta,
-        edge metadata of type $EdgeMeta,
-        graph metadata given by $(repr(g.gprops)),
-        and default weight $(g.defaultweight)",
+        "Meta graph based on a $(g.graph) with vertices indexed by $Label(s), vertex metadata of type $VertexMeta, edge metadata of type $EdgeMeta, graph metadata given by $(repr(g.gprops)), and default weight $(g.defaultweight)",
     )
 end

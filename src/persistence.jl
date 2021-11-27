@@ -84,7 +84,7 @@ function savedot(io::IO, g::MetaGraph)
         show_meta_list(io, g.eprops[arrange(g, label_1, label_2)])
         write(io, "\n")
     end
-    write(io, "}\n")
+    return write(io, "}\n")
 end
 
 function savegraph(fn::AbstractString, g::MetaGraph, ::DOTFormat)

@@ -8,8 +8,8 @@ struct MetaWeights{InnerMetaGraph<:MetaGraph,U<:Real} <: AbstractMatrix{U}
     g::InnerMetaGraph
 end
 
-show(io::IO, ::MetaWeights) = print(io, "MetaWeights")
-show(io::IO, ::MIME"text/plain", x::MetaWeights) = show(io, x)
+Base.show(io::IO, mv::MetaWeights) = print(io, "MetaWeights of size $(size(mv))")
+Base.show(io::IO, ::MIME"text/plain", x::MetaWeights) = show(io, x)
 
 MetaWeights(g::MetaGraph) = MetaWeights{typeof(g),weighttype(g)}(g)
 
@@ -18,9 +18,9 @@ MetaWeights(g::MetaGraph) = MetaWeights{typeof(g),weighttype(g)}(g)
 
 Return a matrix-like `MetaWeights` object containing the edge weights for graph `g`.
 """
-weights(g::MetaGraph) = MetaWeights(g)
+Graphs.weights(g::MetaGraph) = MetaWeights(g)
 
-function size(w::MetaWeights)
+function Base.size(w::MetaWeights)
     vertices = nv(w.g)
     return (vertices, vertices)
 end
@@ -55,12 +55,12 @@ defaultweight(g::MetaGraph) = g.defaultweight
 
 Get the weight of edge `(v1, v2)`.
 """
-function getindex(w::MetaWeights, v1::Integer, v2::Integer)
+function Base.getindex(w::MetaWeights, v1::Integer, v2::Integer)
     g = w.g
     if has_edge(g, v1, v2)
         labels = g.labels
         wf = weightfunction(g)
-        return wf(g[arrange(g, labels[v1], labels[v2], u, v)...])
+        return wf(g[arrange(g, labels[v1], labels[v2], v1, v2)...])
     else
         dw = defaultweight(g)
         return dw

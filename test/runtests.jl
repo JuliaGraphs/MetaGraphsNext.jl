@@ -1,4 +1,7 @@
+using Documenter
 using MetaGraphsNext
-import Documenter: doctest
+using Test
 
-doctest(MetaGraphsNext)
+@testset "MetaGraphsNext" begin
+    doctest(MetaGraphsNext)
+end

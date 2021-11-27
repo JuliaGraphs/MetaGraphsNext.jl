@@ -13,6 +13,8 @@ Graphs.has_edge(g::MetaGraph, v1::Integer, v2::Integer) = has_edge(g.graph, v1, 
 Graphs.inneighbors(g::MetaGraph, v::Integer) = inneighbors(g.graph, v)
 Graphs.outneighbors(g::MetaGraph, v::Integer) = outneighbors(g.graph, v)
 
+Base.issubset(g::G, h::G) where {G<:MetaGraph} = issubset(g.graph, h.graph)
+
 ## Link between graph codes and metagraph labels
 
 """
@@ -145,7 +147,7 @@ function Graphs.rem_vertex!(g::MetaGraph, v::Integer)
 end
 
 function Graphs.rem_edge!(g::MetaGraph, v1::Integer, v2::Integer)
-    removed = rem_edge!(g.graph, u, v)
+    removed = rem_edge!(g.graph, v1, v2)
     if removed
         label_1, label_2 = label_for(g, v1), label_for(g, v2)
         delete!(g.eprops, arrange(g, label_1, label_2, v1, v2))

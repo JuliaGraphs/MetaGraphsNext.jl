@@ -29,7 +29,7 @@ julia> ne(copy(colors))
 julia> add_vertex!(colors, :white, "neutral")
 true
 
-julia> add_edge!(colors, 1, 3, :pink)
+julia> add_edge!(colors, :red, :white, :pink)
 true
 
 julia> rem_edge!(colors, 1, 3)
@@ -54,12 +54,6 @@ julia> has_edge(colors, 1, 2)
 false
 
 julia> has_vertex(colors, 1)
-true
-
-julia> Graphs.SimpleGraphs.fadj(colors, 1) == Int[]
-true
-
-julia> Graphs.SimpleGraphs.badj(colors, 1) == Int[]
 true
 
 julia> colors == colors

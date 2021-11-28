@@ -6,96 +6,160 @@ julia> using Graphs
 julia> using MetaGraphsNext
 ```
 
-`MetaGraph`s inherit many methods from Graphs.jl. In general, inherited methods refer to vertices by codes, not labels, for compatibility with AbstractGraph. Vertex codes get reassigned after `rem_vertex!` to remain contiguous, so we recommend using labels if possible.
+`MetaGraph`s inherit many methods from Graphs.jl. In general, inherited methods refer to vertices by codes, not labels, for compatibility with the `AbstractGraph` interface.
+
+Note that vertex codes get reassigned after `rem_vertex!` operations to remain contiguous, so we recommend systematically converting to and from labels.
 
 ## Undirected graphs
 
+We can make `MetaGraph`s based on (undirected) `Graph`s.
+
 ```jldoctest graphs
-julia> colors = MetaGraph(Graph(), VertexMeta = String, EdgeMeta = Symbol, gprops = "special");
+julia> cities = MetaGraph(Graph(), VertexMeta = String, EdgeMeta = Int, gprops = nothing, weightfunction = identity);
+```
 
-julia> colors[:red] = "warm";
+Let us add some cities and the distance between them:
 
-julia> colors[:yellow] = "warm";
+```jldoctest graphs
+julia> cities[:Paris] = "France";
 
-julia> is_directed(colors)
+julia> cities[:London] = "UK";
+
+julia> cities[:Berlin] = "Germany";
+
+julia> cities[:Paris, :London] = 344;
+
+julia> cities[:Paris, :Berlin] = 878;
+```
+
+The general properties of the graph are as expected:
+
+```jldoctest graphs
+julia> is_directed(cities)
 false
 
-julia> nv(zero(colors))
+julia> eltype(cities)
+Int64
+
+julia> edgetype(cities)
+Graphs.SimpleGraphs.SimpleEdge{Int64}
+
+julia> SimpleGraph(cities)
+{3, 2} undirected simple Int64 graph
+```
+
+We can check the set of vertices:
+
+```jldoctest graphs
+julia> nv(cities)
+3
+
+julia> collect(vertices(cities))
+3-element Vector{Int64}:
+ 1
+ 2
+ 3
+
+julia> has_vertex(cities, 2)
+true
+
+julia> has_vertex(cities, 4)
+false
+```
+
+We then check the set of edges:
+
+```jldoctest graphs
+julia> ne(cities)
+2
+
+julia> collect(edges(cities))
+2-element Vector{Graphs.SimpleGraphs.SimpleEdge{Int64}}:
+ Edge 1 => 2
+ Edge 1 => 3
+
+julia> has_edge(cities, 1, 2)
+true
+
+julia> has_edge(cities, 2, 3)
+false
+```
+
+From this initial graph, we can create some others:
+
+```jldoctest graphs
+julia> copy(cities) == cities
+true
+
+julia> zero(cities) == cities
+false
+
+julia> nv(zero(cities))
 0
+```
 
-julia> ne(copy(colors))
-0
+Finally, let us remove some edges and vertices
 
-julia> add_vertex!(colors, :white, "neutral")
+```jldoctest graphs
+julia> rem_edge!(cities, 1, 3)
 true
 
-julia> add_edge!(colors, :red, :white, :pink)
+julia> rem_vertex!(cities, 3)
 true
 
-julia> rem_edge!(colors, 1, 3)
-true
-
-julia> rem_vertex!(colors, 3)
-true
-
-julia> rem_vertex!(colors, 3)
+julia> rem_vertex!(cities, 3)
 false
 
-julia> eltype(colors) == Int
+julia> has_vertex(cities, 1)
 true
 
-julia> edgetype(colors) == Edge{Int}
-true
-
-julia> vertices(colors)
-Base.OneTo(2)
-
-julia> has_edge(colors, 1, 2)
+julia> has_vertex(cities, 3)
 false
-
-julia> has_vertex(colors, 1)
-true
-
-julia> colors == colors
-true
-
-julia> issubset(colors, colors)
-true
-
-julia> SimpleGraph(colors)
-{2, 0} undirected simple Int64 graph
 ```
 
 ## Directed graphs
 
-You can seemlessly make MetaGraphs based on DiGraphs as well.
+We can make `MetaGraph`s based on `DiGraph`s as well.
 
 ```jldoctest graphs
 julia> rock_paper_scissors = MetaGraph(DiGraph(), Label = Symbol, EdgeMeta = Symbol);
 
-julia> rock_paper_scissors[:rock] = nothing; rock_paper_scissors[:paper] = nothing; rock_paper_scissors[:scissors] = nothing;
+julia> for label in [:rock, :paper, :scissors]; rock_paper_scissors[label] = nothing; end;
 
-julia> rock_paper_scissors[:rock, :scissors] = :rock_beats_scissors; rock_paper_scissors[:scissors, :paper] = :scissors_beats_paper; rock_paper_scissors[:paper, :rock] = :paper_beats_rock;
+julia> rock_paper_scissors[:rock, :scissors] = :rock_beats_scissors; rock_paper_scissors[:scissors, :paper] = :scissors_beat_paper; rock_paper_scissors[:paper, :rock] = :paper_beats_rock;
+```
 
+We see that the underlying graph has changed:
+
+```jldoctest graphs
 julia> is_directed(rock_paper_scissors)
 true
 
+julia> SimpleDiGraph(rock_paper_scissors)
+{3, 3} directed simple Int64 graph
+```
+
+Directed graphs can be reversed:
+
+``` jldoctest graphs
 julia> haskey(rock_paper_scissors, :scissors, :rock)
 false
 
 julia> haskey(reverse(rock_paper_scissors), :scissors, :rock)
 true
+```
 
-julia> SimpleDiGraph(rock_paper_scissors)
-{3, 3} directed simple Int64 graph
+Finally, let us take a subgraph:
 
-julia> sub_graph, _ = induced_subgraph(rock_paper_scissors, [1, 3]);
+```jldoctest graphs
+julia> rock_paper, _ = induced_subgraph(rock_paper_scissors, [1, 2]);
 
-julia> haskey(sub_graph, :rock, :scissors)
+julia> issubset(rock_paper, rock_paper_scissors)
 true
 
-julia> delete!(rock_paper_scissors, :paper);
+julia> haskey(rock_paper, :paper, :rock)
+true
 
-julia> rock_paper_scissors[:rock, :scissors]
-:rock_beats_scissors
+julia> haskey(rock_paper, :rock, :scissors)
+false
 ```

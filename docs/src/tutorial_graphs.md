@@ -15,7 +15,7 @@ Note that vertex codes get reassigned after `rem_vertex!` operations to remain c
 We can make `MetaGraph`s based on (undirected) `Graph`s.
 
 ```jldoctest graphs
-julia> cities = MetaGraph(Graph(), VertexMeta = String, EdgeMeta = Int, gprops = nothing, weightfunction = identity);
+julia> cities = MetaGraph(Graph(), VertexMeta = String, EdgeMeta = Int, gprops = nothing, weightfunction = identity, defaultweight = 0);
 ```
 
 Let us add some cities and the distance between them:
@@ -96,6 +96,19 @@ false
 
 julia> nv(zero(cities))
 0
+```
+
+Since `cities` is a weighted graph, we can leverage the whole Graphs.jl machinery of graph analysis and traversal:
+
+```jldoctest graphs
+julia> diameter(cities)
+1222
+
+julia> ds = dijkstra_shortest_paths(cities, 2); ds.dists
+3-element Vector{Int64}:
+  344
+    0
+ 1222
 ```
 
 Finally, let us remove some edges and vertices

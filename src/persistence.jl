@@ -10,7 +10,7 @@ struct MGFormat <: Graphs.AbstractGraphFormat end
 """
     struct DOTFormat <: AbstractGraphFormat end
 
-If all metadata types support `pairs` or are `nothing`, you can save `MetaGraph`s in `DOTFormat`.
+If all metadata types support `pairs` or are `Nothing`, you can save `MetaGraph`s in `DOTFormat`.
 """
 struct DOTFormat <: Graphs.AbstractGraphFormat end
 

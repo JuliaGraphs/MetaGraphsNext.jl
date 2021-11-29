@@ -24,9 +24,9 @@ graph T {
 }
 
 julia> complicated = MetaGraph(DiGraph(),
-            VertexMeta = Dict{Symbol, Int},
-            EdgeMeta = Dict{Symbol, Int},
-            gprops = (tagged = true,)
+            VertexData = Dict{Symbol, Int},
+            EdgeData = Dict{Symbol, Int},
+            graph_data = (tagged = true,)
         );
 
 julia> complicated[:a] = Dict(:code_1 => 1, :code_2 => 2);

@@ -15,7 +15,7 @@ Note that vertex codes get reassigned after `rem_vertex!` operations to remain c
 We can make `MetaGraph`s based on (undirected) `Graph`s.
 
 ```jldoctest graphs
-julia> cities = MetaGraph(Graph(), VertexMeta = String, EdgeMeta = Int, gprops = nothing, weightfunction = identity, defaultweight = 0);
+julia> cities = MetaGraph(Graph(), VertexData = String, EdgeData = Int, weight_function = identity, default_weight = 0);
 ```
 
 Let us add some cities and the distance between them:
@@ -127,7 +127,7 @@ false
 We can make `MetaGraph`s based on `DiGraph`s as well.
 
 ```jldoctest graphs
-julia> rock_paper_scissors = MetaGraph(DiGraph(), Label = Symbol, EdgeMeta = Symbol);
+julia> rock_paper_scissors = MetaGraph(DiGraph(), Label = Symbol, EdgeData = Symbol);
 
 julia> for label in [:rock, :paper, :scissors]; rock_paper_scissors[label] = nothing; end;
 

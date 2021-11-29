@@ -5,7 +5,7 @@ using Graphs
 
 export MetaGraph, MetaDiGraph, MetaUndirectedGraph
 export label_for, code_for, set_data
-export weighttype, defaultweight, weightfunction
+export weighttype, default_weight, weight_function
 export MGFormat, DOTFormat
 
 include("metagraph.jl")

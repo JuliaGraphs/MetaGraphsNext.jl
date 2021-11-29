@@ -3,28 +3,28 @@
 
 Return graph metadata.
 """
-Base.getindex(g::MetaGraph) = g.gprops
+Base.getindex(g::MetaGraph) = g.graph_data
 
 """
     getindex(g, label)
 
 Return vertex metadata for `label`.
 """
-Base.getindex(g::MetaGraph, label) = g.vprops[label]
+Base.getindex(g::MetaGraph, label) = g.vertex_data[label]
 
 """
     getindex(g, label_1, label_2)
 
 Return edge metadata for the edge between `label_1` and `label_2`.
 """
-Base.getindex(g::MetaGraph, label_1, label_2) = g.eprops[arrange(g, label_1, label_2)]
+Base.getindex(g::MetaGraph, label_1, label_2) = g.edge_data[arrange(g, label_1, label_2)]
 
 """
     haskey(g, label)
 
 Determine whether a graph `g` contains the vertex `label`.
 """
-Base.haskey(g::MetaGraph, label) = haskey(g.vprops, label)
+Base.haskey(g::MetaGraph, label) = haskey(g.vertex_data, label)
 
 """
     haskey(g, label_1, label_2)
@@ -37,7 +37,7 @@ function Base.haskey(g::MetaGraph, label_1, label_2)
     return (
         haskey(g, label_1) &&
         haskey(g, label_2) &&
-        haskey(g.eprops, arrange(g, label_1, label_2))
+        haskey(g.edge_data, arrange(g, label_1, label_2))
     )
 end
 
@@ -100,18 +100,18 @@ Copy properties from `oldg` to `newg` following vertex map `vmap`.
 """
 function _copy_props!(oldg::G, newg::G, vmap) where {G<:MetaGraph}
     for (newv, oldv) in enumerate(vmap)
-        oldl = oldg.labels[oldv]
-        data = oldg.vprops[oldl]
-        newg.labels[newv] = oldl
-        newg.vcodes[oldl] = newv
-        newg.vprops[oldl] = data
+        oldl = oldg.vertex_labels[oldv]
+        data = oldg.vertex_data[oldl]
+        newg.vertex_labels[newv] = oldl
+        newg.vertex_codes[oldl] = newv
+        newg.vertex_data[oldl] = data
     end
     for newe in edges(newg.graph)
-        labels = newg.labels
+        vertex_labels = newg.vertex_labels
         v1, v2 = Tuple(newe)
-        label_1 = labels[v1]
-        label_2 = labels[v2]
-        newg.eprops[arrange(newg, label_1, label_2, v1, v2)] = oldg.eprops[arrange(
+        label_1 = vertex_labels[v1]
+        label_2 = vertex_labels[v2]
+        newg.edge_data[arrange(newg, label_1, label_2, v1, v2)] = oldg.edge_data[arrange(
             oldg, label_1, label_2
         )]
     end

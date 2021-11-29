@@ -24,7 +24,7 @@ Find the vertex code (or index) associated with label `label`.
 
 This can be useful to pass to methods inherited from `Graphs`. Note, however, that vertex codes can be reassigned after vertex deletion.
 """
-code_for(g::MetaGraph, label) = g.vcodes[label]
+code_for(g::MetaGraph, label) = g.vertex_codes[label]
 
 """
     label_for(g::MetaGraph, v)
@@ -33,7 +33,7 @@ Find the label associated with code `v`.
 
 This can be useful to interpret the results of methods inherited from `Graphs`. Note, however, that vertex codes can be reassigned after vertex deletion.
 """
-label_for(g::MetaGraph, v::Integer) = g.labels[v]
+label_for(g::MetaGraph, v::Integer) = g.vertex_labels[v]
 
 ## Set vertex and edge data
 
@@ -45,8 +45,8 @@ Set vertex metadata for `label` to `data`.
 Return `true` if the operation succeeds, and `false` if `g` has no such vertex.
 """
 function set_data!(g::MetaGraph, label, data)
-    if haskey(g.vprops, label)
-        g.vprops[label] = data
+    if haskey(g.vertex_data, label)
+        g.vertex_data[label] = data
         return true
     else
         return false
@@ -62,8 +62,8 @@ Return `true` if the operation succeeds, and `false` if `g` has no such edge.
 """
 function set_data!(g::MetaGraph, label_1, label_2, data)
     edge_labels = arrange(g, label_1, label_2)
-    if haskey(g.eprops, edge_labels)
-        g.eprops[edge_labels] = data
+    if haskey(g.edge_data, edge_labels)
+        g.edge_data[edge_labels] = data
         return true
     else
         return false
@@ -83,9 +83,9 @@ function Graphs.add_vertex!(g::MetaGraph, label, data)
     added = add_vertex!(g.graph)
     if added
         v = nv(g)
-        g.labels[v] = label
-        g.vcodes[label] = v
-        g.vprops[label] = data
+        g.vertex_labels[v] = label
+        g.vertex_codes[label] = v
+        g.vertex_data[label] = data
     end
     return added
 end
@@ -101,7 +101,7 @@ function Graphs.add_edge!(g::MetaGraph, label_1, label_2, data)
     v1, v2 = code_for(g, label_1), code_for(g, label_2)
     added = add_edge!(g.graph, v1, v2)
     if added
-        g.eprops[arrange(g, label_1, label_2, v1, v2)] = data
+        g.edge_data[arrange(g, label_1, label_2, v1, v2)] = data
     end
     return added
 end
@@ -109,28 +109,28 @@ end
 ## Remove vertex
 
 function _rem_vertex!(g::MetaGraph, label, v)
-    labels = g.labels
-    vcodes = g.vcodes
-    vprops = g.vprops
-    eprops = g.eprops
+    vertex_labels = g.vertex_labels
+    vertex_codes = g.vertex_codes
+    vertex_data = g.vertex_data
+    edge_data = g.edge_data
     lastv = nv(g)
     for n in outneighbors(g, v)
-        delete!(eprops, arrange(g, label, labels[n], v, n))
+        delete!(edge_data, arrange(g, label, vertex_labels[n], v, n))
     end
     for n in inneighbors(g, v)
-        delete!(eprops, arrange(g, labels[n], label, n, v))
+        delete!(edge_data, arrange(g, vertex_labels[n], label, n, v))
     end
     removed = rem_vertex!(g.graph, v)
     if removed
         if v != lastv # ignore if we're removing the last vertex.
-            lastl = labels[lastv]
-            lastvprop = vprops[lastl]
-            labels[v] = lastl
-            vcodes[lastl] = v
-            vprops[lastl] = lastvprop
+            lastl = vertex_labels[lastv]
+            lastvprop = vertex_data[lastl]
+            vertex_labels[v] = lastl
+            vertex_codes[lastl] = v
+            vertex_data[lastl] = lastvprop
         end
-        delete!(vprops, label)
-        delete!(labels, lastv)
+        delete!(vertex_data, label)
+        delete!(vertex_labels, lastv)
     end
     return removed
 end
@@ -150,7 +150,7 @@ function Graphs.rem_edge!(g::MetaGraph, v1::Integer, v2::Integer)
     removed = rem_edge!(g.graph, v1, v2)
     if removed
         label_1, label_2 = label_for(g, v1), label_for(g, v2)
-        delete!(g.eprops, arrange(g, label_1, label_2, v1, v2))
+        delete!(g.edge_data, arrange(g, label_1, label_2, v1, v2))
     end
     return removed
 end
@@ -163,13 +163,13 @@ function Graphs.induced_subgraph(
     inducedgraph, vmap = induced_subgraph(g.graph, v)
     newg = MetaGraph(
         inducedgraph,
-        empty(g.labels),
-        empty(g.vcodes),
-        empty(g.vprops),
-        empty(g.eprops),
-        g.gprops,
-        g.weightfunction,
-        g.defaultweight,
+        empty(g.vertex_labels),
+        empty(g.vertex_codes),
+        empty(g.vertex_data),
+        empty(g.edge_data),
+        g.graph_data,
+        g.weight_function,
+        g.default_weight,
     )
     _copy_props!(g, newg, vmap)
     return newg, vmap
@@ -177,20 +177,27 @@ end
 
 function Graphs.reverse(g::MetaDiGraph)
     rg = reverse(g.graph)
-    rlabels = copy(g.labels)
-    rvcodes = copy(g.vcodes)
-    rvprops = copy(g.vprops)
-    reprops = empty(g.eprops)
-    rgprops = g.gprops
-    rweightfunction = g.weightfunction
-    rdefaultweight = g.defaultweight
+    rvertex_labels = copy(g.vertex_labels)
+    rvertex_codes = copy(g.vertex_codes)
+    rvertex_data = copy(g.vertex_data)
+    redge_data = empty(g.edge_data)
+    rgraph_data = g.graph_data
+    rweight_function = g.weight_function
+    rdefault_weight = g.default_weight
 
-    for (u, v) in keys(g.eprops)
-        reprops[(v, u)] = g.eprops[(u, v)]
+    for (u, v) in keys(g.edge_data)
+        redge_data[(v, u)] = g.edge_data[(u, v)]
     end
 
     rg = MetaGraph(
-        rg, rlabels, rvcodes, rvprops, reprops, rgprops, rweightfunction, rdefaultweight
+        rg,
+        rvertex_labels,
+        rvertex_codes,
+        rvertex_data,
+        redge_data,
+        rgraph_data,
+        rweight_function,
+        rdefault_weight,
     )
 
     return rg

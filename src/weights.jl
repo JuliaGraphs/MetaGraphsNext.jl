@@ -37,18 +37,18 @@ function weighttype(
 end
 
 """
-    weightfunction(g)
+    weight_function(g)
 
 Return the weight function for metagraph `g`.
 """
-weightfunction(g::MetaGraph) = g.weightfunction
+weight_function(g::MetaGraph) = g.weight_function
 
 """
-    defaultweight(g)
+    default_weight(g)
 
 Return the default weight for metagraph `g`.
 """
-defaultweight(g::MetaGraph) = g.defaultweight
+default_weight(g::MetaGraph) = g.default_weight
 
 """
     getindex(w::MetaWeights, v1, v2)
@@ -58,11 +58,11 @@ Get the weight of edge `(v1, v2)`.
 function Base.getindex(w::MetaWeights, v1::Integer, v2::Integer)
     g = w.g
     if has_edge(g, v1, v2)
-        labels = g.labels
-        wf = weightfunction(g)
+        labels = g.vertex_labels
+        wf = weight_function(g)
         return wf(g[arrange(g, labels[v1], labels[v2], v1, v2)...])
     else
-        dw = defaultweight(g)
+        dw = default_weight(g)
         return dw
     end
 end

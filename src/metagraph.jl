@@ -16,7 +16,7 @@ It is recommended not to set `Label` to an integer type, so as to avoid confusio
 - `weight_function::WeightFunction`: function defining edge weight from edge metadata
 - `default_weight::U`: default weight for the edges
 """
-Base.@kwdef struct MetaGraph{
+struct MetaGraph{
     T<:Integer,Label,Graph,VertexData,EdgeData,GraphData,WeightFunction,U<:Real
 } <: AbstractGraph{T}
     graph::Graph
@@ -54,15 +54,15 @@ function MetaGraph(
     if Label <: Integer
         @warn "Constructing a MetaGraph with integer labels is not advised."
     end
-    return MetaGraph(;
-        graph=graph,
-        vertex_labels=Dict{T,Label}(),
-        vertex_codes=Dict{Label,T}(),
-        vertex_data=Dict{Label,VertexData}(),
-        edge_data=Dict{Tuple{Label,Label},EdgeData}(),
-        graph_data=graph_data,
-        weight_function=weight_function,
-        default_weight=default_weight,
+    return MetaGraph(
+        graph,
+        Dict{T,Label}(),
+        Dict{Label,T}(),
+        Dict{Label,VertexData}(),
+        Dict{Tuple{Label,Label},EdgeData}(),
+        graph_data,
+        weight_function,
+        default_weight,
     )
 end
 

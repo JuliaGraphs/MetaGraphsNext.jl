@@ -74,9 +74,7 @@ julia> ne(cities)
 2
 
 julia> collect(edges(cities))
-2-element Vector{Graphs.SimpleGraphs.SimpleEdge{Int64}}:
- Edge 1 => 2
- Edge 1 => 3
+(Edge 1 => 2, Edge 1 => 3)
 
 julia> has_edge(cities, 1, 2)
 true
@@ -104,11 +102,8 @@ Since `cities` is a weighted graph, we can leverage the whole Graphs.jl machiner
 julia> diameter(cities)
 1222
 
-julia> ds = dijkstra_shortest_paths(cities, 2); ds.dists
-3-element Vector{Int64}:
-  344
-    0
- 1222
+julia> ds = dijkstra_shortest_paths(cities, 2); Tuple(ds.dists)
+(344, 0, 1222)
 ```
 
 Finally, let us remove some edges and vertices

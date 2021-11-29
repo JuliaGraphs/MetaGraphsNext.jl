@@ -47,7 +47,7 @@ end
 
 function savedot(io::IO, g::MetaGraph)
     gprops = g.gprops
-    metaindex = g.metaindex
+    labels = g.labels
 
     if is_directed(g)
         write(io, "digraph G {\n")

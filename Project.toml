@@ -5,9 +5,15 @@ version = "0.2.0"
 [deps]
 Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
-TestEnv = "1e6cf692-eddd-4d53-88a5-2d735e33781b"
 
 [compat]
 Graphs = "1.4.1"
 JLD2 = "0.1.11, 0.2, 0.3, 0.4"
 julia = "1"
+
+[extras]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Documenter", "Test"]

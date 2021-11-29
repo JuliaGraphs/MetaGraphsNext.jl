@@ -73,7 +73,7 @@ We then check the set of edges:
 julia> ne(cities)
 2
 
-julia> collect(edges(cities))
+julia> Tuple(collect(edges(cities)))
 (Edge 1 => 2, Edge 1 => 3)
 
 julia> has_edge(cities, 1, 2)

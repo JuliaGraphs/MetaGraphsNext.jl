@@ -24,8 +24,8 @@ function savemg(fn::AbstractString, g::MetaGraph)
     return 1
 end
 
-loadgraph(fn::AbstractString, gname::String, ::MGFormat) = loadmg(fn)
-savegraph(fn::AbstractString, g::MetaGraph) = savemg(fn, g)
+Graphs.loadgraph(fn::AbstractString, gname::String, ::MGFormat) = loadmg(fn)
+Graphs.savegraph(fn::AbstractString, g::MetaGraph) = savemg(fn, g)
 
 function show_meta_list(io::IO, meta)
     if meta !== nothing && length(meta) > 0
@@ -87,7 +87,7 @@ function savedot(io::IO, g::MetaGraph)
     return write(io, "}\n")
 end
 
-function savegraph(fn::AbstractString, g::MetaGraph, ::DOTFormat)
+function Graphs.savegraph(fn::AbstractString, g::MetaGraph, ::DOTFormat)
     open(fn, "w") do fp
         savedot(fp, g)
     end

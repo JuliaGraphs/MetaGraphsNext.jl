@@ -54,11 +54,8 @@ We can check the set of vertices:
 julia> nv(cities)
 3
 
-julia> collect(vertices(cities))
-3-element Vector{Int64}:
- 1
- 2
- 3
+julia> Tuple(collect(vertices(cities)))
+(1, 2, 3)
 
 julia> has_vertex(cities, 2)
 true

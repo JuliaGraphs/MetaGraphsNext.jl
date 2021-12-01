@@ -48,10 +48,12 @@ end
 
 Add a vertex to MetaGraph `g` with label `label` having value `val`.
 
-Return true if the vertex has been added, false otherwise.
+Return true if the vertex has been added, false incase the label already exists or edge was not added.
 """
 function add_vertex!(g::MetaGraph, label, val)
     added = add_vertex!(g.graph)
+    if g.haskey(label)
+        return false
     if added
         v = nv(g)
         g.vprops[label] = (v, val)

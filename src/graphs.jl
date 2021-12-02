@@ -53,6 +53,7 @@ Return true if the vertex has been added, false incase the label already exists 
 function add_vertex!(g::MetaGraph, label, val)
     if g.haskey(label)
         return false
+    end
     added = add_vertex!(g.graph)
     if added
         v = nv(g)

@@ -1,91 +1,100 @@
 """
-    MetaGraph{T,Label,Graph,VertexMeta,EdgeMeta,GraphMeta,WeightFunction,U} <: AbstractGraph{T}
+    MetaGraph{T<:Integer,Label,Graph,VertexData,EdgeData,GraphData,WeightFunction,U<:Real} <: AbstractGraph{T}
 
 A graph type with custom vertex labels containing vertex-, edge- and graph-level metadata.
 
-Vertex labels have type `Label`, while vertex (resp. edge, resp. graph) metadata has type `VertexMeta` (resp. `EdgeMeta`, resp. `GraphMeta`).
-It is recommended not to set `Label` to `Int` to avoid confusion between vertex labels and vertex codes (which have type `T <: Integer`).
+Vertex labels have type `Label`, while vertex (resp. edge, resp. graph) metadata has type `VertexData` (resp. `EdgeData`, resp. `GraphData`).
+It is recommended not to set `Label` to an integer type, so as to avoid confusion between vertex labels and vertex codes (which have type `T<:Integer`).
 
 # Fields
 - `g::Graph`: underlying, data-less graph with vertex indices of type `T`
-- `vprops::Dict{Label,Tuple{T,VertexMeta}}`: dictionary mapping vertex labels to vertex codes and metadata
-- `eprops::Dict{Tuple{Label,Label},EdgeMeta}`: dictionary mapping edge labels such as `(label_u, label_v)` to edge metadata
-- `gprops::GraphMeta`: graph metadata
-- `weightfunction::WeightFunction`: function defining edge weight from edge metadata
-- `defaultweight::U`: default weight for the edges
-- `metaindex::Dict{T,Label}`: dictionary mapping vertex codes to vertex labels
+- `vertex_labels::Dict{T,Label}`: dictionary mapping vertex codes to vertex labels
+- `vertex_properties::Dict{Label,Tuple{T,VertexData}}`: dictionary mapping vertex labels to vertex codes & data
+- `edge_data::Dict{Tuple{Label,Label},EdgeData}`: dictionary mapping edge labels such as `(label_u, label_v)` to edge metadata
+- `graph_data::GraphData`: graph metadata
+- `weight_function::WeightFunction`: function defining edge weight from edge metadata
+- `default_weight::U`: default weight for the edges
 """
 struct MetaGraph{
-    T<:Integer,
-    Label,
-    Graph,
-    VertexMeta,
-    EdgeMeta,
-    GraphMeta,
-    WeightFunction,
-    U<:Real,
+    T<:Integer,Label,Graph,VertexData,EdgeData,GraphData,WeightFunction,U<:Real
 } <: AbstractGraph{T}
     graph::Graph
-    vprops::Dict{Label,Tuple{T,VertexMeta}}
-    eprops::Dict{Tuple{Label,Label},EdgeMeta}
-    gprops::GraphMeta
-    weightfunction::WeightFunction
-    defaultweight::U
-    metaindex::Dict{T,Label}
+    vertex_labels::Dict{T,Label}
+    vertex_properties::Dict{Label,Tuple{T,VertexData}}
+    edge_data::Dict{Tuple{Label,Label},EdgeData}
+    graph_data::GraphData
+    weight_function::WeightFunction
+    default_weight::U
 end
 
 """
-    MetaGraph(g;
+    MetaGraph(
+        g;
         Label = Symbol,
-        VertexMeta = nothing,
-        EdgeMeta = nothing,
-        gprops = nothing,
-        weightfunction = eprops -> 1.0,
-        defaultweight = 1.0
+        VertexData = Nothing,
+        EdgeData = Nothing,
+        graph_data = nothing,
+        weight_function = edge_data -> 1.0,
+        default_weight = 1.0
     )
+
+Construct an empty `MetaGraph` with the given metadata types and weights.
 """
 function MetaGraph(
-    g::AbstractGraph{T};
-    Label = Symbol,
-    VertexMeta = Nothing,
-    EdgeMeta = Nothing,
-    gprops = nothing,
-    weightfunction = eprops -> 1.0,
-    defaultweight = 1.0,
-) where {Vertex,T}
-    MetaGraph(
-        g,
-        Dict{Label,Tuple{T,VertexMeta}}(),
-        Dict{Tuple{Label,Label},EdgeMeta}(),
-        gprops,
-        weightfunction,
-        defaultweight,
+    graph::AbstractGraph{T};
+    Label=Symbol,
+    VertexData=Nothing,
+    EdgeData=Nothing,
+    graph_data=nothing,
+    weight_function=edata -> 1.0,
+    default_weight=1.0,
+) where {T}
+    if Label <: Integer
+        @warn "Constructing a MetaGraph with integer labels is not advised."
+    elseif nv(graph) > 0
+        @warn "Constructing a MetaGraph with a nonempty underlying graph is not advised."
+    end
+    return MetaGraph(
+        graph,
         Dict{T,Label}(),
+        Dict{Label,Tuple{T,VertexData}}(),
+        Dict{Tuple{Label,Label},EdgeData}(),
+        graph_data,
+        weight_function,
+        default_weight,
     )
 end
 
-zero(
-    g::MetaGraph{T,Label,Graph,VertexMeta,EdgeMeta,GraphMeta},
-) where {T,Label,Graph,VertexMeta,EdgeMeta,GraphMeta} = MetaGraph(
-    Graph();
-    Label = Label,
-    VertexMeta = VertexMeta,
-    EdgeMeta = EdgeMeta,
-    gprops = g.gprops,
-    weightfunction = g.weightfunction,
-    defaultweight = g.defaultweight,
-)
+"""
+    arrange(g, label_1, label_2)
 
-==(x::MetaGraph, y::MetaGraph) = x.graph == y.graph
+Sort two vertex labels in a default order (useful to uniquely express undirected edges).
+"""
+function arrange end
 
-copy(g::T) where {T<:MetaGraph} = deepcopy(g)
+function Base.zero(
+    g::MetaGraph{T,Label,Graph,VertexData,EdgeData}
+) where {T,Label,Graph,VertexData,EdgeData}
+    return MetaGraph(
+        Graph();
+        Label=Label,
+        VertexData=VertexData,
+        EdgeData=EdgeData,
+        graph_data=g.graph_data,
+        weight_function=g.weight_function,
+        default_weight=g.default_weight,
+    )
+end
 
-function show(
-    io::IO,
-    g::MetaGraph{<:Any,Label,<:Any,VertexMeta,EdgeMeta},
-) where {Label,VertexMeta,EdgeMeta}
-    print(
+Base.:(==)(x::MetaGraph, y::MetaGraph) = x.graph == y.graph
+
+Base.copy(g::MetaGraph) = deepcopy(g)
+
+function Base.show(
+    io::IO, g::MetaGraph{<:Any,Label,<:Any,VertexData,EdgeData}
+) where {Label,VertexData,EdgeData}
+    return print(
         io,
-        "Meta graph based on a $(g.graph) with vertices indexed by $Label(s), $VertexMeta(s) vertex metadata, $EdgeMeta(s) edge metadata, $(repr(g.gprops)) as graph metadata, and default weight $(g.defaultweight)",
+        "Meta graph based on a $(g.graph) with vertex labels of type $Label, vertex metadata of type $VertexData, edge metadata of type $EdgeData, graph metadata given by $(repr(g.graph_data)), and default weight $(g.default_weight)",
     )
 end

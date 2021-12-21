@@ -4,10 +4,10 @@ Welcome to `MetaGraphsNext.jl`, an experimental, type-stable replacement for [Me
 
 ## Getting started
 
-To see how the package works, take a look at the tutorial. We first explain [the basics](tutorial_basics.md) of the `MetaGraph` structure, before moving on to its [integration](tutorial_graphs.md) with `Graphs.jl`.
+To install the package, open the Julia REPL and type
 
-## Index
-
-```@index
-Modules = [MetaGraphsNext]
+```julia
+julia> using Pkg; Pkg.add("MetaGraphsNext")
 ```
+
+The tutorial provides an overview of the functionalities. We first explain the [basics](tutorial_basics.md) of the `MetaGraph` structure, before moving on to its [integration](tutorial_graphs.md) with `Graphs.jl`.

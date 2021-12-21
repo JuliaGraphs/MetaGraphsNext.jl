@@ -5,14 +5,14 @@
 
 You can save `MetaGraph`s in a `MGFormat`, currently based on `JLD2`.
 """
-struct MGFormat <: AbstractGraphFormat end
+struct MGFormat <: Graphs.AbstractGraphFormat end
 
 """
     struct DOTFormat <: AbstractGraphFormat end
 
-If all metadata types support `pairs` or are `nothing`, you can save `MetaGraph`s in `DOTFormat`.
+If all metadata types support `pairs` or are `Nothing`, you can save `MetaGraph`s in `DOTFormat`.
 """
-struct DOTFormat <: AbstractGraphFormat end
+struct DOTFormat <: Graphs.AbstractGraphFormat end
 
 function loadmg(fn::AbstractString)
     @load fn g
@@ -24,8 +24,8 @@ function savemg(fn::AbstractString, g::MetaGraph)
     return 1
 end
 
-loadgraph(fn::AbstractString, gname::String, ::MGFormat) = loadmg(fn)
-savegraph(fn::AbstractString, g::MetaGraph) = savemg(fn, g)
+Graphs.loadgraph(fn::AbstractString, gname::String, ::MGFormat) = loadmg(fn)
+Graphs.savegraph(fn::AbstractString, g::MetaGraph) = savemg(fn, g)
 
 function show_meta_list(io::IO, meta)
     if meta !== nothing && length(meta) > 0
@@ -46,8 +46,8 @@ function show_meta_list(io::IO, meta)
 end
 
 function savedot(io::IO, g::MetaGraph)
-    gprops = g.gprops
-    metaindex = g.metaindex
+    graph_data = g.graph_data
+    labels = g.vertex_labels
 
     if is_directed(g)
         write(io, "digraph G {\n")
@@ -57,8 +57,8 @@ function savedot(io::IO, g::MetaGraph)
         dash = "--"
     end
 
-    if gprops !== nothing
-        for (key, value) in pairs(gprops)
+    if graph_data !== nothing
+        for (key, value) in pairs(graph_data)
             write(io, "    ")
             write(io, key)
             write(io, " = ")
@@ -67,27 +67,27 @@ function savedot(io::IO, g::MetaGraph)
         end
     end
 
-    for label in keys(g.vprops)
+    for label in keys(g.vertex_properties)
         write(io, "    ")
         write(io, label)
         show_meta_list(io, g[label])
         write(io, '\n')
     end
 
-    for (label_1, label_2) in keys(g.eprops)
+    for (label_1, label_2) in keys(g.edge_data)
         write(io, "    ")
         write(io, label_1)
         write(io, ' ')
         write(io, dash)
         write(io, ' ')
         write(io, label_2)
-        show_meta_list(io, g.eprops[arrange(g, label_1, label_2)])
+        show_meta_list(io, g.edge_data[arrange(g, label_1, label_2)])
         write(io, "\n")
     end
-    write(io, "}\n")
+    return write(io, "}\n")
 end
 
-function savegraph(fn::AbstractString, g::MetaGraph, ::DOTFormat)
+function Graphs.savegraph(fn::AbstractString, g::MetaGraph, ::DOTFormat)
     open(fn, "w") do fp
         savedot(fp, g)
     end

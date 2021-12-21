@@ -67,7 +67,7 @@ function savedot(io::IO, g::MetaGraph)
         end
     end
 
-    for label in keys(g.vertex_data)
+    for label in keys(g.vertex_properties)
         write(io, "    ")
         write(io, label)
         show_meta_list(io, g[label])

@@ -10,7 +10,7 @@ Base.getindex(g::MetaGraph) = g.graph_data
 
 Return vertex metadata for `label`.
 """
-Base.getindex(g::MetaGraph, label) = g.vertex_data[label]
+Base.getindex(g::MetaGraph, label) = g.vertex_properties[label][2]
 
 """
     getindex(g, label_1, label_2)
@@ -24,7 +24,7 @@ Base.getindex(g::MetaGraph, label_1, label_2) = g.edge_data[arrange(g, label_1, 
 
 Determine whether a graph `g` contains the vertex `label`.
 """
-Base.haskey(g::MetaGraph, label) = haskey(g.vertex_data, label)
+Base.haskey(g::MetaGraph, label) = haskey(g.vertex_properties, label)
 
 """
     haskey(g, label_1, label_2)
@@ -101,10 +101,9 @@ Copy properties from `oldg` to `newg` following vertex map `vmap`.
 function _copy_props!(oldg::G, newg::G, vmap) where {G<:MetaGraph}
     for (newv, oldv) in enumerate(vmap)
         oldl = oldg.vertex_labels[oldv]
-        data = oldg.vertex_data[oldl]
+        _, data = oldg.vertex_properties[oldl]
         newg.vertex_labels[newv] = oldl
-        newg.vertex_codes[oldl] = newv
-        newg.vertex_data[oldl] = data
+        newg.vertex_properties[oldl] = (newv, data)
     end
     for newe in edges(newg.graph)
         vertex_labels = newg.vertex_labels

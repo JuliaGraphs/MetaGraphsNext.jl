@@ -9,8 +9,7 @@ It is recommended not to set `Label` to an integer type, so as to avoid confusio
 # Fields
 - `g::Graph`: underlying, data-less graph with vertex indices of type `T`
 - `vertex_labels::Dict{T,Label}`: dictionary mapping vertex codes to vertex labels
-- `vertex_codes::Dict{Label,T}`: dictionary mapping vertex labels to vertex codes
-- `vertex_data::Dict{Label,VertexData}`: dictionary mapping vertex labels to vertex metadata
+- `vertex_properties::Dict{Label,Tuple{T,VertexData}}`: dictionary mapping vertex labels to vertex codes & data
 - `edge_data::Dict{Tuple{Label,Label},EdgeData}`: dictionary mapping edge labels such as `(label_u, label_v)` to edge metadata
 - `graph_data::GraphData`: graph metadata
 - `weight_function::WeightFunction`: function defining edge weight from edge metadata
@@ -21,8 +20,7 @@ struct MetaGraph{
 } <: AbstractGraph{T}
     graph::Graph
     vertex_labels::Dict{T,Label}
-    vertex_codes::Dict{Label,T}
-    vertex_data::Dict{Label,VertexData}
+    vertex_properties::Dict{Label,Tuple{T,VertexData}}
     edge_data::Dict{Tuple{Label,Label},EdgeData}
     graph_data::GraphData
     weight_function::WeightFunction
@@ -53,12 +51,13 @@ function MetaGraph(
 ) where {T}
     if Label <: Integer
         @warn "Constructing a MetaGraph with integer labels is not advised."
+    elseif nv(graph) > 0
+        @warn "Constructing a MetaGraph with a nonempty underlying graph is not advised."
     end
     return MetaGraph(
         graph,
         Dict{T,Label}(),
-        Dict{Label,T}(),
-        Dict{Label,VertexData}(),
+        Dict{Label,Tuple{T,VertexData}}(),
         Dict{Tuple{Label,Label},EdgeData}(),
         graph_data,
         weight_function,

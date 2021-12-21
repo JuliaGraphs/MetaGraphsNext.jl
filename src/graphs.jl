@@ -24,7 +24,7 @@ Find the vertex code (or index) associated with label `label`.
 
 This can be useful to pass to methods inherited from `Graphs`. Note, however, that vertex codes can be reassigned after vertex deletion.
 """
-code_for(g::MetaGraph, label) = g.vertex_codes[label]
+code_for(g::MetaGraph, label) = g.vertex_properties[label][1]
 
 """
     label_for(g::MetaGraph, v)
@@ -45,8 +45,9 @@ Set vertex metadata for `label` to `data`.
 Return `true` if the operation succeeds, and `false` if `g` has no such vertex.
 """
 function set_data!(g::MetaGraph, label, data)
-    if haskey(g.vertex_data, label)
-        g.vertex_data[label] = data
+    if haskey(g.vertex_properties, label)
+        code, old_data = g.vertex_properties[label]
+        g.vertex_properties[label] = (code, data)
         return true
     else
         return false
@@ -84,8 +85,7 @@ function Graphs.add_vertex!(g::MetaGraph, label, data)
     if added
         v = nv(g)
         g.vertex_labels[v] = label
-        g.vertex_codes[label] = v
-        g.vertex_data[label] = data
+        g.vertex_properties[label] = (v, data)
     end
     return added
 end
@@ -110,8 +110,7 @@ end
 
 function _rem_vertex!(g::MetaGraph, label, v)
     vertex_labels = g.vertex_labels
-    vertex_codes = g.vertex_codes
-    vertex_data = g.vertex_data
+    vertex_properties = g.vertex_properties
     edge_data = g.edge_data
     lastv = nv(g)
     for n in outneighbors(g, v)
@@ -124,13 +123,12 @@ function _rem_vertex!(g::MetaGraph, label, v)
     if removed
         if v != lastv # ignore if we're removing the last vertex.
             lastl = vertex_labels[lastv]
-            lastvprop = vertex_data[lastl]
+            lastvprop = vertex_properties[lastl]
             vertex_labels[v] = lastl
-            vertex_codes[lastl] = v
-            vertex_data[lastl] = lastvprop
+            vertex_properties[lastl] = lastvprop
         end
-        delete!(vertex_data, label)
         delete!(vertex_labels, lastv)
+        delete!(vertex_properties, label)
     end
     return removed
 end
@@ -164,8 +162,7 @@ function Graphs.induced_subgraph(
     newg = MetaGraph(
         inducedgraph,
         empty(g.vertex_labels),
-        empty(g.vertex_codes),
-        empty(g.vertex_data),
+        empty(g.vertex_properties),
         empty(g.edge_data),
         g.graph_data,
         g.weight_function,
@@ -178,8 +175,7 @@ end
 function Graphs.reverse(g::MetaDiGraph)
     rg = reverse(g.graph)
     rvertex_labels = copy(g.vertex_labels)
-    rvertex_codes = copy(g.vertex_codes)
-    rvertex_data = copy(g.vertex_data)
+    rvertex_properties = copy(g.vertex_properties)
     redge_data = empty(g.edge_data)
     rgraph_data = g.graph_data
     rweight_function = g.weight_function
@@ -192,8 +188,7 @@ function Graphs.reverse(g::MetaDiGraph)
     rg = MetaGraph(
         rg,
         rvertex_labels,
-        rvertex_codes,
-        rvertex_data,
+        rvertex_properties,
         redge_data,
         rgraph_data,
         rweight_function,

@@ -29,6 +29,15 @@ julia> ne(copy(colors))
 julia> add_vertex!(colors, :white, "neutral")
 true
 
+julia> nv(colors)
+3
+
+julia> add_vertex!(colors, :white, "neutral")
+false
+
+julia> nv(colors)
+3
+
 julia> add_edge!(colors, 1, 3, :pink)
 true
 

@@ -64,6 +64,16 @@ julia> has_vertex(cities, 4)
 false
 ```
 
+Note that we can't add the same city (i.e. vertex label) twice:
+
+```jldoctest graphs
+julia> add_vertex!(cities, :London, "Italy")
+false
+
+julia> nv(cities)
+3
+```
+
 We then check the set of edges:
 
 ```jldoctest graphs

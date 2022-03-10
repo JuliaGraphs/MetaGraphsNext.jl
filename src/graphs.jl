@@ -80,7 +80,7 @@ Add a vertex to MetaGraph `g` with label `label` having metadata `data`.
 
 Return true if the vertex has been added, false incase the label already exists or vertex was not added.
 """
-function Graphs.add_vertex!(g::MetaGraph, label, val)
+function Graphs.add_vertex!(g::MetaGraph, label, data)
     if haskey(g,label)
         return false
     end

@@ -64,10 +64,10 @@ julia> has_vertex(cities, 4)
 false
 ```
 
-Note that we can't add the same city twice:
+Note that we can't add the same city (i.e. vertex label) twice:
 
 ```jldoctest graphs
-julia> cities[:London] = "United Kingdom"
+julia> add_vertex!(cities, :London, "Italy")
 false
 
 julia> nv(cities)

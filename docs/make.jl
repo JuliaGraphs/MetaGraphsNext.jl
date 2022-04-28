@@ -17,6 +17,7 @@ makedocs(
             "Graphs.jl interface" => "tutorial_graphs.md",
             "Reading / writing" => "tutorial_files.md",
         ],
+        "Coming from MetaGraphs.jl" => "migration.md",
         "API reference" => "api.md",
     ]
 )

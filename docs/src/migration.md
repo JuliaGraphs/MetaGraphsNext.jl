@@ -15,6 +15,13 @@ using Graphs
 import MetaGraphs, MetaGraphsNext
 ```
 
+```@meta
+DocTestSetup = quote
+  using Graphs
+  import MetaGraphsNext
+end
+```
+
 ***
 
 ###### Create a metagraph based on a simplegraph, with optional default edge weight
@@ -25,7 +32,7 @@ _mg = MetaGraphs.MetaGraph(path_graph(5), 3.0)
 ```
 
 Using *MetaGraphsNext.jl*:
-```@example main
+```jldoctest main
 mg = MetaGraphsNext.MetaGraph(Graph(), default_weight = 3.0)
 
 add_vertex!(mg, :a, nothing)
@@ -39,6 +46,10 @@ add_edge!(mg, :b, :c, nothing)
 add_edge!(mg, :c, :d, nothing)
 add_edge!(mg, :d, :e, nothing)
 mg
+
+# output
+
+Meta graph based on a {5, 4} undirected simple Int64 graph with vertex labels of type Symbol, vertex metadata of type Nothing, edge metadata of type Nothing, graph metadata given by nothing, and default weight 3.0
 ```
 
 ***
@@ -51,13 +62,17 @@ _mdg = MetaGraphs.MetaDiGraph(path_graph(5), 3.0)
 ```
 
 Using *MetaGraphsNext.jl*:
-```@example main
+```jldoctest main
 mg = MetaGraphsNext.MetaGraph(DiGraph(), default_weight = 3.0)
 
 # A more concise way to construct a path graph with 5 vertices
 foreach(x -> add_vertex!(mg, Symbol(x), nothing), 'a':'e')
 foreach(x -> add_edge!(mg, Symbol(x[1]), Symbol(x[2]), nothing), zip('a':'e', 'b':'e'))
 mg
+
+# output
+
+Meta graph based on a {5, 4} directed simple Int64 graph with vertex labels of type Symbol, vertex metadata of type Nothing, edge metadata of type Nothing, graph metadata given by nothing, and default weight 3.0
 ```
 
 ***
@@ -70,12 +85,14 @@ MetaGraphs.set_prop!(_mg, :description, "This is a metagraph.")
 ```
 
 Using *MetaGraphsNext.jl*:
-```@example main
+```jldoctest main
 # Important: graph data can only be set when constructing the object
 mg = MetaGraphsNext.MetaGraph(DiGraph(), graph_data = "graph_of_colors")
 
 foreach(x -> add_vertex!(mg, Symbol(x), nothing), 'a':'e')
 foreach(x -> add_edge!(mg, Symbol(x[1]), Symbol(x[2]), nothing), zip('a':'e', 'b':'e'))
+
+# output
 ```
 
 ***
@@ -88,7 +105,7 @@ MetaGraphs.set_props!(_mg, 1, Dict(:name=>"Susan", :id => 123))
 ```
 
 Using *MetaGraphsNext.jl*:
-```@example main
+```jldoctest main
 mg = MetaGraphsNext.MetaGraph(Graph(),
                               VertexData = NamedTuple{(:name, :id), Tuple{String, Union{Int64, Missing}}})
 
@@ -96,6 +113,10 @@ foreach(x -> add_vertex!(mg, Symbol(x), (name = "", id = missing)), 'a':'e')
 foreach(x -> add_edge!(mg, Symbol(x[1]), Symbol(x[2]), nothing), zip('a':'e', 'b':'e'))
 
 mg[MetaGraphsNext.label_for(mg, 1)] = (name = "Susan", id = 123)
+
+# output
+
+(name = "Susan", id = 123)
 ```
 
 ***
@@ -108,9 +129,13 @@ MetaGraphs.set_prop!(_mg, 2, :name, "John")
 ```
 
 Using *MetaGraphsNext.jl*:
-```@example main
+```jldoctest main
 # Not possible since but this is a workaround
 mg[Symbol(2)] = (name = "John", id = missing)
+
+# output
+
+(name = "John", id = missing)
 ```
 
 ***
@@ -123,7 +148,7 @@ MetaGraphs.set_prop!(_mg, Edge(1, 2), :action, "knows")
 ```
 
 Using *MetaGraphsNext.jl*:
-```@example main
+```jldoctest main
 mg = MetaGraphsNext.MetaGraph(Graph(), 
                               VertexData = NamedTuple{(:name, :id), Tuple{String, Union{Int64, Missing}}},
                               EdgeData = String)
@@ -134,6 +159,10 @@ mg[Symbol(1)] = (name = "Susan", id = 123)
 mg[Symbol(2)] = (name = "John", id = missing)
 
 mg[Symbol(1), Symbol(2)] = "knows"
+
+# output
+
+"knows"
 ```
 
 ***
@@ -162,9 +191,13 @@ MetaGraphs.props(_mg, 1)
 ```
 
 Using *MetaGraphsNext.jl*:
-```@example main
+```jldoctest main
 # All 'properties' are stored in one object
 mg[Symbol(1)]
+
+# output
+
+NamedTuple{(:name, :id), Tuple{String, Union{Missing, Int64}}}(("Susan", 123))
 ```
 
 ***
@@ -177,9 +210,13 @@ MetaGraphs.get_prop(_mg, 2, :name)
 ```
 
 Using *MetaGraphsNext.jl*:
-```@example main
+```jldoctest main
 # This is workaround that uses a named tuple
 mg[Symbol(2)].name
+
+# output
+
+"John"
 ```
 
 ***
@@ -192,10 +229,14 @@ MetaGraphs.rem_prop!(_mg, 1, :name)
 ```
 
 Using *MetaGraphsNext.jl*:
-```@example main
+```jldoctest main
 # A workaround that creates a new named tuple object of the same type and sets
 # the default values for the elements of the tuple that want to be "removed"
 mg[Symbol(1)] = (name = "", id = mg[Symbol(1)].id)
+
+# output
+
+(name = "", id = 123)
 ```
 
 ***
@@ -208,10 +249,14 @@ MetaGraphs.clear_props!(_mg, 2)
 ```
 
 Using *MetaGraphsNext.jl*:
-```@example main
+```jldoctest main
 # In this case, we create a new named tuple object of the same type and set all
 # of its elements to their default values
 mg[Symbol(2)] = (name = "", id = missing)
+
+# output
+
+(name = "", id = missing)
 ```
 
 ***
@@ -224,8 +269,17 @@ betweenness_centrality(_mg)
 ```
 
 Using *MetaGraphsNext.jl*:
-```@example main
+```jldoctest main
 betweenness_centrality(mg)
+
+# output
+
+5-element Vector{Float64}:
+ 0.0
+ 0.5
+ 0.6666666666666666
+ 0.5
+ 0.0
 ```
 
 ***
@@ -242,7 +296,7 @@ enumerate_paths(dijkstra_shortest_paths(_mg, 1), 3) |> println
 ```
 
 Using *MetaGraphsNext.jl*:
-```@example main
+```jldoctest main
 using Combinatorics: combinations
 mg = MetaGraphsNext.MetaGraph(Graph(), EdgeData = Float64, weight_function = identity, default_weight = 1.0)
 foreach(x -> add_vertex!(mg, Symbol(x), nothing), 'a':'e')
@@ -251,6 +305,11 @@ enumerate_paths(dijkstra_shortest_paths(mg, 1), 3) |> println
 mg[:a, :b] = 0.2
 mg[:b, :c] = 0.6
 enumerate_paths(dijkstra_shortest_paths(mg, 1), 3) |> println
+
+# output
+
+[1, 3]
+[1, 2, 3]
 ```
 
 ***

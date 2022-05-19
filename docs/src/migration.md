@@ -297,10 +297,11 @@ enumerate_paths(dijkstra_shortest_paths(_mg, 1), 3) |> println
 
 Using *MetaGraphsNext.jl*:
 ```jldoctest main
-using Combinatorics: combinations
+combinations = [['a','b'], ['a','c'], ['a','d'], ['a','e'], ['b','c'],
+                ['b','d'], ['b','e'], ['c','d'], ['c', 'e'], ['d','e']]
 mg = MetaGraphsNext.MetaGraph(Graph(), EdgeData = Float64, weight_function = identity, default_weight = 1.0)
 foreach(x -> add_vertex!(mg, Symbol(x), nothing), 'a':'e')
-foreach(x -> add_edge!(mg, Symbol(x[1]), Symbol(x[2]), 1.0), combinations('a':'e', 2))
+foreach(x -> add_edge!(mg, Symbol(x[1]), Symbol(x[2]), 1.0), combinations)
 enumerate_paths(dijkstra_shortest_paths(mg, 1), 3) |> println
 mg[:a, :b] = 0.2
 mg[:b, :c] = 0.6

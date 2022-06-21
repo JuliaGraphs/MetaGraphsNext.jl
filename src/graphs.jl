@@ -128,7 +128,7 @@ function _rem_vertex!(g::MetaGraph, label, v)
             lastl = vertex_labels[lastv]
             lastvprop = vertex_properties[lastl]
             vertex_labels[v] = lastl
-            vertex_properties[lastl] = lastvprop
+            vertex_properties[lastl] = (v, lastvprop[2]) 
         end
         delete!(vertex_labels, lastv)
         delete!(vertex_properties, label)

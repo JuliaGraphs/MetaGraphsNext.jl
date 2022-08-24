@@ -12,7 +12,7 @@ We provide a default constructor in which you only need to specify types:
 
 ```jldoctest example
 julia> colors = MetaGraph( Graph(), VertexData = String, EdgeData = Symbol, graph_data = "graph_of_colors")
-Meta graph based on a {0, 0} undirected simple Int64 graph with vertex labels of type Symbol, vertex metadata of type String, edge metadata of type Symbol, graph metadata given by "graph_of_colors", and default weight 1.0
+Meta graph based on a Graphs.SimpleGraphs.SimpleGraph{Int64}(0, Vector{Int64}[]) with vertex labels of type Symbol, vertex metadata of type String, edge metadata of type Symbol, graph metadata given by "graph_of_colors", and default weight 1.0
 ```
 
 ## Modifying the graph
@@ -136,7 +136,7 @@ julia> size(weight_matrix)
 julia> weight_matrix[1, 3]
 1.0
 
-julia> weight_function(weighted)(0)
+julia> get_weight_function(weighted)(0)
 0
 ```
 

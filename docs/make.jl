@@ -18,7 +18,7 @@ makedocs(
             "Reading / writing" => "tutorial_files.md",
         ],
         "API reference" => "api.md",
-    ]
+    ],
 )
 
 deploydocs(repo = "github.com/JuliaGraphs/MetaGraphsNext.jl.git")

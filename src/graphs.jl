@@ -1,53 +1,83 @@
 ## Basic Graphs.jl interface
 
-Base.eltype(::MetaGraph{T}) where {T} = T
-Graphs.edgetype(g::MetaGraph) = edgetype(g.graph)
-Graphs.nv(g::MetaGraph) = nv(g.graph)
-Graphs.ne(g::MetaGraph) = ne(g.graph)
-Graphs.vertices(g::MetaGraph) = vertices(g.graph)
-Graphs.edges(g::MetaGraph) = edges(g.graph)
+function Base.eltype(::Type{<: MetaGraph{Code}}) where {Code}
+    Code
+end
+function Base.eltype(::MetaGraphType) where {MetaGraphType <: MetaGraph}
+    eltype(MetaGraphType)
+end
 
-Graphs.has_vertex(g::MetaGraph, v::Integer) = has_vertex(g.graph, v)
-Graphs.has_edge(g::MetaGraph, v1::Integer, v2::Integer) = has_edge(g.graph, v1, v2)
+function Graphs.edgetype(meta_graph::MetaGraph)
+    edgetype(meta_graph.graph)
+end
+function Graphs.nv(meta_graph::MetaGraph)
+    nv(meta_graph.graph)
+end
+function Graphs.ne(meta_graph::MetaGraph)
+    ne(meta_graph.graph)
+end
+function Graphs.vertices(meta_graph::MetaGraph)
+    vertices(meta_graph.graph)
+end
+function Graphs.edges(meta_graph::MetaGraph)
+    edges(meta_graph.graph)
+end
 
-Graphs.inneighbors(g::MetaGraph, v::Integer) = inneighbors(g.graph, v)
-Graphs.outneighbors(g::MetaGraph, v::Integer) = outneighbors(g.graph, v)
+function Graphs.has_vertex(meta_graph::MetaGraph, code::Integer)
+    has_vertex(meta_graph.graph, code)
+end
+function Graphs.has_edge(meta_graph::MetaGraph, code_1::Integer, code_2::Integer)
+    has_edge(meta_graph.graph, code_1, code_2)
+end
 
-Base.issubset(g::G, h::G) where {G<:MetaGraph} = issubset(g.graph, h.graph)
+function Graphs.inneighbors(meta_graph::MetaGraph, code::Integer)
+    inneighbors(meta_graph.graph, code)
+end
+function Graphs.outneighbors(meta_graph::MetaGraph, code::Integer)
+    outneighbors(meta_graph.graph, code)
+end
+
+function Base.issubset(meta_graph::MetaGraph, h::MetaGraph)
+    issubset(meta_graph.graph, h.graph)
+end
 
 ## Link between graph codes and metagraph labels
 
 """
-    code_for(g::MetaGraph, label)
+    code_for(meta_graph::MetaGraph, label)
 
 Find the vertex code (or index) associated with label `label`.
 
 This can be useful to pass to methods inherited from `Graphs`. Note, however, that vertex codes can be reassigned after vertex deletion.
 """
-code_for(g::MetaGraph, label) = g.vertex_properties[label][1]
+function code_for(meta_graph::MetaGraph, label)
+    meta_graph.vertex_properties[label][1]
+end
 
 """
-    label_for(g::MetaGraph, v)
+    label_for(meta_graph::MetaGraph, code)
 
-Find the label associated with code `v`.
+Find the label associated with code `code`.
 
 This can be useful to interpret the results of methods inherited from `Graphs`. Note, however, that vertex codes can be reassigned after vertex deletion.
 """
-label_for(g::MetaGraph, v::Integer) = g.vertex_labels[v]
+function label_for(meta_graph::MetaGraph, code::Integer)
+    meta_graph.vertex_labels[code]
+end
 
 ## Set vertex and edge data
 
 """
-    set_data!(g, label, data)
+    set_data!(meta_graph, label, data)
 
 Set vertex metadata for `label` to `data`.
 
-Return `true` if the operation succeeds, and `false` if `g` has no such vertex.
+Return `true` if the operation succeeds, and `false` if `meta_graph` has no such vertex.
 """
-function set_data!(g::MetaGraph, label, data)
-    if haskey(g.vertex_properties, label)
-        code, old_data = g.vertex_properties[label]
-        g.vertex_properties[label] = (code, data)
+function set_data!(meta_graph::MetaGraph, label, data)
+    if haskey(meta_graph.vertex_properties, label)
+        code, _ = meta_graph.vertex_properties[label]
+        meta_graph.vertex_properties[label] = (code, data)
         return true
     else
         return false
@@ -55,148 +85,139 @@ function set_data!(g::MetaGraph, label, data)
 end
 
 """
-    set_data!(g, label_1, label_2, data)
+    set_data!(meta_graph, label_1, label_2, data)
 
 Set edge metadata for `(label_1, label_2)` to `data`.
 
-Return `true` if the operation succeeds, and `false` if `g` has no such edge.
+Return `true` if the operation succeeds, and `false` if `meta_graph` has no such edge.
 """
-function set_data!(g::MetaGraph, label_1, label_2, data)
-    edge_labels = arrange(g, label_1, label_2)
-    if haskey(g.edge_data, edge_labels)
-        g.edge_data[edge_labels] = data
-        return true
-    else
-        return false
+function set_data!(meta_graph::MetaGraph, label_1, label_2, data)
+    edge_labels = arrange(meta_graph, label_1, label_2)
+    present = haskey(meta_graph.edge_data, edge_labels)
+    if present
+        meta_graph.edge_data[edge_labels] = data
     end
+    present
 end
 
 ## Add vertices and edges with labels
 
 """
-    add_vertex!(g, label, data)
+    add_vertex!(meta_graph, label, data)
 
-Add a vertex to MetaGraph `g` with label `label` having metadata `data`.
+Add a vertex to MetaGraph `meta_graph` with label `label` having metadata `data`.
 
 Return true if the vertex has been added, false incase the label already exists or vertex was not added.
 """
-function Graphs.add_vertex!(g::MetaGraph, label, data)
-    if haskey(g,label)
+function Graphs.add_vertex!(meta_graph::MetaGraph, label, data)
+    if haskey(meta_graph, label)
         return false
     end
-    added = add_vertex!(g.graph)
+    added = add_vertex!(meta_graph.graph)
     if added
-        v = nv(g)
-        g.vertex_labels[v] = label
-        g.vertex_properties[label] = (v, data)
+        code = nv(meta_graph)
+        meta_graph.vertex_labels[code] = label
+        meta_graph.vertex_properties[label] = (code, data)
     end
-    return added
+    added
 end
 
 """
-    add_edge!(g, label_1, label_2, data)
+    add_edge!(meta_graph, label_1, label_2, data)
 
-Add an edge `(label_1, label_2)` to MetaGraph `g` with metadata `data`.
+Add an edge `(label_1, label_2)` to MetaGraph `meta_graph` with metadata `data`.
 
 Return `true` if the edge has been added, `false` otherwise.
 """
-function Graphs.add_edge!(g::MetaGraph, label_1, label_2, data)
-    v1, v2 = code_for(g, label_1), code_for(g, label_2)
-    added = add_edge!(g.graph, v1, v2)
+function Graphs.add_edge!(meta_graph::MetaGraph, label_1, label_2, data)
+    code_1, code_2 = code_for(meta_graph, label_1), code_for(meta_graph, label_2)
+    added = add_edge!(meta_graph.graph, code_1, code_2)
     if added
-        g.edge_data[arrange(g, label_1, label_2, v1, v2)] = data
+        meta_graph.edge_data[arrange(meta_graph, label_1, label_2, code_1, code_2)] = data
     end
-    return added
+    added
 end
 
 ## Remove vertex
 
-function _rem_vertex!(g::MetaGraph, label, v)
-    vertex_labels = g.vertex_labels
-    vertex_properties = g.vertex_properties
-    edge_data = g.edge_data
-    lastv = nv(g)
-    for n in outneighbors(g, v)
-        delete!(edge_data, arrange(g, label, vertex_labels[n], v, n))
+function _rem_vertex!(meta_graph::MetaGraph, label, code)
+    vertex_labels = meta_graph.vertex_labels
+    vertex_properties = meta_graph.vertex_properties
+    edge_data = meta_graph.edge_data
+    last_vertex_code = nv(meta_graph)
+    for out_neighbor in outneighbors(meta_graph, code)
+        delete!(edge_data, arrange(meta_graph, label, vertex_labels[out_neighbor], code, out_neighbor))
     end
-    for n in inneighbors(g, v)
-        delete!(edge_data, arrange(g, vertex_labels[n], label, n, v))
+    for in_neighbor in inneighbors(meta_graph, code)
+        delete!(edge_data, arrange(meta_graph, vertex_labels[in_neighbor], label, in_neighbor, code))
     end
-    removed = rem_vertex!(g.graph, v)
+    removed = rem_vertex!(meta_graph.graph, code)
     if removed
-        if v != lastv # ignore if we're removing the last vertex.
-            lastl = vertex_labels[lastv]
+        if code != last_vertex_code # ignore if we're removing the last vertex.
+            lastl = vertex_labels[last_vertex_code]
             lastvprop = vertex_properties[lastl]
-            vertex_labels[v] = lastl
+            vertex_labels[code] = lastl
             vertex_properties[lastl] = lastvprop
         end
-        delete!(vertex_labels, lastv)
+        delete!(vertex_labels, last_vertex_code)
         delete!(vertex_properties, label)
     end
-    return removed
+    removed
 end
 
 ## Remove vertices and edges based on codes
 
-function Graphs.rem_vertex!(g::MetaGraph, v::Integer)
-    if has_vertex(g, v)
-        label = label_for(g, v)
-        return _rem_vertex!(g, label, v)
+function Graphs.rem_vertex!(meta_graph::MetaGraph, code::Integer)
+    if has_vertex(meta_graph, code)
+        label = label_for(meta_graph, code)
+        _rem_vertex!(meta_graph, label, code)
     else
-        return false
+        false
     end
 end
 
-function Graphs.rem_edge!(g::MetaGraph, v1::Integer, v2::Integer)
-    removed = rem_edge!(g.graph, v1, v2)
+function Graphs.rem_edge!(meta_graph::MetaGraph, code_1::Integer, code_2::Integer)
+    removed = rem_edge!(meta_graph.graph, code_1, code_2)
     if removed
-        label_1, label_2 = label_for(g, v1), label_for(g, v2)
-        delete!(g.edge_data, arrange(g, label_1, label_2, v1, v2))
+        label_1, label_2 = label_for(meta_graph, code_1), label_for(meta_graph, code_2)
+        delete!(meta_graph.edge_data, arrange(meta_graph, label_1, label_2, code_1, code_2))
     end
-    return removed
+    removed
 end
 
 ## Miscellaneous
 
 function Graphs.induced_subgraph(
-    g::G, v::AbstractVector{U}
-) where {G<:MetaGraph} where {U<:Integer}
-    inducedgraph, vmap = induced_subgraph(g.graph, v)
-    newg = MetaGraph(
+    meta_graph::MetaGraph,
+    vertex_codes::AbstractVector{<: Integer}
+)
+    inducedgraph, code_map = induced_subgraph(meta_graph.graph, vertex_codes)
+    new_graph = MetaGraph(
         inducedgraph,
-        empty(g.vertex_labels),
-        empty(g.vertex_properties),
-        empty(g.edge_data),
-        g.graph_data,
-        g.weight_function,
-        g.default_weight,
+        empty(meta_graph.vertex_labels),
+        empty(meta_graph.vertex_properties),
+        empty(meta_graph.edge_data),
+        meta_graph.graph_data,
+        meta_graph.weight_function,
+        meta_graph.default_weight,
     )
-    _copy_props!(g, newg, vmap)
-    return newg, vmap
+    _copy_props!(meta_graph, new_graph, code_map)
+    new_graph, code_map
 end
 
-function Graphs.reverse(g::MetaDiGraph)
-    rg = reverse(g.graph)
-    rvertex_labels = copy(g.vertex_labels)
-    rvertex_properties = copy(g.vertex_properties)
-    redge_data = empty(g.edge_data)
-    rgraph_data = g.graph_data
-    rweight_function = g.weight_function
-    rdefault_weight = g.default_weight
-
-    for (u, v) in keys(g.edge_data)
-        redge_data[(v, u)] = g.edge_data[(u, v)]
+function Graphs.reverse(meta_graph::MetaDiGraph)
+    edge_data = meta_graph.edge_data
+    reverse_edge_data = empty(edge_data)
+    for (label_1, label_2) in keys(edge_data)
+        reverse_edge_data[(label_2, label_1)] = edge_data[(label_1, label_2)]
     end
-
-    rg = MetaGraph(
-        rg,
-        rvertex_labels,
-        rvertex_properties,
-        redge_data,
-        rgraph_data,
-        rweight_function,
-        rdefault_weight,
+    MetaGraph(
+        reverse(meta_graph.graph),
+        copy(meta_graph.vertex_labels),
+        copy(meta_graph.vertex_properties),
+        reverse_edge_data,
+        meta_graph.graph_data,
+        meta_graph.weight_function,
+        meta_graph.default_weight,
     )
-
-    return rg
 end

@@ -1,0 +1,6 @@
+always_for_in = true
+whitespace_typedefs = true
+whitespace_ops_in_indices = true
+remove_extra_newlines = true
+import_to_using = true
+short_to_long_function_def = true

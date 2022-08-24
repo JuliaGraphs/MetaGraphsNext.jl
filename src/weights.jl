@@ -1,68 +1,67 @@
 """
-    MetaWeights{InnerMetaGraph<:MetaGraph,U<:Real} <: AbstractMatrix{U}
+    MetaWeights{InnerMetaGraph<:MetaGraph,Weight<:Real} <: AbstractMatrix{Weight}
 
 Matrix-like wrapper for edge weights on a metagraph of type `InnerMetaGraph`.
 """
 
-struct MetaWeights{InnerMetaGraph<:MetaGraph,U<:Real} <: AbstractMatrix{U}
-    g::InnerMetaGraph
+struct MetaWeights{InnerMetaGraph <: MetaGraph, Weight <: Real} <: AbstractMatrix{Weight}
+    meta_graph::InnerMetaGraph
 end
 
-Base.show(io::IO, mv::MetaWeights) = print(io, "MetaWeights of size $(size(mv))")
+Base.show(io::IO, meta_weights::MetaWeights) = print(io, "MetaWeights of size $(size(meta_weights))")
 Base.show(io::IO, ::MIME"text/plain", x::MetaWeights) = show(io, x)
 
-MetaWeights(g::MetaGraph) = MetaWeights{typeof(g),weighttype(g)}(g)
+MetaWeights(meta_graph::MetaGraph) = MetaWeights{typeof(meta_graph), weighttype(meta_graph)}(meta_graph)
 
 """
-    weigths(g)
+    weigths(meta_graph)
 
-Return a matrix-like `MetaWeights` object containing the edge weights for graph `g`.
+Return a matrix-like `MetaWeights` object containing the edge weights for meta_graph `meta_graph`.
 """
-Graphs.weights(g::MetaGraph) = MetaWeights(g)
+Graphs.weights(meta_graph::MetaGraph) = MetaWeights(meta_graph)
 
-function Base.size(w::MetaWeights)
-    vertices = nv(w.g)
-    return (vertices, vertices)
+function Base.size(meta_weights::MetaWeights)
+    vertices = nv(meta_weights.meta_graph)
+    (vertices, vertices)
 end
 
 """
-    weighttype(g)
+    weighttype(meta_graph)
 
-Return the weight type for metagraph `g`.
+Return the weight type for metagraph `meta_graph`.
 """
 function weighttype(
-    g::MetaGraph{<:Any,<:Any,<:Any,<:Any,<:Any,<:Any,<:Any,Weight}
+    ::MetaGraph{<:Any, <:Any, <:Any, <:Any, <:Any, <:Any, <:Any, Weight},
 ) where {Weight}
-    return Weight
+    Weight
 end
 
 """
-    weight_function(g)
+    get_weight_function(meta_graph)
 
-Return the weight function for metagraph `g`.
+Return the weight function for metagraph `meta_graph`.
 """
-weight_function(g::MetaGraph) = g.weight_function
-
-"""
-    default_weight(g)
-
-Return the default weight for metagraph `g`.
-"""
-default_weight(g::MetaGraph) = g.default_weight
+get_weight_function(meta_graph::MetaGraph) = meta_graph.weight_function
 
 """
-    getindex(w::MetaWeights, v1, v2)
+    default_weight(meta_graph)
 
-Get the weight of edge `(v1, v2)`.
+Return the default weight for metagraph `meta_graph`.
 """
-function Base.getindex(w::MetaWeights, v1::Integer, v2::Integer)
-    g = w.g
-    if has_edge(g, v1, v2)
-        labels = g.vertex_labels
-        wf = weight_function(g)
-        return wf(g[arrange(g, labels[v1], labels[v2], v1, v2)...])
+default_weight(meta_graph::MetaGraph) = meta_graph.default_weight
+
+"""
+    getindex(meta_weights::MetaWeights, code_1, code_2)
+
+Get the weight of edge `(code_1, code_2)`.
+"""
+function Base.getindex(meta_weights::MetaWeights, code_1::Integer, code_2::Integer)
+    meta_graph = meta_weights.meta_graph
+    if has_edge(meta_graph, code_1, code_2)
+        labels = meta_graph.vertex_labels
+        weight_function = get_weight_function(meta_graph)
+        weight_function(meta_graph[arrange(meta_graph, labels[code_1], labels[code_2], code_1, code_2)...])
     else
-        dw = default_weight(g)
-        return dw
+        default_weight(meta_graph)
     end
 end

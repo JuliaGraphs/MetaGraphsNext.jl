@@ -1,120 +1,123 @@
 """
-    getindex(g)
+    getindex(meta_graph)
 
-Return graph metadata.
+Return meta_graph metadata.
 """
-Base.getindex(g::MetaGraph) = g.graph_data
+function Base.getindex(meta_graph::MetaGraph)
+    meta_graph.graph_data
+end
 
 """
-    getindex(g, label)
+    getindex(meta_graph, label)
 
 Return vertex metadata for `label`.
 """
-Base.getindex(g::MetaGraph, label) = g.vertex_properties[label][2]
+function Base.getindex(meta_graph::MetaGraph, label)
+    meta_graph.vertex_properties[label][2]
+end
 
 """
-    getindex(g, label_1, label_2)
+    getindex(meta_graph, label_1, label_2)
 
 Return edge metadata for the edge between `label_1` and `label_2`.
 """
-Base.getindex(g::MetaGraph, label_1, label_2) = g.edge_data[arrange(g, label_1, label_2)]
-
-"""
-    haskey(g, label)
-
-Determine whether a graph `g` contains the vertex `label`.
-"""
-Base.haskey(g::MetaGraph, label) = haskey(g.vertex_properties, label)
-
-"""
-    haskey(g, label_1, label_2)
-
-Determine whether a graph `g` contains an edge from `label_1` to `label_2`.
-
-The order of `label_1` and `label_2` only matters if `g` is a digraph.
-"""
-function Base.haskey(g::MetaGraph, label_1, label_2)
-    return (
-        haskey(g, label_1) &&
-        haskey(g, label_2) &&
-        haskey(g.edge_data, arrange(g, label_1, label_2))
-    )
+function Base.getindex(meta_graph::MetaGraph, label_1, label_2)
+    meta_graph.edge_data[arrange(meta_graph, label_1, label_2)]
 end
 
 """
-    setindex!(g, data, label)
+    haskey(meta_graph, label)
+
+Determine whether a meta_graph `meta_graph` contains the vertex `label`.
+"""
+function Base.haskey(meta_graph::MetaGraph, label)
+    haskey(meta_graph.vertex_properties, label)
+end
+
+"""
+    haskey(meta_graph, label_1, label_2)
+
+Determine whether a meta_graph `meta_graph` contains an edge from `label_1` to `label_2`.
+
+The order of `label_1` and `label_2` only matters if `meta_graph` is a digraph.
+"""
+function Base.haskey(meta_graph::MetaGraph, label_1, label_2)
+    haskey(meta_graph, label_1) &&
+    haskey(meta_graph, label_2) &&
+    haskey(meta_graph.edge_data, arrange(meta_graph, label_1, label_2))
+end
+
+"""
+    setindex!(meta_graph, data, label)
 
 Set vertex metadata for `label` to `data`.
 """
-function Base.setindex!(g::MetaGraph, data, label)
-    if haskey(g, label)
-        set_data!(g, label, data)
+function Base.setindex!(meta_graph::MetaGraph, data, label)
+    if haskey(meta_graph, label)
+        set_data!(meta_graph, label, data)
     else
-        add_vertex!(g, label, data)
+        add_vertex!(meta_graph, label, data)
     end
-    return nothing
+    nothing
 end
 
 """
-    setindex!(g, data, label_1, label_2)
+    setindex!(meta_graph, data, label_1, label_2)
 
 Set edge metadata for `(label_1, label_2)` to `data`.
 """
-function Base.setindex!(g::MetaGraph, data, label_1, label_2)
-    if haskey(g, label_1, label_2)
-        set_data!(g, label_1, label_2, data)
+function Base.setindex!(meta_graph::MetaGraph, data, label_1, label_2)
+    if haskey(meta_graph, label_1, label_2)
+        set_data!(meta_graph, label_1, label_2, data)
     else
-        add_edge!(g, label_1, label_2, data)
+        add_edge!(meta_graph, label_1, label_2, data)
     end
-    return nothing
+    nothing
 end
 
 """
-    delete!(g, label)
+    delete!(meta_graph, label)
 
 Delete vertex `label`.
 """
-function Base.delete!(g::MetaGraph, label)
-    if haskey(g, label)
-        v = code_for(g, label)
-        _rem_vertex!(g, label, v)
+function Base.delete!(meta_graph::MetaGraph, label)
+    if haskey(meta_graph, label)
+        _rem_vertex!(meta_graph, label, code_for(meta_graph, label))
     end
-    return nothing
+    nothing
 end
 
 """
-    delete!(g, label_1, label_2)
+    delete!(meta_graph, label_1, label_2)
 
 Delete edge `(label_1, label_2)`.
 """
-function Base.delete!(g::MetaGraph, label_1, label_2)
-    v1, v2 = code_for(g, label_1), code_for(g, label_2)
-    rem_edge!(g, v1, v2)
-    return nothing
+function Base.delete!(meta_graph::MetaGraph, label_1, label_2)
+    rem_edge!(meta_graph, code_for(meta_graph, label_1), code_for(meta_graph, label_2))
+    nothing
 end
 
 """
-    _copy_props!(oldg, newg, vmap)
+    _copy_props!(old_meta_graph, new_meta_graph, code_map)
 
-Copy properties from `oldg` to `newg` following vertex map `vmap`.
+Copy properties from `old_meta_graph` to `new_meta_graph` following vertex map `code_map`.
 """
-function _copy_props!(oldg::G, newg::G, vmap) where {G<:MetaGraph}
-    for (newv, oldv) in enumerate(vmap)
-        oldl = oldg.vertex_labels[oldv]
-        _, data = oldg.vertex_properties[oldl]
-        newg.vertex_labels[newv] = oldl
-        newg.vertex_properties[oldl] = (newv, data)
+function _copy_props!(old_meta_graph::MetaGraph, new_meta_graph::MetaGraph, code_map)
+    for (new_code, old_code) in enumerate(code_map)
+        old_label = old_meta_graph.vertex_labels[old_code]
+        _, data = old_meta_graph.vertex_properties[old_label]
+        new_meta_graph.vertex_labels[new_code] = old_label
+        new_meta_graph.vertex_properties[old_label] = (new_code, data)
     end
-    for newe in edges(newg.graph)
-        vertex_labels = newg.vertex_labels
-        v1, v2 = Tuple(newe)
-        label_1 = vertex_labels[v1]
-        label_2 = vertex_labels[v2]
-        newg.edge_data[arrange(newg, label_1, label_2, v1, v2)] = oldg.edge_data[arrange(
-            oldg, label_1, label_2
-        )]
+    for new_edge in edges(new_meta_graph.graph)
+        vertex_labels = new_meta_graph.vertex_labels
+        code_1, code_2 = Tuple(new_edge)
+        label_1 = vertex_labels[code_1]
+        label_2 = vertex_labels[code_2]
+        new_meta_graph.edge_data[arrange(new_meta_graph, label_1, label_2, code_1, code_2)] =
+            old_meta_graph.edge_data[arrange(old_meta_graph, label_1, label_2)]
     end
-    return nothing
+    nothing
 end
 
 # TODO - It would be nice to be able to apply a function to properties.

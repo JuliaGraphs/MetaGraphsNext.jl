@@ -9,7 +9,7 @@ JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 [compat]
 Graphs = "1.4.1"
 JLD2 = "0.1.11, 0.2, 0.3, 0.4"
-julia = "1"
+julia = "1.6"
 
 [extras]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"

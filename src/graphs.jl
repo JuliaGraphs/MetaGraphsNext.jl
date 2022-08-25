@@ -154,10 +154,10 @@ function _rem_vertex!(meta_graph::MetaGraph, label, code)
     removed = rem_vertex!(meta_graph.graph, code)
     if removed
         if code != last_vertex_code # ignore if we're removing the last vertex.
-            lastl = vertex_labels[last_vertex_code]
-            lastvprop = vertex_properties[lastl]
-            vertex_labels[code] = lastl
-            vertex_properties[lastl] = lastvprop
+            last_label = vertex_labels[last_vertex_code]
+            _, last_data = vertex_properties[last_label]
+            vertex_labels[code] = last_label
+            vertex_properties[last_label] = code, last_data
         end
         delete!(vertex_labels, last_vertex_code)
         delete!(vertex_properties, label)

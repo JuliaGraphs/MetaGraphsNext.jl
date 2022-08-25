@@ -11,8 +11,8 @@ julia> using MetaGraphsNext
 We provide a default constructor in which you only need to specify types:
 
 ```jldoctest example
-julia> colors = MetaGraph( Graph(), VertexData = String, EdgeData = Symbol, graph_data = "graph_of_colors")
-Meta graph based on a Graphs.SimpleGraphs.SimpleGraph{Int64}(0, Vector{Int64}[]) with vertex labels of type Symbol, vertex metadata of type String, edge metadata of type Symbol, graph metadata given by "graph_of_colors", and default weight 1.0
+julia> colors = MetaGraph(Graph(), VertexData = String, EdgeData = Symbol, graph_data = "graph_of_colors")
+Meta graph based on a SimpleGraph{Int64}(0, Vector{Int64}[]) with vertex labels of type Symbol, vertex metadata of type String, edge metadata of type Symbol, graph metadata given by "graph_of_colors", and default weight 1.0
 ```
 
 ## Modifying the graph

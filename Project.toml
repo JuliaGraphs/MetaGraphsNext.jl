@@ -5,6 +5,7 @@ version = "0.4.0"
 [deps]
 Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
+SimpleTraits = "699a6c99-e7fa-54fc-8d76-47d257e15c1d"
 
 [compat]
 Graphs = "1.4.1"

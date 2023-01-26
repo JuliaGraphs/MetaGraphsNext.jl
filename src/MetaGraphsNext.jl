@@ -2,6 +2,7 @@ module MetaGraphsNext
 
 using JLD2
 using Graphs
+using SimpleTraits
 
 export MetaGraph, MetaDiGraph, MetaUndirectedGraph
 export label_for, code_for, set_data

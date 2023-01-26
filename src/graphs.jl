@@ -41,6 +41,14 @@ function Base.issubset(meta_graph::MetaGraph, h::MetaGraph)
     issubset(meta_graph.graph, h.graph)
 end
 
+function Graphs.is_directed(meta_graph::MetaGraph)
+    Graphs.is_directed(meta_graph.graph)
+end
+
+function Graphs.is_directed(::Type{<:MetaGraph{Code, Label, Graph}}) where {Code,Label,Graph<:AbstractGraph}
+    Graphs.is_directed(Graph)
+end
+
 ## Link between graph codes and metagraph labels
 
 """
@@ -205,7 +213,7 @@ function Graphs.induced_subgraph(
     new_graph, code_map
 end
 
-function Graphs.reverse(meta_graph::MetaDiGraph)
+@traitfn function Graphs.reverse(meta_graph::MetaGraph::IsDirected)
     edge_data = meta_graph.edge_data
     reverse_edge_data = empty(edge_data)
     for (label_1, label_2) in keys(edge_data)

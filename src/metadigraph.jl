@@ -3,24 +3,19 @@
 
 A `MetaGraph` whose underlying graph is of type `Graphs.SimpleDiGraph`.
 """
-const MetaDiGraph = MetaGraph{<:Any, <:Any, <:SimpleDiGraph}
+const MetaDiGraph = MetaGraph{<:Any,<:Any,<:SimpleDiGraph}
 
 function Graphs.SimpleDiGraph(meta_graph::MetaDiGraph)
-    meta_graph.graph
+    return meta_graph.graph
 end
 
 function Graphs.is_directed(::Type{<:MetaDiGraph})
-    true
+    return true
 end
 function Graphs.is_directed(::MetaDiGraph)
-    true
+    return true
 end
 
-function arrange(
-    ::MetaDiGraph,
-    label_1,
-    label_2,
-    _...,
-)
-    label_1, label_2
+function arrange(::MetaDiGraph, label_1, label_2, _...)
+    return label_1, label_2
 end

@@ -43,13 +43,13 @@ function show_meta_list(io::IO, meta)
         end
         write(io, "]")
     end
-    nothing
+    return nothing
 end
 
 function savedot(io::IO, meta_graph::MetaGraph)
     graph_data = meta_graph.graph_data
     edge_data = meta_graph.edge_data
-    
+
     if is_directed(meta_graph)
         write(io, "digraph G {\n")
         dash = "->"
@@ -86,12 +86,12 @@ function savedot(io::IO, meta_graph::MetaGraph)
         write(io, "\n")
     end
     write(io, "}\n")
-    nothing
+    return nothing
 end
 
 function Graphs.savegraph(file::AbstractString, meta_graph::MetaGraph, ::DOTFormat)
     open(file, "w") do io
         savedot(io, meta_graph)
     end
-    nothing
+    return nothing
 end

@@ -1,6 +1,6 @@
 # MetaGraphsNext.jl
 
-Welcome to `MetaGraphsNext.jl`, an experimental, type-stable replacement for [MetaGraphs](https://github.com/JuliaGraphs/MetaGraphs.jl).
+Welcome to MetaGraphsNext.jl, a type-stable replacement for [MetaGraphs.jl](https://github.com/JuliaGraphs/MetaGraphs.jl). It allows you to create graphs with vertex and edge metadata, on which you can unleash the full power of the [Graphs.jl](https://github.com/JuliaGraphs/Graphs.jl) ecosystem.
 
 ## Getting started
 
@@ -9,5 +9,3 @@ To install the package, open the Julia REPL and type
 ```julia
 julia> using Pkg; Pkg.add("MetaGraphsNext")
 ```
-
-The tutorial provides an overview of the functionalities. We first explain the [basics](tutorial_basics.md) of the `MetaGraph` structure, before moving on to its [integration](tutorial_graphs.md) with `Graphs.jl`.

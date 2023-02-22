@@ -103,23 +103,22 @@ weighttype(weighted_default)
 
 # You can use the `weight_function` keyword to specify a function which will transform edge metadata into a weight. This weight must always be the same type as the `default_weight`.
 
-weighted = MetaGraph(Graph(); EdgeData=Float64, weight_function=identity);
-weighted[:red] = nothing;
-weighted[:blue] = nothing;
-weighted[:yellow] = nothing;
-weighted[:red, :blue] = 1.0;
-weighted[:blue, :yellow] = 2.0;
+weighted = MetaGraph(Graph(); EdgeData=Float64, weight_function=ed -> ed^2);
+
+weighted[:alice] = nothing;
+weighted[:bob] = nothing;
+weighted[:alice, :bob] = 2.0;
 #-
 weight_matrix = Graphs.weights(weighted)
 #-
 size(weight_matrix)
-@test size(weight_matrix) == (3, 3)  #src
+@test size(weight_matrix) == (2, 2)  #src
 #-
-weight_matrix[1, 3]
-@test weight_matrix[1, 3] ≈ 1.0  #src
+weight_matrix[1, 2]
+@test weight_matrix[1, 2] ≈ 4.0  #src
 #-
-wf = get_weight_function(weighted)  # identity
-wf(5.2)
-@test wf(5.2) ≈ 5.2  #src
+wf = get_weight_function(weighted)
+wf(3)
+@test wf(3) == 9  #src
 
 # You can then use all functions from Graphs.jl that require weighted graphs (see the rest of the tutorial).

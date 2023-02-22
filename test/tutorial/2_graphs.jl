@@ -13,7 +13,12 @@ using Test  #src
 # We can make `MetaGraph`s based on (undirected) `Graph`s.
 
 cities = MetaGraph(
-    Graph(); VertexData=String, EdgeData=Int, weight_function=identity, default_weight=0
+    Graph();
+    Label=Symbol,
+    VertexData=String,
+    EdgeData=Int,
+    weight_function=identity,
+    default_weight=0,
 );
 
 # Let us add some cities and the distance between them:
@@ -88,7 +93,7 @@ zero(cities)
 diameter(cities)
 @test diameter(cities) == 344 + 878  #src
 #-
-ds = dijkstra_shortest_paths(cities, 2);
+ds = dijkstra_shortest_paths(cities, 2)
 @test Tuple(ds.dists) == (344, 0, 344 + 878)  #src
 
 # Finally, let us remove some edges and vertices

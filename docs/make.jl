@@ -9,7 +9,9 @@ TUTORIAL_DIR_JL = joinpath(dirname(@__DIR__), "test", "tutorial")
 TUTORIAL_DIR_MD = joinpath(@__DIR__, "src", "tutorial")
 
 for file in readdir(TUTORIAL_DIR_MD)
-    rm(joinpath(TUTORIAL_DIR_MD, file))
+    if endswith(file, ".md")
+        rm(joinpath(TUTORIAL_DIR_MD, file))
+    end
 end
 
 for file in readdir(TUTORIAL_DIR_JL)
@@ -38,7 +40,7 @@ pages = [
     "Home" => "index.md",
     "Tutorial" => [
         markdown_title(joinpath(TUTORIAL_DIR_MD, file)) => joinpath("tutorial", file)
-        for file in sort(readdir(TUTORIAL_DIR_MD))
+        for file in sort(readdir(TUTORIAL_DIR_MD)) if endswith(file, ".md")
     ],
     "API reference" => "api.md",
 ]

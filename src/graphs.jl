@@ -41,14 +41,16 @@ function Base.issubset(meta_graph::MetaGraph, h::MetaGraph)
     return issubset(meta_graph.graph, h.graph)
 end
 
-function Graphs.is_directed(meta_graph::MetaGraph)
-    return Graphs.is_directed(meta_graph.graph)
+function Graphs.is_directed(
+    ::MetaGraph{Code,Label,Graph}
+) where {Code,Label,Graph<:AbstractGraph}
+    return is_directed(Graph)
 end
 
 function Graphs.is_directed(
     ::Type{<:MetaGraph{Code,Label,Graph}}
 ) where {Code,Label,Graph<:AbstractGraph}
-    return Graphs.is_directed(Graph)
+    return is_directed(Graph)
 end
 
 ## Link between graph codes and metagraph labels

@@ -39,8 +39,6 @@ eltype(cities)
 #-
 edgetype(cities)
 @test edgetype(cities) == Graphs.SimpleEdge{Int}  #src
-#-
-SimpleGraph(cities)
 
 # We can check the set of vertices:
 
@@ -121,8 +119,6 @@ rock_paper_scissors[:paper, :rock] = "paper beats rock";
 
 is_directed(rock_paper_scissors)
 @test is_directed(rock_paper_scissors)  #src
-#-
-SimpleDiGraph(rock_paper_scissors)
 
 # Directed graphs can be reversed:
 

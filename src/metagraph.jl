@@ -1,5 +1,14 @@
 """
-    MetaGraph{Code<:Integer,Label,Graph,VertexData,EdgeData,GraphData,WeightFunction,Weight<:Real} <: AbstractGraph{Code}
+    MetaGraph{
+        Code<:Integer,
+        Label,
+        Graph,
+        VertexData,
+        EdgeData,
+        GraphData,
+        WeightFunction,
+        Weight<:Real
+    } <: AbstractGraph{Code}
 
 A graph type with custom vertex labels containing vertex-, edge- and graph-level metadata.
 
@@ -64,13 +73,6 @@ function MetaGraph(
         default_weight,
     )
 end
-
-"""
-    arrange(graph, label_1, label_2)
-
-Sort two vertex labels in a default order (useful to uniquely express undirected edges).
-"""
-function arrange end
 
 function Base.zero(
     meta_graph::MetaGraph{Code,Label,Graph,VertexData,EdgeData}

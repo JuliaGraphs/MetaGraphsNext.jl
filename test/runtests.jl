@@ -3,6 +3,7 @@ using Documenter
 using Graphs
 using JuliaFormatter
 using MetaGraphsNext
+using SimpleTraits
 using Test
 
 @testset verbose = true "MetaGraphsNext" begin
@@ -26,7 +27,7 @@ using Test
             include(joinpath("tutorial", "3_files.jl"))
         end
     end
-    @testset verbose = true "Labels and codes" begin
-        include("labels_codes.jl")
+    @testset verbose = true "Labels, codes, directedness" begin
+        include("labels_codes_directedness.jl")
     end
 end

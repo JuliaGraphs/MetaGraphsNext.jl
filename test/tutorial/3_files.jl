@@ -16,8 +16,8 @@ example2 = mktemp() do file, io
     loadgraph(file, "something", MGFormat())
 end
 
-example2 == example
-@test example2 == example  #src
+example2.graph == example.graph
+@test example2.graph == example.graph  #src
 
 # ## DOTFormat
 

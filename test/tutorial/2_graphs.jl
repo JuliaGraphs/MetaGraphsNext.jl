@@ -81,7 +81,7 @@ has_edge(cities, 2, 3)
 # From this initial graph, we can create some others:
 
 copy(cities)
-@test copy(cities) == cities  #src
+@test copy(cities).graph == cities.graph  #src
 #-
 zero(cities)
 @test nv(zero(cities)) == 0  #src

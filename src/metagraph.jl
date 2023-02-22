@@ -1,13 +1,13 @@
 """
     MetaGraph{
         Code<:Integer,
+        Graph<:AbstractGraph{Code},
         Label,
-        Graph,
         VertexData,
         EdgeData,
         GraphData,
         WeightFunction,
-        Weight<:Real
+        Weight
     } <: AbstractGraph{Code}
 
 A graph type with custom vertex labels containing vertex-, edge- and graph-level metadata.
@@ -19,13 +19,20 @@ It is recommended not to set `Label` to an integer type, so as to avoid confusio
 - `graph::Graph`: underlying, data-less graph with vertex indices of type `Code`
 - `vertex_labels::Dict{Code,Label}`: dictionary mapping vertex codes to vertex labels
 - `vertex_properties::Dict{Label,Tuple{Code,VertexData}}`: dictionary mapping vertex labels to vertex codes & data
-- `edge_data::Dict{Tuple{Label,Label},EdgeData}`: dictionary mapping edge labels such as `(label_u, label_v)` to edge metadata
-- `graph_data::GraphData`: graph metadata
-- `weight_function::WeightFunction`: function defining edge weight from edge metadata
-- `default_weight::Weight`: default weight for the edges
+- `edge_data::Dict{Tuple{Label,Label},EdgeData}`: dictionary mapping edge labels such as `(label_u, label_v)` to edge data
+- `graph_data::GraphData`: global data for the graph object
+- `weight_function::WeightFunction`: function computing edge weight from edge data, its output must have the same type as `default_weight`
+- `default_weight::Weight`: default weight used when an edge doesn't exist
 """
 struct MetaGraph{
-    Code<:Integer,Label,Graph,VertexData,EdgeData,GraphData,WeightFunction,Weight<:Real
+    Code<:Integer,
+    Graph<:AbstractGraph{Code},
+    Label,
+    VertexData,
+    EdgeData,
+    GraphData,
+    WeightFunction,
+    Weight,
 } <: AbstractGraph{Code}
     graph::Graph
     vertex_labels::Dict{Code,Label}
@@ -38,16 +45,75 @@ end
 
 """
     MetaGraph(
+        graph,
+        vertices_description,
+        edges_description,
+        graph_data=nothing,
+        weight_function=edge_data -> 1.0,
+        default_weight=1.0,
+    )
+
+Construct a non-empty `MetaGraph` based on lists of vertices and edges with their labels and data.
+
+These lists must be constructed as follows:
+- `vertices_description` is a vector of pairs `label => data` (the code of a vertex will correspond to its rank in the list)
+- `edges_description` is a vector of pairs `(label1, label2) => data`
+
+Furthermore, they must be coherent with the `graph` argument, i.e. describe the same set of vertices and edges.
+"""
+function MetaGraph(
+    graph::AbstractGraph{Code},
+    vertices_description::Vector{Pair{Label,VertexData}},
+    edges_description::Vector{Pair{Tuple{Label,Label},EdgeData}},
+    graph_data=nothing,
+    weight_function=edge_data -> 1.0,
+    default_weight=1.0,
+) where {Code,Label,VertexData,EdgeData}
+    # Construct vertex data
+    @assert length(vertices_description) == nv(graph)
+    vertex_labels = Dict{Code,Label}()
+    vertex_properties = Dict{Label,Tuple{Code,VertexData}}()
+    for (code, (label, data)) in enumerate(vertices_description)
+        vertex_labels[code] = label
+        vertex_properties[label] = (code, data)
+    end
+    # Construct edge data
+    @assert length(edges_description) == ne(graph)
+    for ((label_1, label_2), _) in edges_description
+        code_1 = vertex_properties[label_1][1]
+        code_2 = vertex_properties[label_2][1]
+        @assert has_edge(graph, code_1, code_2)
+    end
+    edge_data = Dict{Tuple{Label,Label},EdgeData}()
+    for ((label_1, label_2), data) in edges_description
+        edge_data[label_1, label_2] = data
+    end
+    return MetaGraph(
+        graph,
+        vertex_labels,
+        vertex_properties,
+        edge_data,
+        graph_data,
+        weight_function,
+        default_weight,
+    )
+end
+
+"""
+    MetaGraph(
         graph;
-        Label = Symbol,
-        VertexData = Nothing,
-        EdgeData = Nothing,
-        graph_data = nothing,
-        weight_function = edge_data -> 1.0,
-        default_weight = 1.0
+        Label=Symbol,
+        VertexData=Nothing,
+        EdgeData=Nothing,
+        graph_data=nothing,
+        weight_function=edge_data -> 1.0,
+        default_weight=1.0
     )
 
 Construct an empty `MetaGraph` with the given metadata types and weights.
+
+!!! danger "Warning"
+    This constructor is not type-stable, it is only there for convenience.
 """
 function MetaGraph(
     graph::AbstractGraph{Code};
@@ -55,49 +121,29 @@ function MetaGraph(
     VertexData=Nothing,
     EdgeData=Nothing,
     graph_data=nothing,
-    weight_function=edata -> 1.0,
+    weight_function=edge_data -> 1.0,
     default_weight=1.0,
 ) where {Code}
+    @assert nv(graph) == 0
     if Label <: Integer
         @warn "Constructing a MetaGraph with integer labels is not advised."
-    elseif nv(graph) > 0
-        @warn "Constructing a MetaGraph with a nonempty underlying graph is not advised."
     end
+    vertex_labels = Dict{Code,Label}()
+    vertex_properties = Dict{Label,Tuple{Code,VertexData}}()
+    edge_data = Dict{Tuple{Label,Label},EdgeData}()
     return MetaGraph(
         graph,
-        Dict{Code,Label}(),
-        Dict{Label,Tuple{Code,VertexData}}(),
-        Dict{Tuple{Label,Label},EdgeData}(),
+        vertex_labels,
+        vertex_properties,
+        edge_data,
         graph_data,
         weight_function,
         default_weight,
     )
 end
 
-function Base.zero(
-    meta_graph::MetaGraph{Code,Label,Graph,VertexData,EdgeData}
-) where {Code,Label,Graph,VertexData,EdgeData}
-    return MetaGraph(
-        Graph();
-        Label=Label,
-        VertexData=VertexData,
-        EdgeData=EdgeData,
-        graph_data=meta_graph.graph_data,
-        weight_function=meta_graph.weight_function,
-        default_weight=meta_graph.default_weight,
-    )
-end
-
-function Base.:(==)(meta_graph_1::MetaGraph, meta_graph_2::MetaGraph)
-    return meta_graph_1.graph == meta_graph_2.graph
-end
-
-function Base.copy(meta_graph::MetaGraph)
-    return deepcopy(meta_graph)
-end
-
 function Base.show(
-    io::IO, meta_graph::MetaGraph{<:Any,Label,<:Any,VertexData,EdgeData}
+    io::IO, meta_graph::MetaGraph{<:Any,<:Any,Label,VertexData,EdgeData}
 ) where {Label,VertexData,EdgeData}
     print(
         io,

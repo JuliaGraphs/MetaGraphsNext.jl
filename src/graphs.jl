@@ -10,15 +10,19 @@ end
 function Graphs.edgetype(meta_graph::MetaGraph)
     return edgetype(meta_graph.graph)
 end
+
 function Graphs.nv(meta_graph::MetaGraph)
     return nv(meta_graph.graph)
 end
+
 function Graphs.ne(meta_graph::MetaGraph)
     return ne(meta_graph.graph)
 end
+
 function Graphs.vertices(meta_graph::MetaGraph)
     return vertices(meta_graph.graph)
 end
+
 function Graphs.edges(meta_graph::MetaGraph)
     return edges(meta_graph.graph)
 end
@@ -26,6 +30,7 @@ end
 function Graphs.has_vertex(meta_graph::MetaGraph, code::Integer)
     return has_vertex(meta_graph.graph, code)
 end
+
 function Graphs.has_edge(meta_graph::MetaGraph, code_1::Integer, code_2::Integer)
     return has_edge(meta_graph.graph, code_1, code_2)
 end
@@ -33,24 +38,13 @@ end
 function Graphs.inneighbors(meta_graph::MetaGraph, code::Integer)
     return inneighbors(meta_graph.graph, code)
 end
+
 function Graphs.outneighbors(meta_graph::MetaGraph, code::Integer)
     return outneighbors(meta_graph.graph, code)
 end
 
 function Base.issubset(meta_graph::MetaGraph, h::MetaGraph)
     return issubset(meta_graph.graph, h.graph)
-end
-
-function Graphs.is_directed(
-    ::MetaGraph{Code,Label,Graph}
-) where {Code,Label,Graph<:AbstractGraph}
-    return is_directed(Graph)
-end
-
-function Graphs.is_directed(
-    ::Type{<:MetaGraph{Code,Label,Graph}}
-) where {Code,Label,Graph<:AbstractGraph}
-    return is_directed(Graph)
 end
 
 ## Link between graph codes and metagraph labels
@@ -205,6 +199,22 @@ end
 
 ## Miscellaneous
 
+function Base.copy(meta_graph::MetaGraph)
+    return deepcopy(meta_graph)
+end
+
+function Base.zero(meta_graph::MetaGraph)
+    return MetaGraph(
+        zero(meta_graph.graph),
+        empty(meta_graph.vertex_labels),
+        empty(meta_graph.vertex_properties),
+        empty(meta_graph.edge_data),
+        deepcopy(meta_graph.graph_data),
+        deepcopy(meta_graph.weight_function),
+        deepcopy(meta_graph.default_weight),
+    )
+end
+
 function Graphs.induced_subgraph(
     meta_graph::MetaGraph, vertex_codes::AbstractVector{<:Integer}
 )
@@ -222,7 +232,7 @@ function Graphs.induced_subgraph(
     return new_graph, code_map
 end
 
-@traitfn function Graphs.reverse(meta_graph::MetaGraph::IsDirected)
+@traitfn function Graphs.reverse(meta_graph::MG) where {MG <: MetaGraph; IsDirected{MG}}
     edge_data = meta_graph.edge_data
     reverse_edge_data = empty(edge_data)
     for (label_1, label_2) in keys(edge_data)

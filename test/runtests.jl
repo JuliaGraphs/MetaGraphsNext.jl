@@ -1,26 +1,32 @@
+using Aqua
 using Documenter
+using Graphs
+using JuliaFormatter
 using MetaGraphsNext
 using Test
-using Graphs
 
-@testset "MetaGraphsNext" begin
-    doctest(MetaGraphsNext)
-
-    colors = MetaGraph( Graph(), VertexData = String, EdgeData = Symbol, graph_data = "graph_of_colors")
-
-    labels = [:red, :yellow, :blue]
-    values = ["warm", "warm", "cool"]
-    for (label, value) in zip(labels, values)
-        colors[label] = value
+@testset verbose = true "MetaGraphsNext" begin
+    @testset verbose = true "Code quality (Aqua.jl)" begin
+        Aqua.test_all(MetaGraphsNext; ambiguities=false)
     end
-    for label in labels
-        @test label_for(colors, code_for(colors, label)) == label
+    @testset verbose = true "Code formatting (JuliaFormatter.jl)" begin
+        @test format(MetaGraphsNext; verbose=false, overwrite=false)
     end
-    #delete an entry and test again
-    rem_vertex!(colors, 1)
-    popfirst!(labels)
-    popfirst!(values)
-    for label in labels
-        @test label_for(colors, code_for(colors, label)) == label
+    @testset verbose = true "Doctests (Documenter.jl)" begin
+        doctest(MetaGraphsNext)
+    end
+    @testset verbose = true "Tutorial" begin
+        @testset verbose = true "Basics" begin
+            include(joinpath("tutorial", "1_basics.jl"))
+        end
+        @testset verbose = true "Graphs" begin
+            include(joinpath("tutorial", "2_graphs.jl"))
+        end
+        @testset verbose = true "Files" begin
+            include(joinpath("tutorial", "3_files.jl"))
+        end
+    end
+    @testset verbose = true "Labels and codes" begin
+        include("labels_codes.jl")
     end
 end

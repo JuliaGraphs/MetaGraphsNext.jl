@@ -18,9 +18,9 @@ function MetaWeights(meta_graph::MetaGraph)
 end
 
 """
-    weigths(meta_graph)
+    weights(meta_graph)
 
-Return a matrix-like `MetaWeights` object containing the edge weights for meta_graph `meta_graph`.
+Return a matrix-like `MetaWeights` object containing the edge weights for metagraph `meta_graph`.
 """
 Graphs.weights(meta_graph::MetaGraph) = MetaWeights(meta_graph)
 

@@ -1,4 +1,5 @@
 using Documenter
+using Graphs
 using Literate
 using MetaGraphsNext
 

@@ -56,7 +56,7 @@ end
         default_weight=1.0
     )
 
-Construct an empty `MetaGraph` based on an empty `graph`, initializing storage with the given metadata types *as positional arguments*.
+Construct an empty `MetaGraph` based on an empty `graph`, initializing storage with metadata types *given as positional arguments*.
 """
 function MetaGraph(
     graph::AbstractGraph{Code},
@@ -96,7 +96,7 @@ end
         default_weight=1.0
     )
 
-Construct an empty `MetaGraph` based on an empty `graph`, initializing storage with the given metadata types *as keyword arguments*.
+Construct an empty `MetaGraph` based on an empty `graph`, initializing storage with metadata types *given as keyword arguments*.
 
 !!! warning "Warning"
     This constructor uses keyword arguments for convenience, which means it is type-unstable.
@@ -131,7 +131,7 @@ end
         default_weight=1.0,
     )
 
-Construct a non-empty `MetaGraph` based on a non-empty `graph` with specified vertex and edge data.
+Construct a non-empty `MetaGraph` based on a non-empty `graph` with specified vertex and edge data, *given as positional arguments*.
 
 The data must be given as follows:
 - `vertices_description` is a vector of pairs `label => data` (the code of a vertex will correspond to its rank in the list)

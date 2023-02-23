@@ -58,6 +58,7 @@ makedocs(;
     ),
     checkdocs=:all,
     linkcheck=true,
+    strict=true,
 )
 
 deploydocs(; repo="github.com/JuliaGraphs/MetaGraphsNext.jl.git")

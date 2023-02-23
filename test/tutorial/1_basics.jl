@@ -6,53 +6,49 @@ using Test  #src
 
 # ## Creating a `MetaGraph`
 
+# ### Easiest constructor
+
 # We provide a convenience constructor for creating empty graphs, which looks as follows:
 
 colors = MetaGraph(
     Graph();  # underlying graph structure
     label_type=Symbol,  # color name
     vertex_data_type=NTuple{3,Int},  # RGB code
-    edge_data_type=String,  # result of the addition between two colors
+    edge_data_type=Symbol,  # result of the addition between two colors
     graph_data="additive colors",  # tag for the whole graph
 )
 
-@test_throws ErrorException @inferred MetaGraph(  #src
-    Graph();  #src
-    label_type=Symbol,  #src
-    vertex_data_type=NTuple{3,Int},  #src
-    edge_data_type=String,  #src
-    graph_data="additive colors",  #src
-)  #src
-
 # The `label_type` argument defines how vertices will be referred to, it can be anything but an integer type (to avoid confusion with codes, see below). The `vertex_data_type` and `edge_data_type` type determine what kind of data will be associated with each vertex and edge. Finally, `graph_data` can contain an arbitrary object associated with the graph as a whole.
 
-# However, since this constructor receives types as keyword arguments, it is type-unstable. Casual users may not care, but if your goal is performance, you should use either of the following alternatives:
-# 1. Wrap the constructor in a function
-# 2. Switch to positional arguments (be careful with the order!)
+# ### Type stability
+
+# However, since this constructor receives types as keyword arguments, it is type-unstable. Casual users may not care, but if your goal is performance, you might need one of the following alternatives: either wrap the constructor in a function...
 
 function colors_constructor()
     return MetaGraph(
         Graph();
         label_type=Symbol,
         vertex_data_type=NTuple{3,Int},
-        edge_data_type=String,
+        edge_data_type=Symbol,
         graph_data="additive colors",
     )
 end
 
+colors_constructor()
+
 @test @inferred colors_constructor() == colors  #src
 
-#-
+# ... or switch to positional arguments (be careful with the order!)
 
-colors_stable = MetaGraph(Graph(), Symbol, NTuple{3,Int}, String, "additive colors")
+MetaGraph(Graph(), Symbol, NTuple{3,Int}, Symbol, "additive colors")
 
-@test @inferred MetaGraph(  #src
+@test (@inferred MetaGraph(  #src
     Graph(),  #src
     Symbol,  #src
     NTuple{3,Int},  #src
-    String,  #src
+    Symbol,  #src
     "additive colors",  #src
-) == colors  #src
+) == colors)  #src
 
 # ## Modifying the graph
 
@@ -70,9 +66,29 @@ colors[:blue] = (0, 0, 255);
 
 # Use `setindex!` with two keys to add a new edge between the given labels and containing the given metadata. Beware that this time, nonexistent labels will throw an error.
 
-colors[:red, :green] = "yellow";
-colors[:red, :blue] = "magenta";
-colors[:green, :blue] = "cyan";
+colors[:red, :green] = :yellow;
+colors[:red, :blue] = :magenta;
+colors[:green, :blue] = :cyan;
+
+# ### Creating a non-empty graph
+
+# There is a final constructor we haven't mentioned, which allows you to build and fill the `MetaGraph` in one fell swoop. Here's how it works:
+
+graph = Graph(Edge.([(1, 2), (1, 3), (2, 3)]))
+vertices_description = [:red => (255, 0, 0), :green => (0, 255, 0), :blue => (0, 0, 255)]
+edges_description = [
+    (:red, :green) => :yellow, (:red, :blue) => :magenta, (:green, :blue) => :cyan
+]
+
+colors2 = MetaGraph(graph, vertices_description, edges_description, "additive colors")
+colors2 == colors
+
+@test (@inferred MetaGraph(  #src
+    graph,  #src
+    vertices_description,  #src
+    edges_description,  #src
+    "additive colors",  #src
+) == colors)  #src
 
 # ## Accessing graph properties
 
@@ -105,7 +121,7 @@ colors[:blue]
 @test @inferred colors[:blue] == (0, 0, 255)  #src
 #-
 colors[:green, :blue]
-@test @inferred colors[:green, :blue] == "cyan"  #src
+@test @inferred colors[:green, :blue] == :cyan  #src
 
 # ## Using vertex codes
 

@@ -6,17 +6,31 @@ using Test  #src
 
 # ## Creating a `MetaGraph`
 
-# We provide a default constructor which looks as follows:
+# We provide a convenience constructor for creating empty graphs, which looks as follows:
 
 colors = MetaGraph(
     Graph();  # underlying graph structure
-    Label=Symbol,  # color name
-    VertexData=NTuple{3,Int},  # RGB code
-    EdgeData=String,  # result of the addition between two colors
+    label_type=Symbol,  # color name
+    vertex_data_type=NTuple{3,Int},  # RGB code
+    edge_data_type=String,  # result of the addition between two colors
     graph_data="additive colors",  # tag for the whole graph
 )
 
-# The `Label` type defines how vertices will be referred to, it can be anything but an integer type (to avoid confusion with codes, see below). The `VertexData` and `EdgeData` type determine what kind of data will be associated with each vertex and edge. Finally, `graph_data` can contain an arbitrary object associated with the graph as a whole.
+# The `label_type` argument defines how vertices will be referred to, it can be anything but an integer type (to avoid confusion with codes, see below). The `vertex_data_type` and `edge_data_type` type determine what kind of data will be associated with each vertex and edge. Finally, `graph_data` can contain an arbitrary object associated with the graph as a whole.
+
+# However, since this constructor receives types as keyword arguments, it is type-unstable. Casual users may not care, but if your goal is performance, you should use the following syntax instead, which relies on positional arguments.
+
+colors_stable = MetaGraph(Graph(), Symbol, NTuple{3,Int}, String, "additive colors")
+
+@test @inferred MetaGraph(  #src
+    Graph(),  #src
+    Symbol,  #src
+    NTuple{3,Int},  #src
+    String,  #src
+    "additive colors",  #src
+) == colors_stable  #src
+
+# Be careful with the order!
 
 # ## Modifying the graph
 
@@ -47,13 +61,13 @@ colors[:green, :blue] = "cyan";
 # To check the presence of a vertex or edge, use `haskey`:
 
 haskey(colors, :red)
-@test haskey(colors, :red)  #src
+@test @inferred haskey(colors, :red)  #src
 #-
 haskey(colors, :black)
 @test !haskey(colors, :black)  #src
 #-
 haskey(colors, :red, :green) && haskey(colors, :green, :red)
-@test haskey(colors, :red, :green) && haskey(colors, :green, :red)  #src
+@test (@inferred haskey(colors, :red, :green)) && haskey(colors, :green, :red)  #src
 #-
 !haskey(colors, :red, :black)
 @test !haskey(colors, :red, :black)  #src
@@ -63,20 +77,20 @@ haskey(colors, :red, :green) && haskey(colors, :green, :red)
 # All kinds of metadata can be accessed with `getindex`:
 
 colors[]
-@test colors[] == "additive colors"  #src
+@test @inferred colors[] == "additive colors"  #src
 #-
 colors[:blue]
-@test colors[:blue] == (0, 0, 255)  #src
+@test @inferred colors[:blue] == (0, 0, 255)  #src
 #-
 colors[:green, :blue]
-@test colors[:green, :blue] == "cyan"  #src
+@test @inferred colors[:green, :blue] == "cyan"  #src
 
 # ## Using vertex codes
 
 # In the absence of removal, vertex codes correspond to order of insertion in the underlying graph. They are the ones used by most algorithms in the Graphs.jl ecosystem.
 
 code_for(colors, :red)
-@test code_for(colors, :red) == 1  #src
+@test @inferred code_for(colors, :red) == 1  #src
 #-
 code_for(colors, :blue)
 @test code_for(colors, :blue) == 3  #src
@@ -84,7 +98,7 @@ code_for(colors, :blue)
 # You can retrieve the associated labels as follows:
 
 label_for(colors, 1)
-@test label_for(colors, 1) == :red  #src
+@test @inferred label_for(colors, 1) == :red  #src
 #-
 label_for(colors, 3)
 @test label_for(colors, 3) == :blue  #src
@@ -93,32 +107,35 @@ label_for(colors, 3)
 
 # The most simple way to add edge weights is to speficy a default weight for all of them.
 
-weighted_default = MetaGraph(Graph(); default_weight=2);
+weighted_default = MetaGraph(Graph(); label_type=Symbol, default_weight=2);
 #-
 default_weight(weighted_default)
-@test default_weight(weighted_default) == 2  #src
+@test @inferred default_weight(weighted_default) == 2  #src
 #-
 weighttype(weighted_default)
-@test weighttype(weighted_default) == Int  #src
+@test @inferred weighttype(weighted_default) == Int  #src
 
 # You can use the `weight_function` keyword to specify a function which will transform edge metadata into a weight. This weight must always be the same type as the `default_weight`.
 
-weighted = MetaGraph(Graph(); EdgeData=Float64, weight_function=ed -> ed^2);
+weighted = MetaGraph(
+    Graph(); label_type=Symbol, edge_data_type=Float64, weight_function=ed -> ed^2
+);
 
 weighted[:alice] = nothing;
 weighted[:bob] = nothing;
 weighted[:alice, :bob] = 2.0;
 #-
 weight_matrix = Graphs.weights(weighted)
+@test @inferred Graphs.weights(weighted) == weight_matrix
 #-
 size(weight_matrix)
 @test size(weight_matrix) == (2, 2)  #src
 #-
 weight_matrix[1, 2]
-@test weight_matrix[1, 2] ≈ 4.0  #src
+@test @inferred weight_matrix[1, 2] ≈ 4.0  #src
 #-
 wf = get_weight_function(weighted)
 wf(3)
-@test wf(3) == 9  #src
+@test @inferred wf(3) == 9  #src
 
 # You can then use all functions from Graphs.jl that require weighted graphs (see the rest of the tutorial).

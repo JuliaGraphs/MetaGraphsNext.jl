@@ -14,11 +14,11 @@ using Test  #src
 
 cities = MetaGraph(
     Graph();
-    Label=Symbol,
-    VertexData=String,
-    EdgeData=Int,
+    label_type=Symbol,
+    vertex_data_type=String,
+    edge_data_type=Int,
+    graph_data=nothing,
     weight_function=identity,
-    default_weight=0,
 );
 
 # Let us add some cities and the distance between them:
@@ -32,27 +32,27 @@ cities[:Paris, :Berlin] = 878;
 # The general properties of the graph are as expected:
 
 is_directed(cities)
-@test !is_directed(cities)  #src
+@test @inferred !is_directed(cities)  #src
 #-
 eltype(cities)
-@test eltype(cities) == Int  #src
+@test @inferred eltype(cities) == Int  #src
 #-
 edgetype(cities)
-@test edgetype(cities) == Graphs.SimpleEdge{Int}  #src
+@test @inferred edgetype(cities) == Graphs.SimpleEdge{Int}  #src
 
 # We can check the set of vertices:
 
 nv(cities)
-@test nv(cities) == 3  #src
+@test @inferred nv(cities) == 3  #src
 #-
 collect(vertices(cities))
-@test Tuple(collect(vertices(cities))) == (1, 2, 3)  #src
+@test @inferred Tuple(collect(vertices(cities))) == (1, 2, 3)  #src
 #-
 has_vertex(cities, 2)
-@test has_vertex(cities, 2)  #src
+@test @inferred has_vertex(cities, 2)  #src
 #-
 has_vertex(cities, 4)
-@test !has_vertex(cities, 4)  #src
+@test @inferred !has_vertex(cities, 4)  #src
 
 # Note that we can't add the same city (i.e. vertex label) twice:
 
@@ -62,18 +62,18 @@ nv(cities)
 @test nv(cities) == 3  #src
 #-
 cities[:London]
-@test cities[:London] == "UK"  #src
+@test @inferred cities[:London] == "UK"  #src
 
 # We then check the set of edges:
 
 ne(cities)
-@test ne(cities) == 2  #src
+@test @inferred ne(cities) == 2  #src
 #-
 collect(edges(cities))
-@test Tuple(collect(edges(cities))) == (Edge(1, 2), Edge(1, 3))  #src
+@test @inferred Tuple(collect(edges(cities))) == (Edge(1, 2), Edge(1, 3))  #src
 #-
 has_edge(cities, 1, 2)
-@test has_edge(cities, 1, 2)  #src
+@test @inferred has_edge(cities, 1, 2)  #src
 #-
 has_edge(cities, 2, 3)
 @test !has_edge(cities, 2, 3)  #src
@@ -81,7 +81,7 @@ has_edge(cities, 2, 3)
 # From this initial graph, we can create some others:
 
 copy(cities)
-@test copy(cities).graph == cities.graph  #src
+@test copy(cities) == cities  #src
 #-
 zero(cities)
 @test nv(zero(cities)) == 0  #src
@@ -92,7 +92,7 @@ diameter(cities)
 @test diameter(cities) == 344 + 878  #src
 #-
 ds = dijkstra_shortest_paths(cities, 2)
-@test Tuple(ds.dists) == (344, 0, 344 + 878)  #src
+@test @inferred Tuple(dijkstra_shortest_paths(cities, 2).dists) == (344, 0, 344 + 878)  #src
 
 # Finally, let us remove some edges and vertices
 
@@ -105,7 +105,7 @@ has_vertex(cities, 1) && !has_vertex(cities, 3)
 
 # We can make `MetaGraph`s based on `DiGraph`s as well.
 
-rock_paper_scissors = MetaGraph(DiGraph(); Label=Symbol, EdgeData=String);
+rock_paper_scissors = MetaGraph(DiGraph(); label_type=Symbol, edge_data_type=String);
 
 for label in [:rock, :paper, :scissors]
     rock_paper_scissors[label] = nothing
@@ -118,7 +118,7 @@ rock_paper_scissors[:paper, :rock] = "paper beats rock";
 # We see that the underlying graph has changed:
 
 is_directed(rock_paper_scissors)
-@test is_directed(rock_paper_scissors)  #src
+@test @inferred is_directed(rock_paper_scissors)  #src
 
 # Directed graphs can be reversed:
 
@@ -131,9 +131,10 @@ haskey(reverse(rock_paper_scissors), :scissors, :rock)
 # Finally, let us take a subgraph:
 
 rock_paper, _ = induced_subgraph(rock_paper_scissors, [1, 2])
+@test @inferred induced_subgraph(rock_paper_scissors, [1, 2])[1] == rock_paper
 #-
 issubset(rock_paper, rock_paper_scissors)
-@test issubset(rock_paper, rock_paper_scissors)  #src
+@test @inferred issubset(rock_paper, rock_paper_scissors)  #src
 #-
 haskey(rock_paper, :paper, :rock)
 @test haskey(rock_paper, :paper, :rock)  #src

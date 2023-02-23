@@ -1,6 +1,10 @@
 # undirected MetaGraph
 colors = MetaGraph(
-    Graph(); VertexData=String, EdgeData=Symbol, graph_data="graph_of_colors"
+    Graph();
+    label_type=Symbol,
+    vertex_data_type=String,
+    edge_data_type=Symbol,
+    graph_data="graph_of_colors",
 )
 @test istrait(IsDirected{typeof(colors)}) == is_directed(colors) == false
 labels = [:red, :yellow, :blue]
@@ -22,7 +26,11 @@ end
 
 # directed MetaGraph
 dcolors = MetaGraph(
-    SimpleDiGraph(); VertexData=String, EdgeData=Symbol, graph_data="graph_of_colors"
+    SimpleDiGraph();
+    label_type=Symbol,
+    vertex_data_type=String,
+    edge_data_type=Symbol,
+    graph_data="graph_of_colors",
 )
 @test istrait(IsDirected{typeof(dcolors)}) == is_directed(dcolors) == true
 labels = [:red, :yellow, :blue]

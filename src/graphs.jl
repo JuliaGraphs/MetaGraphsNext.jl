@@ -47,30 +47,6 @@ function Base.issubset(meta_graph::MetaGraph, h::MetaGraph)
     return issubset(meta_graph.graph, h.graph)
 end
 
-## Link between graph codes and metagraph labels
-
-"""
-    code_for(meta_graph::MetaGraph, label)
-
-Find the vertex code (or index) associated with label `label`.
-
-This can be useful to pass to methods inherited from `Graphs`. Note, however, that vertex codes can be reassigned after vertex deletion.
-"""
-function code_for(meta_graph::MetaGraph, label)
-    return meta_graph.vertex_properties[label][1]
-end
-
-"""
-    label_for(meta_graph::MetaGraph, code)
-
-Find the label associated with code `code`.
-
-This can be useful to interpret the results of methods inherited from `Graphs`. Note, however, that vertex codes can be reassigned after vertex deletion.
-"""
-function label_for(meta_graph::MetaGraph, code::Integer)
-    return meta_graph.vertex_labels[code]
-end
-
 ## Set vertex and edge data
 
 """

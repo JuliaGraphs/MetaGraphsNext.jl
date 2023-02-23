@@ -43,6 +43,8 @@ struct MetaGraph{
     default_weight::Weight
 end
 
+## Constructors
+
 """
     MetaGraph(
         graph,
@@ -175,6 +177,8 @@ function MetaGraph(
     )
 end
 
+## Base extensions
+
 function Base.show(
     io::IO, meta_graph::MetaGraph{<:Any,<:Any,Label,VertexData,EdgeData}
 ) where {Label,VertexData,EdgeData}
@@ -198,4 +202,37 @@ function Base.:(==)(meta_graph_1::MetaGraph, meta_graph_2::MetaGraph)
         ) &&
         (meta_graph_1.default_weight == meta_graph_2.default_weight)
     )
+end
+
+## Link between graph codes and metagraph labels
+
+"""
+    code_for(meta_graph::MetaGraph, label)
+
+Find the vertex code (or index) associated with label `label`.
+
+This can be useful to pass to methods inherited from `Graphs`. Note, however, that vertex codes can be reassigned after vertex deletion.
+"""
+function code_for(meta_graph::MetaGraph, label)
+    return meta_graph.vertex_properties[label][1]
+end
+
+"""
+    label_for(meta_graph::MetaGraph, code)
+
+Find the label associated with code `code`.
+
+This can be useful to interpret the results of methods inherited from `Graphs`. Note, however, that vertex codes can be reassigned after vertex deletion.
+"""
+function label_for(meta_graph::MetaGraph, code::Integer)
+    return meta_graph.vertex_labels[code]
+end
+
+"""
+    labels(meta_graph::MetaGraph)
+
+List all vertex labels, *not necessarily in the same order as the codes!*
+"""
+function labels(meta_graph::MetaGraph)
+    return values(meta_graph.vertex_labels)
 end

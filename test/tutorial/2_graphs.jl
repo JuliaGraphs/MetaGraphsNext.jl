@@ -33,6 +33,8 @@ cities[:Paris, :Berlin] = 878;
 
 is_directed(cities)
 @test @inferred !is_directed(cities)  #src
+@test !istrait(IsDirected{typeof(cities)})  #src
+@test MetaGraphsNext.arrange(cities, :London, :Paris) == (:Paris, :London)
 #-
 eltype(cities)
 @test @inferred eltype(cities) == Int  #src
@@ -119,6 +121,8 @@ rock_paper_scissors[:paper, :rock] = "paper beats rock";
 
 is_directed(rock_paper_scissors)
 @test @inferred is_directed(rock_paper_scissors)  #src
+@test istrait(IsDirected{typeof(rock_paper_scissors)}) #src
+@test MetaGraphsNext.arrange(rock_paper_scissors, :paper, :rock) == (:paper, :rock)  #src
 
 # Directed graphs can be reversed:
 

@@ -64,12 +64,11 @@ function Base.getindex(meta_weights::MetaWeights, code_1::Integer, code_2::Integ
     if has_edge(meta_graph, code_1, code_2)
         labels = meta_graph.vertex_labels
         weight_function = get_weight_function(meta_graph)
-        weight_function(
-            meta_graph[arrange(
-                meta_graph, labels[code_1], labels[code_2], code_1, code_2
-            )...],
+        arranged_label_1, arranged_label_2 = arrange(
+            meta_graph, labels[code_1], labels[code_2], code_1, code_2
         )
+        return weight_function(meta_graph[arranged_label_1, arranged_label_2])
     else
-        default_weight(meta_graph)
+        return default_weight(meta_graph)
     end
 end

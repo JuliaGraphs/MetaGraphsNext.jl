@@ -34,7 +34,7 @@ cities[:Paris, :Berlin] = 878;
 is_directed(cities)
 @test @inferred !is_directed(cities)  #src
 @test !istrait(IsDirected{typeof(cities)})  #src
-@test MetaGraphsNext.arrange(cities, :London, :Paris) == (:Paris, :London)
+@test MetaGraphsNext.arrange(cities, :London, :Paris) == (:Paris, :London)  #src
 #-
 eltype(cities)
 @test @inferred eltype(cities) == Int  #src
@@ -135,7 +135,7 @@ haskey(reverse(rock_paper_scissors), :scissors, :rock)
 # Finally, let us take a subgraph:
 
 rock_paper, _ = induced_subgraph(rock_paper_scissors, [1, 2])
-@test @inferred induced_subgraph(rock_paper_scissors, [1, 2])[1] == rock_paper
+@test @inferred induced_subgraph(rock_paper_scissors, [1, 2])[1] == rock_paper  #src
 #-
 issubset(rock_paper, rock_paper_scissors)
 @test @inferred issubset(rock_paper, rock_paper_scissors)  #src

@@ -168,7 +168,7 @@ weighted[:alice, :bob] = 2.0;
 weighted[:bob, :charlie] = 3.0;
 #-
 weight_matrix = Graphs.weights(weighted)
-@test @inferred Graphs.weights(weighted) == weight_matrix
+@test @inferred Graphs.weights(weighted) == weight_matrix  #src
 #-
 default_weight(weighted)
 @test @inferred default_weight(weighted) ≈ Inf  #src
@@ -186,7 +186,7 @@ weight_matrix[1, 3]
 @test @inferred weight_matrix[1, 3] ≈ Inf  #src
 #-
 wf = get_weight_function(weighted)
-@test @inferred get_weight_function(weighted) == wf
+@test @inferred get_weight_function(weighted) == wf  #src
 wf(4.0)
 @test @inferred wf(4.0) ≈ 16.0  #src
 

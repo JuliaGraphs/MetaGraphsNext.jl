@@ -4,9 +4,7 @@ using Graphs
 using MetaGraphsNext
 using Test  #src
 
-# ## Creating a `MetaGraph`
-
-# ### Easiest constructor
+# ## Creating an empty `MetaGraph`
 
 # We provide a convenience constructor for creating empty graphs, which looks as follows:
 
@@ -19,36 +17,6 @@ colors = MetaGraph(
 )
 
 # The `label_type` argument defines how vertices will be referred to, it can be anything but an integer type (to avoid confusion with codes, see below). The `vertex_data_type` and `edge_data_type` type determine what kind of data will be associated with each vertex and edge. Finally, `graph_data` can contain an arbitrary object associated with the graph as a whole.
-
-# ### Type stability
-
-# However, since this constructor receives types as keyword arguments, it is type-unstable. Casual users may not care, but if your goal is performance, you might need one of the following alternatives: either wrap the constructor in a function...
-
-function colors_constructor()
-    return MetaGraph(
-        Graph();
-        label_type=Symbol,
-        vertex_data_type=NTuple{3,Int},
-        edge_data_type=Symbol,
-        graph_data="additive colors",
-    )
-end
-
-colors_constructor()
-
-@test @inferred colors_constructor() == colors  #src
-
-# ... or switch to positional arguments (be careful with the order!)
-
-MetaGraph(Graph(), Symbol, NTuple{3,Int}, Symbol, "additive colors")
-
-@test (@inferred MetaGraph(  #src
-    Graph(),  #src
-    Symbol,  #src
-    NTuple{3,Int},  #src
-    Symbol,  #src
-    "additive colors",  #src
-) == colors)  #src
 
 # ## Modifying the graph
 
@@ -70,9 +38,9 @@ colors[:red, :green] = :yellow;
 colors[:red, :blue] = :magenta;
 colors[:green, :blue] = :cyan;
 
-# ### Creating a non-empty graph
+# ## Creating a non-empty `MetaGraph`
 
-# There is a final constructor we haven't mentioned, which allows you to build and fill the `MetaGraph` in one fell swoop. Here's how it works:
+# There is an alternative constructor which allows you to build and fill the graph in one fell swoop. Here's how it works:
 
 graph = Graph(Edge.([(1, 2), (1, 3), (2, 3)]))
 vertices_description = [:red => (255, 0, 0), :green => (0, 255, 0), :blue => (0, 0, 255)]
@@ -82,13 +50,6 @@ edges_description = [
 
 colors2 = MetaGraph(graph, vertices_description, edges_description, "additive colors")
 colors2 == colors
-
-@test (@inferred MetaGraph(  #src
-    graph,  #src
-    vertices_description,  #src
-    edges_description,  #src
-    "additive colors",  #src
-) == colors)  #src
 
 # ## Accessing graph properties
 

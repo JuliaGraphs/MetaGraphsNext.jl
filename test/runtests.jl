@@ -26,5 +26,8 @@ using Test
         @testset verbose = true "Files" begin
             include(joinpath("tutorial", "3_files.jl"))
         end
+        @testset verbose = true "Type stability" begin
+            include(joinpath("tutorial", "4_type_stability.jl"))
+        end
     end
 end

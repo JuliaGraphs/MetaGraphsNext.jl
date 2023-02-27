@@ -17,7 +17,8 @@ julia = "1.6"
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
+MetaGraphs = "626554b9-1ddb-594c-aa3c-2596fe9399a5"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Aqua", "Documenter", "JuliaFormatter", "Test"]
+test = ["Aqua", "Documenter", "JuliaFormatter", "MetaGraphs", "Test"]

@@ -2,4 +2,5 @@
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
+MetaGraphs = "626554b9-1ddb-594c-aa3c-2596fe9399a5"
 MetaGraphsNext = "fa8bd995-216d-47f1-8a91-f3b68fbeb377"

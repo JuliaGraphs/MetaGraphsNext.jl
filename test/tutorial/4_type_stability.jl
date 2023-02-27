@@ -63,7 +63,7 @@ edges_description = [
 ]
 MetaGraph(cycle_graph(3), vertices_description, edges_description, "additive colors")
 
-@test (@inferred zero(
+@test (@inferred zero(  #src
     MetaGraph(  #src
         cycle_graph(3),  #src
         vertices_description,  #src

@@ -69,7 +69,7 @@ MetaGraph(cycle_graph(3), vertices_description, edges_description, "additive col
         vertices_description,  #src
         edges_description,  #src
         "additive colors",  #src
-    )
+    ),  #src
 ) == colors)  #src
 
 # Once Julia can infer the full type of the `MetaGraph`, accessing vertex and edge metadata also becomes type-stable.

@@ -67,7 +67,13 @@ function MetaGraph(
     weight_function=edge_data -> 1.0,
     default_weight=1.0,
 ) where {Code,Label,VertexData,EdgeData}
-    @assert nv(graph) == 0
+    if nv(graph) != 0
+        throw(
+            ArgumentError(
+                "For this MetaGraph constructor, the underlying graph should be empty."
+            ),
+        )
+    end
     if Label <: Integer
         @warn "Constructing a MetaGraph with integer labels is not advised."
     end
@@ -148,7 +154,13 @@ function MetaGraph(
     default_weight=1.0,
 ) where {Code,Label,VertexData,EdgeData}
     # Construct vertex data
-    @assert length(vertices_description) == nv(graph)
+    if length(vertices_description) != nv(graph)
+        throw(
+            ArgumentError(
+                "For this MetaGraph constructor, the description of vertices should contain as many vertices as the underlying graph.",
+            ),
+        )
+    end
     vertex_labels = Dict{Code,Label}()
     vertex_properties = Dict{Label,Tuple{Code,VertexData}}()
     for (code, (label, data)) in enumerate(vertices_description)
@@ -156,11 +168,23 @@ function MetaGraph(
         vertex_properties[label] = (code, data)
     end
     # Construct edge data
-    @assert length(edges_description) == ne(graph)
+    if length(edges_description) != ne(graph)
+        throw(
+            ArgumentError(
+                "For this MetaGraph constructor, the description of edges should contain as many edges as the underlying graph.",
+            ),
+        )
+    end
     for ((label_1, label_2), _) in edges_description
         code_1 = vertex_properties[label_1][1]
         code_2 = vertex_properties[label_2][1]
-        @assert has_edge(graph, code_1, code_2)
+        if !has_edge(graph, code_1, code_2)
+            throw(
+                ArgumentError(
+                    "For this MetaGraph constructor, each edge in the edge description should exist in the underlying graph.",
+                ),
+            )
+        end
     end
     edge_data = Dict{Tuple{Label,Label},EdgeData}()
     for ((label_1, label_2), data) in edges_description

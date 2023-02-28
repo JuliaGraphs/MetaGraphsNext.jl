@@ -127,7 +127,7 @@ function Graphs.add_vertex!(meta_graph::MetaGraph, label, data)
     end
     nvnum = nv(meta_graph.graph)
     add_vertex!(meta_graph.graph)
-    added = nvnum != nv(meta_graph.graph)
+    added = nvnum + 1 == nv(meta_graph.graph)
     if added
         code = nv(meta_graph)
         meta_graph.vertex_labels[code] = label

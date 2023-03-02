@@ -5,7 +5,8 @@ using Graphs
 using SimpleTraits
 
 export MetaGraph
-export label_for, code_for, set_data!
+export label_for, code_for, labels
+export set_data!
 export weighttype, default_weight, get_weight_function
 export MGFormat, DOTFormat
 

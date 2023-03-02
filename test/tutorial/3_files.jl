@@ -9,7 +9,7 @@ using Test  #src
 # MetaGraphsNext.jl overloads `Graphs.savegraph` to write graphs in a custom format called `MGFormat`, which is based on JLD2.
 # It is not very readable, but it does give the right result when we load it back.
 
-example = MetaGraph(Graph());
+example = MetaGraph(Graph(), Symbol);
 
 example2 = mktemp() do file, io
     savegraph(file, example)
@@ -23,7 +23,7 @@ example2 == example
 
 # MetaGraphsNext.jl also support the more standard DOT encoding, which is used as follows.
 
-simple = MetaGraph(Graph());
+simple = MetaGraph(Graph(), Symbol);
 
 simple[:a] = nothing;
 simple[:b] = nothing;
@@ -41,8 +41,9 @@ print(simple_str)  #md
 
 complicated = MetaGraph(
     DiGraph();
-    VertexData=Dict{Symbol,Int},
-    EdgeData=Dict{Symbol,Int},
+    label_type=Symbol,
+    vertex_data_type=Dict{Symbol,Int},
+    edge_data_type=Dict{Symbol,Int},
     graph_data=(tagged=true,),
 );
 

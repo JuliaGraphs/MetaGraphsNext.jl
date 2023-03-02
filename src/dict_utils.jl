@@ -120,7 +120,3 @@ function _copy_props!(old_meta_graph::MetaGraph, new_meta_graph::MetaGraph, code
     end
     return nothing
 end
-
-# TODO - It would be nice to be able to apply a function to properties.
-# Not sure how this might work, but if the property is a vector,
-# a generic way to append to it would be a good thing.

@@ -6,6 +6,8 @@ using MetaGraphsNext
 using SimpleTraits
 using Test
 
+DocMeta.setdocmeta!(MetaGraphsNext, :DocTestSetup, :(using MetaGraphsNext); recursive=true)
+
 @testset verbose = true "MetaGraphsNext" begin
     @testset verbose = true "Code quality (Aqua.jl)" begin
         Aqua.test_all(MetaGraphsNext; ambiguities=false)

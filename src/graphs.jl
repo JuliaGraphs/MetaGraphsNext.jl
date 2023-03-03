@@ -88,8 +88,10 @@ end
     add_vertex!(meta_graph, label, data)
 
 Add a vertex to MetaGraph `meta_graph` with label `label` having metadata `data`.
+If the `VertexData` type of `meta_graph` is `Nothing`, `data` can be omitted.
 
-Return true if the vertex has been added, false incase the label already exists or vertex was not added.
+Return true if the vertex has been added, false incase the label already exists or vertex
+was not added.
 """
 function Graphs.add_vertex!(meta_graph::MetaGraph, label, data)
     if haskey(meta_graph, label)
@@ -106,10 +108,15 @@ function Graphs.add_vertex!(meta_graph::MetaGraph, label, data)
     return added
 end
 
+function Graphs.add_vertex!(meta_graph::MetaGraph{<:Any, <:Any, <:Any, Nothing}, label)
+    Graphs.add_vertex!(meta_graph, label, nothing)
+end
+
 """
     add_edge!(meta_graph, label_1, label_2, data)
 
 Add an edge `(label_1, label_2)` to MetaGraph `meta_graph` with metadata `data`.
+If the `EdgeData` type of `meta_graph` is `Nothing`, `data` can be omitted.
 
 Return `true` if the edge has been added, `false` otherwise.
 """
@@ -121,6 +128,12 @@ function Graphs.add_edge!(meta_graph::MetaGraph, label_1, label_2, data)
     end
     return added
 end
+
+function Graphs.add_edge!(meta_graph::MetaGraph{<:Any, <:Any, <:Any, <:Any, Nothing},
+                          label_1, label_2)
+    Graphs.add_edge!(meta_graph, label_1, label_2, nothing)
+end
+
 
 ## Remove vertex
 

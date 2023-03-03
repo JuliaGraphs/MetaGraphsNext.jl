@@ -107,8 +107,8 @@ function Graphs.add_vertex!(meta_graph::MetaGraph, label, data)
     return added
 end
 
-function Graphs.add_vertex!(meta_graph::MetaGraph{<:Any, <:Any, <:Any, Nothing}, label)
-    Graphs.add_vertex!(meta_graph, label, nothing)
+function Graphs.add_vertex!(meta_graph::MetaGraph{<:Any,<:Any,<:Any,Nothing}, label)
+    return Graphs.add_vertex!(meta_graph, label, nothing)
 end
 
 """
@@ -128,9 +128,10 @@ function Graphs.add_edge!(meta_graph::MetaGraph, label_1, label_2, data)
     return added
 end
 
-function Graphs.add_edge!(meta_graph::MetaGraph{<:Any, <:Any, <:Any, <:Any, Nothing},
-                          label_1, label_2)
-    Graphs.add_edge!(meta_graph, label_1, label_2, nothing)
+function Graphs.add_edge!(
+    meta_graph::MetaGraph{<:Any,<:Any,<:Any,<:Any,Nothing}, label_1, label_2
+)
+    return Graphs.add_edge!(meta_graph, label_1, label_2, nothing)
 end
 
 ## Remove vertex

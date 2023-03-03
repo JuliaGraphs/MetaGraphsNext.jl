@@ -32,4 +32,8 @@ DocMeta.setdocmeta!(MetaGraphsNext, :DocTestSetup, :(using MetaGraphsNext); recu
             include(joinpath("tutorial", "4_type_stability.jl"))
         end
     end
+
+    @testset verbose = true "Miscellaneous" begin
+        include("misc.jl")
+    end
 end

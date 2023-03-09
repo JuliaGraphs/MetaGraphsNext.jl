@@ -102,28 +102,18 @@ label_for(colors, 1)
 label_for(colors, 3)
 @test label_for(colors, 3) == :blue  #src
 
-# Test coherence  #src
+# ## Listing labels
 
-for label in labels(colors)  #src
-    @test label_for(colors, code_for(colors, label)) == label  #src
-end  #src
+# The functions `labels`, `edge_labels`, `(in/out)neighbor_labels` iterate through labels the same way that `vertices`, `edges` and `(in/out)neighbors` iterate through codes.
 
-for code in vertices(colors)  #src
-    @test code_for(colors, label_for(colors, code)) == code  #src
-end  #src
-
-# Delete vertex in a copy and test again  #src
-
-colors_copy = copy(colors)  #src
-rem_vertex!(colors_copy, 1)  #src
-
-for label in labels(colors_copy)  #src
-    @test label_for(colors_copy, code_for(colors_copy, label)) == label  #src
-end  #src
-
-for code in vertices(colors_copy)  #src
-    @test code_for(colors_copy, label_for(colors_copy, code)) == code  #src
-end  #src
+collect(labels(colors))
+@test collect(labels(colors)) == [:red, :green, :blue]  #src
+#-
+collect(edge_labels(colors))
+@test collect(edge_labels(colors)) == [(:red, :green), (:red, :blue), (:green, :blue)]  #src
+#-
+collect(neighbor_labels(colors, :red))
+@test collect(neighbor_labels(colors, :red)) == [:green, :blue]  #src
 
 # ## Handling weights
 

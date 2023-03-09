@@ -251,12 +251,3 @@ This can be useful to interpret the results of methods inherited from `Graphs`. 
 function label_for(meta_graph::MetaGraph, code::Integer)
     return meta_graph.vertex_labels[code]
 end
-
-"""
-    labels(meta_graph::MetaGraph)
-
-List all vertex labels, *not necessarily in the same order as the codes!*
-"""
-function labels(meta_graph::MetaGraph)
-    return values(meta_graph.vertex_labels)
-end

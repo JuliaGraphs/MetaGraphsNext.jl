@@ -47,6 +47,59 @@ function Base.issubset(meta_graph::MetaGraph, h::MetaGraph)
     return issubset(meta_graph.graph, h.graph)
 end
 
+## List labels
+
+"""
+    labels(meta_graph)
+
+Iterate through all vertex labels, in the same order as the codes obtained by `vertices(meta_graph)`.
+"""
+function labels(meta_graph::MetaGraph)
+    return (label_for(meta_graph, code) for code in vertices(meta_graph))
+end
+
+"""
+    edge_labels(meta_graph)
+
+Iterate through all tuples of edge labels, in the same order as the tuples of codes obtained by `edges(meta_graph)`.
+"""
+function edge_labels(meta_graph::MetaGraph)
+    return (
+        (label_for(meta_graph, src(ed)), label_for(meta_graph, dst(ed))) for
+        ed in edges(meta_graph)
+    )
+end
+
+"""
+    neighbor_labels(meta_graph, label)
+
+Iterate through all labels of neighbors of the vertex `code` with label `label`, in the same order as the codes obtained by `neighbors(meta_graph, code)`.
+"""
+function neighbor_labels(meta_graph::MetaGraph, label)
+    code_1 = code_for(meta_graph, label)
+    return (label_for(meta_graph, code_2) for code_2 in neighbors(meta_graph, code_1))
+end
+
+"""
+    outneighbor_labels(meta_graph, label)
+
+Iterate through all labels of outneighbors of the vertex `code` with label `label`, in the same order as the codes obtained by `outneighbors(meta_graph, code)`.
+"""
+function outneighbor_labels(meta_graph::MetaGraph, label)
+    code_1 = code_for(meta_graph, label)
+    return (label_for(meta_graph, code_2) for code_2 in outneighbors(meta_graph, code_1))
+end
+
+"""
+    inneighbor_labels(meta_graph, label)
+
+Iterate through all labels of inneighbors of the vertex `code` with label `label`, in the same order as the codes obtained by `inneighbors(meta_graph, code)`.
+"""
+function inneighbor_labels(meta_graph::MetaGraph, label)
+    code_2 = code_for(meta_graph, label)
+    return (label_for(meta_graph, code_1) for code_1 in inneighbors(meta_graph, code_2))
+end
+
 ## Set vertex and edge data
 
 """

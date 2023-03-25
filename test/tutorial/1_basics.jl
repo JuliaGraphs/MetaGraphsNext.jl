@@ -32,8 +32,8 @@ colors[:blue] = (0, 0, 255);
 
 # Note that you cannot use labels or metadata that is incoherent with the types you specified at construction.
 
-@test_throws MethodError colors[:red] = "(255, 0, 0)"
-@test_throws MethodError colors["red"] = (255, 0, 0)
+@test_throws MethodError colors[:red] = "(255, 0, 0)"  #src
+@test_throws MethodError colors["red"] = (255, 0, 0)  #src
 
 # ### Edges
 

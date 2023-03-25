@@ -149,15 +149,18 @@ function Graphs.add_vertex!(meta_graph::MetaGraph, label, data)
     if haskey(meta_graph, label)
         return false
     end
-    nvnum = nv(meta_graph.graph)
+    nv_prev = nv(meta_graph.graph)
+    code = nv_prev + 1
+    meta_graph.vertex_labels[code] = label
+    meta_graph.vertex_properties[label] = (code, data)
     add_vertex!(meta_graph.graph)
-    added = nvnum + 1 == nv(meta_graph.graph)
-    if added
-        code = nv(meta_graph)
-        meta_graph.vertex_labels[code] = label
-        meta_graph.vertex_properties[label] = (code, data)
+    if nv(meta_graph.graph) == nv_prev  # undo
+        delete!(meta_graph.vertex_labels, code)
+        delete!(meta_graph.vertex_properties, label)
+        return false
+    else
+        return true
     end
-    return added
 end
 
 function Graphs.add_vertex!(meta_graph::MetaGraph{<:Any,<:Any,<:Any,Nothing}, label)
@@ -173,12 +176,20 @@ If the `EdgeData` type of `meta_graph` is `Nothing`, `data` can be omitted.
 Return `true` if the edge has been added, `false` otherwise.
 """
 function Graphs.add_edge!(meta_graph::MetaGraph, label_1, label_2, data)
-    code_1, code_2 = code_for(meta_graph, label_1), code_for(meta_graph, label_2)
-    added = add_edge!(meta_graph.graph, code_1, code_2)
-    if added
-        meta_graph.edge_data[arrange(meta_graph, label_1, label_2, code_1, code_2)] = data
+    if !haskey(meta_graph, label_1) || !haskey(meta_graph, label_2)
+        return false
     end
-    return added
+    code_1, code_2 = code_for(meta_graph, label_1), code_for(meta_graph, label_2)
+    label_tup = arrange(meta_graph, label_1, label_2, code_1, code_2)
+    meta_graph.edge_data[label_tup] = data
+    ne_prev = ne(meta_graph.graph)
+    add_edge!(meta_graph.graph, code_1, code_2)
+    if ne(meta_graph.graph) == ne_prev  # undo
+        delete!(meta_graph.edge_data, label_tup)
+        return false
+    else
+        return true
+    end
 end
 
 function Graphs.add_edge!(

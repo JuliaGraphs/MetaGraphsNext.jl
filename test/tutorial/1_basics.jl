@@ -30,6 +30,11 @@ colors[:red] = (255, 0, 0);
 colors[:green] = (0, 255, 0);
 colors[:blue] = (0, 0, 255);
 
+# Note that you cannot use labels or metadata that is incoherent with the types you specified at construction.
+
+@test_throws MethodError colors[:red] = "(255, 0, 0)"  #src
+@test_throws MethodError colors["red"] = (255, 0, 0)  #src
+
 # ### Edges
 
 # Use `setindex!` with two keys to add a new edge between the given labels and containing the given metadata. Beware that this time, nonexistent labels will throw an error.

@@ -2,7 +2,7 @@
 
 using Graphs
 using MetaGraphsNext
-using SimpleTraits
+using SimpleTraits  #src
 using Test  #src
 
 # `MetaGraph`s inherit many methods from Graphs.jl. In general, inherited methods refer to vertices by codes, not labels, for compatibility with the `AbstractGraph` interface.

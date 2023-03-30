@@ -13,7 +13,7 @@
 A graph type with custom vertex labels containing vertex-, edge- and graph-level metadata.
 
 Vertex labels have type `Label`, while vertex (resp. edge, resp. graph) metadata has type `VertexData` (resp. `EdgeData`, resp. `GraphData`).
-It is recommended not to set `Label` to an integer type, so as to avoid confusion between vertex labels and vertex codes (which have type `Code<:Integer`).
+It is recommended not to set `Label` to an integer type, so as to avoid confusion between vertex labels (which do not change as the graph evolves) and vertex codes (which have type `Code<:Integer` and can change as the graph evolves).
 
 # Fields
 - `graph::Graph`: underlying, data-less graph with vertex codes of type `Code`
@@ -73,9 +73,6 @@ function MetaGraph(
                 "For this MetaGraph constructor, the underlying graph should be empty."
             ),
         )
-    end
-    if Label <: Integer
-        @warn "Constructing a MetaGraph with integer labels is not advised."
     end
     vertex_labels = Dict{Code,Label}()
     vertex_properties = Dict{Label,Tuple{Code,VertexData}}()

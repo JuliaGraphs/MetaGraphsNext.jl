@@ -3,7 +3,6 @@ using Documenter
 using Graphs
 using JuliaFormatter
 using MetaGraphsNext
-using SimpleTraits
 using Test
 
 DocMeta.setdocmeta!(MetaGraphsNext, :DocTestSetup, :(using MetaGraphsNext); recursive=true)
@@ -30,6 +29,9 @@ DocMeta.setdocmeta!(MetaGraphsNext, :DocTestSetup, :(using MetaGraphsNext); recu
         end
         @testset verbose = true "Type stability" begin
             include(joinpath("tutorial", "4_type_stability.jl"))
+        end
+        @testset verbose = true "Benchmark" begin
+            include(joinpath("tutorial", "5_benchmark.jl"))
         end
     end
 

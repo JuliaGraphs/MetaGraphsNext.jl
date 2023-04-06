@@ -16,7 +16,9 @@ colors = MetaGraph(
     graph_data="additive colors",  # tag for the whole graph
 )
 
-# The `label_type` argument defines how vertices will be referred to, it can be anything but an integer type (to avoid confusion with codes, see below). The `vertex_data_type` and `edge_data_type` type determine what kind of data will be associated with each vertex and edge. Finally, `graph_data` can contain an arbitrary object associated with the graph as a whole.
+# The `label_type` argument defines how vertices will be referred to, it can be anything you want (although integer types are generally discouraged, to avoid confusion with the vertex codes used by Graphs.jl). The `vertex_data_type` and `edge_data_type` type determine what kind of data will be associated with each vertex and edge. Finally, `graph_data` can contain an arbitrary object associated with the graph as a whole.
+
+# If you don't care about labels at all, using the integer vertex codes as labels may be reasonable. Just keep in mind that labels do not change with vertex deletion, whereas vertex codes get decreased, so the coherence will be broken.
 
 # ## Modifying the graph
 

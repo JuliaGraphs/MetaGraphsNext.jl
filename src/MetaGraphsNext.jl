@@ -5,22 +5,16 @@ A package for graphs with vertex labels and metadata in Julia. Its main export i
 """
 module MetaGraphsNext
 
-using JLD2
+using Bijections: Bijection, inverse
 using Graphs
-using SimpleTraits
 
+export AbstractMetaGraph
+export @labels
+export get_graph, get_label, get_vertex
+export get_data, set_data!
 export MetaGraph
-export label_for, code_for
-export labels, edge_labels, neighbor_labels, outneighbor_labels, inneighbor_labels
-export set_data!
-export weighttype, default_weight, get_weight_function
-export MGFormat, DOTFormat
 
+include("abstractmetagraph.jl")
 include("metagraph.jl")
-include("directedness.jl")
-include("graphs.jl")
-include("dict_utils.jl")
-include("weights.jl")
-include("persistence.jl")
 
 end # module

@@ -1,20 +1,30 @@
 """
     MetaGraphsNext
 
-A package for graphs with vertex labels and metadata in Julia. Its main export is the [`MetaGraph`](@ref) type.
+A Julia package for graphs with vertex labels and vertex or edge metadata.
 """
 module MetaGraphsNext
 
 using Bijections: Bijection, inverse
-using Graphs
+using Graphs: Graphs, AbstractGraph
+using Graphs: eltype, edgetype, is_directed
+using Graphs: nv, ne, vertices, edges, has_vertex, has_edge, add_vertex!, add_edge!
+using Graphs: inneighbors, outneighbors
 
-export AbstractMetaGraph
-export @labels
-export get_graph, get_label, get_vertex
-export get_data, set_data!
-export MetaGraph
+export AbstractMetaGraph, get_graph, get_data, set_data!
+export AbstractUnlabeledMetaGraph
+export AbstractLabeledMetaGraph, @labels, has_label, get_vertex, get_label, set_label
 
-include("abstractmetagraph.jl")
-include("metagraph.jl")
+export UnlabeledMetaGraph
+export LabeledMetaGraph
+
+include("utils.jl")
+
+include("abstract/abstractmetagraph.jl")
+include("abstract/abstractunlabeledmetagraph.jl")
+include("abstract/abstractlabeledmetagraph.jl")
+
+include("concrete/unlabeledmetagraph.jl")
+include("concrete/labeledmetagraph.jl")
 
 end # module

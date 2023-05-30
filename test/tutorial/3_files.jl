@@ -81,11 +81,10 @@ with_spaces_str = mktemp() do file, io
 end
 
 print(with_spaces_str)
-@test with_spaces_str ==
-"""
-digraph G {
-    "a b" [label = "A B"]
-    "c d" [label = "C D"]
-    "a b" -> "c d" [label = "A B to C D"]
-}
-"""
+@test with_spaces_str == """
+                         digraph G {
+                             "a b" [label = "A B"]
+                             "c d" [label = "C D"]
+                             "a b" -> "c d" [label = "A B to C D"]
+                         }
+                         """

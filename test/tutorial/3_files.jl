@@ -75,7 +75,7 @@ digraph G {
 }
 """
 
-@test complicated_str == complicated_str_true
+@test complicated_str == complicated_str_true  #src
 
 #-
 

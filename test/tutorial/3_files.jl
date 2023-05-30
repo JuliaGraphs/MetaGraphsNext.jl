@@ -34,8 +34,16 @@ simple_str = mktemp() do file, io
     read(file, String)
 end
 
-print(simple_str)  #md
-@test simple_str == "graph T {\n    a\n    b\n    a -- b\n}\n"  #src
+simple_str_true = """
+graph T {
+    "a"
+    "b"
+    "a" -- "b"
+}
+"""
+
+simple_str == simple_str_true
+@test simple_str == simple_str_true  #src
 
 #-
 
@@ -58,6 +66,44 @@ complicated_str = mktemp() do file, io
     read(file, String)
 end
 
-print(complicated_str)  #md
-@test complicated_str ==  #src
-    "digraph G {\n    tagged = true\n    a [code_1 = 1, code_2 = 2]\n    b [code = 2]\n    a -> b [code = 12]\n}\n"  #src
+complicated_str_true = """
+digraph G {
+    tagged = true
+    "a" [code_1 = 1, code_2 = 2]
+    "b" [code = 2]
+    "a" -> "b" [code = 12]
+}
+"""
+
+@test complicated_str == complicated_str_true  #src
+
+#-
+
+with_spaces = MetaGraph(
+    DiGraph();
+    label_type=String,
+    vertex_data_type=Dict{Symbol,String},
+    edge_data_type=Dict{Symbol,String},
+)
+
+with_spaces["a b"] = Dict(:label => "A B")
+
+with_spaces["c d"] = Dict(:label => "C D")
+
+with_spaces["a b", "c d"] = Dict(:label => "A B to C D")
+
+with_spaces_str = mktemp() do file, io
+    savegraph(file, with_spaces, DOTFormat())
+    read(file, String)
+end
+
+with_spaces_str_true = """
+digraph G {
+    "a b" [label = "A B"]
+    "c d" [label = "C D"]
+    "a b" -> "c d" [label = "A B to C D"]
+}
+"""
+
+with_spaces_str == with_spaces_str_true
+@test with_spaces_str == with_spaces_str_true  #src

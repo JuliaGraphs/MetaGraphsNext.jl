@@ -201,11 +201,11 @@ end
 ## Base extensions
 
 function Base.show(
-    io::IO, meta_graph::MetaGraph{<:Any,<:Any,Label,VertexData,EdgeData}
-) where {Label,VertexData,EdgeData}
+    io::IO, meta_graph::MetaGraph{<:Any,BaseGraph,Label,VertexData,EdgeData}
+) where {BaseGraph,Label,VertexData,EdgeData}
     print(
         io,
-        "Meta graph based on a $(meta_graph.graph) with vertex labels of type $Label, vertex metadata of type $VertexData, edge metadata of type $EdgeData, graph metadata given by $(repr(meta_graph.graph_data)), and default weight $(meta_graph.default_weight)",
+        "Meta graph based on a $(BaseGraph) with vertex labels of type $Label, vertex metadata of type $VertexData, edge metadata of type $EdgeData, graph metadata given by $(repr(meta_graph.graph_data)), and default weight $(meta_graph.default_weight)",
     )
     return nothing
 end

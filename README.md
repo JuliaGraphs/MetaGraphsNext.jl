@@ -6,4 +6,4 @@
 
 Welcome to MetaGraphsNext.jl, a type-stable replacement for [MetaGraphs.jl](https://github.com/JuliaGraphs/MetaGraphs.jl). It allows you to create graphs with vertex and edge metadata, on which you can unleash the full power of the [Graphs.jl](https://github.com/JuliaGraphs/Graphs.jl) ecosystem.
 
-Take a look at the [documentation](https://juliagraphs.org/MetaGraphsNext.jl/dev/) to learn more!
+Take a look at the [documentation](https://juliagraphs.org/MetaGraphsNext.jl/) to learn more!

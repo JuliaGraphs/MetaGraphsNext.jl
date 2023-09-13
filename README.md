@@ -1,6 +1,7 @@
 # MetaGraphsNext.jl
 
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://JuliaGraphs.github.io/MetaGraphsNext.jl/dev)
+[![Stable docs](https://img.shields.io/badge/docs-stable-blue.svg)](https://JuliaGraphs.github.io/MetaGraphsNext.jl/)
+[![Dev docs](https://img.shields.io/badge/docs-dev-blue.svg)](https://JuliaGraphs.github.io/MetaGraphsNext.jl/dev)
 [![Build Status](https://github.com/JuliaGraphs/MetaGraphsNext.jl/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/JuliaGraphs/MetaGraphsNext.jl/actions/workflows/test.yml?query=branch%3Amaster)
 [![CodeCov](https://codecov.io/gh/JuliaGraphs/MetaGraphsNext.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaGraphs/MetaGraphsNext.jl)
 

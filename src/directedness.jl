@@ -12,6 +12,8 @@ end
     arrange(graph, label_1, label_2)
 
 Sort two vertex labels in a default order (useful to uniquely express undirected edges).
+For undirected graphs, the default order is based on the labels themselves
+to be robust to vertex re-coding, so the labels need to support `<`.
 """
 function arrange end
 
@@ -24,7 +26,7 @@ end
 @traitfn function arrange(
     ::MG, label_1, label_2, code_1, code_2
 ) where {MG <: MetaGraph; !IsDirected{MG}}
-    if code_1 < code_2
+    if label_1 < label_2
         (label_1, label_2)
     else
         (label_2, label_1)

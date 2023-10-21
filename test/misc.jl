@@ -8,6 +8,9 @@ function test_labels_codes(mg::MetaGraph)
     for (label_1, label_2) in edge_labels(mg)
         @test has_edge(mg, code_for(mg, label_1), code_for(mg, label_2))
     end
+    for e in edge_labels(mg) # arrange() consistent with mg.edge_data
+        @test_logs mg[e...]  # no log, no error
+    end
     for label_1 in labels(mg)
         for label_2 in outneighbor_labels(mg, label_1)
             @test has_edge(mg, code_for(mg, label_1), code_for(mg, label_2))
@@ -24,17 +27,22 @@ end
         :red => (255, 0, 0), :green => (0, 255, 0), :blue => (0, 0, 255)
     ]
     edges_description = [
-        (:red, :green) => :yellow, (:red, :blue) => :magenta, (:green, :blue) => :cyan
+        (:green, :red) => :yellow, (:blue, :red) => :magenta, (:blue, :green) => :cyan
     ]
 
     colors = MetaGraph(graph, vertices_description, edges_description, "additive colors")
     test_labels_codes(colors)
 
+    # attempt to add an existing edge: non-standard order, different data
+    @test !add_edge!(colors, :green, :blue, :teal)
+    @test length(colors.edge_data) == ne(colors)
+    @test colors[:blue, :green] == :cyan
+
     # Delete vertex in a copy and test again
 
     colors_copy = copy(colors)
     rem_vertex!(colors_copy, 1)
-    test_labels_codes(colors)
+    test_labels_codes(colors_copy)
 end
 
 @testset verbose = true "Short-form add_vertex!/add_edge!" begin

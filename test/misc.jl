@@ -53,6 +53,7 @@ end
     @test add_vertex!(mg, :A)
     @test add_vertex!(mg, :B)
     @test add_edge!(mg, :A, :B)
+    @test !add_edge!(mg, :A, :C)
 
     # long-form
     mg2 = MetaGraph(

@@ -181,7 +181,7 @@ function Graphs.add_edge!(meta_graph::MetaGraph, label_1, label_2, data)
         return false
     end
     code_1, code_2 = code_for(meta_graph, label_1), code_for(meta_graph, label_2)
-    label_tup = arrange(meta_graph, label_1, label_2, code_1, code_2)
+    label_tup = arrange(meta_graph, label_1, label_2)
     if has_edge(meta_graph.graph, code_1, code_2)
         return false
     end
@@ -210,16 +210,10 @@ function _rem_vertex!(meta_graph::MetaGraph, label, code)
     edge_data = meta_graph.edge_data
     last_vertex_code = nv(meta_graph)
     for out_neighbor in outneighbors(meta_graph, code)
-        delete!(
-            edge_data,
-            arrange(meta_graph, label, vertex_labels[out_neighbor], code, out_neighbor),
-        )
+        delete!(edge_data, arrange(meta_graph, label, vertex_labels[out_neighbor]))
     end
     for in_neighbor in inneighbors(meta_graph, code)
-        delete!(
-            edge_data,
-            arrange(meta_graph, vertex_labels[in_neighbor], label, in_neighbor, code),
-        )
+        delete!(edge_data, arrange(meta_graph, vertex_labels[in_neighbor], label))
     end
     removed = rem_vertex!(meta_graph.graph, code)
     if removed
@@ -248,9 +242,9 @@ end
 
 function Graphs.rem_edge!(meta_graph::MetaGraph, code_1::Integer, code_2::Integer)
     removed = rem_edge!(meta_graph.graph, code_1, code_2)
-    if removed
+    if removed # assume that vertex codes were not modified by edge removal
         label_1, label_2 = label_for(meta_graph, code_1), label_for(meta_graph, code_2)
-        delete!(meta_graph.edge_data, arrange(meta_graph, label_1, label_2, code_1, code_2))
+        delete!(meta_graph.edge_data, arrange(meta_graph, label_1, label_2))
     end
     return removed
 end

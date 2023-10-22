@@ -8,9 +8,11 @@ function test_labels_codes(mg::MetaGraph)
     for (label_1, label_2) in edge_labels(mg)
         @test has_edge(mg, code_for(mg, label_1), code_for(mg, label_2))
     end
-    for e in edge_labels(mg) # arrange() consistent with mg.edge_data
+    # below: arrange(edges) ⊆ keys of mg.edge_data. then = because same length
+    for e in edge_labels(mg)
         @test_logs mg[e...]  # no log, no error
     end
+    @test length(keys(mg.edge_data)) == ne(mg)
     for label_1 in labels(mg)
         for label_2 in outneighbor_labels(mg, label_1)
             @test has_edge(mg, code_for(mg, label_1), code_for(mg, label_2))
@@ -43,6 +45,8 @@ end
     colors_copy = copy(colors)
     rem_vertex!(colors_copy, 1)
     test_labels_codes(colors_copy)
+    @test ne(colors_copy) == 1
+    @test colors_copy[:blue, :green] == :cyan
 end
 
 @testset verbose = true "Short-form add_vertex!/add_edge!" begin

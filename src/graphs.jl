@@ -174,7 +174,7 @@ Add an edge `(label_1, label_2)` to MetaGraph `meta_graph` with metadata `data`.
 If the `EdgeData` type of `meta_graph` is `Nothing`, `data` can be omitted.
 
 Return `true` if the edge has been added, `false` otherwise.
-If `(label_1, label_2)` already existed, its data is updated to `data`.
+If `(label_1, label_2)` already existed, its data is updated to `data` and `false` is returned nonetheless.
 """
 function Graphs.add_edge!(meta_graph::MetaGraph, label_1, label_2, data)
     if !haskey(meta_graph, label_1) || !haskey(meta_graph, label_2)

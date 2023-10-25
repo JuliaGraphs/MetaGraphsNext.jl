@@ -38,7 +38,7 @@ end
     # attempt to add an existing edge: non-standard order, different data
     @test !add_edge!(colors, :green, :blue, :teal)
     @test length(colors.edge_data) == ne(colors)
-    @test colors[:blue, :green] == :cyan
+    @test colors[:blue, :green] == :teal
 
     # Delete vertex in a copy and test again
 
@@ -46,7 +46,7 @@ end
     rem_vertex!(colors_copy, 1)
     test_labels_codes(colors_copy)
     @test ne(colors_copy) == 1
-    @test colors_copy[:blue, :green] == :cyan
+    @test colors_copy[:blue, :green] == :teal
 end
 
 @testset verbose = true "Short-form add_vertex!/add_edge!" begin

@@ -114,7 +114,7 @@ function _copy_props!(old_meta_graph::MetaGraph, new_meta_graph::MetaGraph, code
         code_1, code_2 = Tuple(new_edge)
         label_1 = vertex_labels[code_1]
         label_2 = vertex_labels[code_2]
-        new_meta_graph.edge_data[arrange(new_meta_graph, label_1, label_2, code_1, code_2)] = old_meta_graph.edge_data[arrange(
+        new_meta_graph.edge_data[arrange(new_meta_graph, label_1, label_2)] = old_meta_graph.edge_data[arrange(
             old_meta_graph, label_1, label_2
         )]
     end

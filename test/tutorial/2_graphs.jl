@@ -35,7 +35,8 @@ cities[:Paris, :Berlin] = 878;
 is_directed(cities)
 @test @inferred !is_directed(cities)  #src
 @test !istrait(IsDirected{typeof(cities)})  #src
-@test MetaGraphsNext.arrange(cities, :London, :Paris) == (:Paris, :London)  #src
+@test MetaGraphsNext.arrange(cities, :London, :Paris) == (:London, :Paris)  #src
+@test MetaGraphsNext.arrange(cities, :Paris, :London) == (:London, :Paris)  #src
 #-
 eltype(cities)
 @test @inferred eltype(cities) == Int  #src

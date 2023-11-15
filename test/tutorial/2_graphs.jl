@@ -164,8 +164,8 @@ nv(rock_paper_scissors_subtree)
 # Checking that a graph is a subset of another is not supported yet. For example, an induced subgraph may appear as not a subset of the original graph, if vertex codes were modified.
 
 issubset(rock_paper_scissors_subtree, rock_paper_scissors)
-@test issubset(rock_paper_scissors_subtree, rock_paper_scissors) broken = true  #src
+@test_broken issubset(rock_paper_scissors_subtree, rock_paper_scissors)  #src
 #-
 rock_scissors, _ = induced_subgraph(rock_paper_scissors, [1, 3])
 issubset(rock_scissors, rock_paper_scissors)
-@test issubset(rock_scissors, rock_paper_scissors) broken = true  #src
+@test_broken issubset(rock_scissors, rock_paper_scissors)  #src

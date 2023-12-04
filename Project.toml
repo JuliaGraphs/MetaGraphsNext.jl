@@ -8,9 +8,16 @@ JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 SimpleTraits = "699a6c99-e7fa-54fc-8d76-47d257e15c1d"
 
 [compat]
+Aqua = "0.8"
+BenchmarkTools = "1"
+Documenter = "1"
 Graphs = "1.4.1"
+InteractiveUtils = "1"
 JLD2 = "0.1.11, 0.2, 0.3, 0.4"
+JuliaFormatter = "1"
+MetaGraphs = "0.7"
 SimpleTraits = "0.9"
+Test = "1"
 julia = "1.6"
 
 [extras]

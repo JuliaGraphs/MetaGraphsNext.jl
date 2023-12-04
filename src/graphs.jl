@@ -44,6 +44,7 @@ function Graphs.outneighbors(meta_graph::MetaGraph, code::Integer)
 end
 
 function Base.issubset(meta_graph::MetaGraph, h::MetaGraph)
+    # no checking of: matching vertex label, or matching edge data
     return issubset(meta_graph.graph, h.graph)
 end
 
@@ -267,10 +268,8 @@ function Base.zero(meta_graph::MetaGraph)
     )
 end
 
-function Graphs.induced_subgraph(
-    meta_graph::MetaGraph, vertex_codes::AbstractVector{<:Integer}
-)
-    inducedgraph, code_map = induced_subgraph(meta_graph.graph, vertex_codes)
+function meta_induced_subgraph(meta_graph::MetaGraph, selector)
+    inducedgraph, code_map = induced_subgraph(meta_graph.graph, selector)
     new_graph = MetaGraph(
         inducedgraph,
         empty(meta_graph.vertex_labels),
@@ -282,6 +281,19 @@ function Graphs.induced_subgraph(
     )
     _copy_props!(meta_graph, new_graph, code_map)
     return new_graph, code_map
+end
+
+function Graphs.induced_subgraph(
+    meta_graph::MetaGraph, vertex_codes::AbstractVector{<:Integer}
+)
+    return meta_induced_subgraph(meta_graph, vertex_codes)
+end
+
+function Graphs.induced_subgraph(
+    meta_graph::MetaGraph, edges::AbstractVector{<:AbstractEdge}
+)
+    # separate method to avoid dispatch ambiguity
+    return meta_induced_subgraph(meta_graph, edges)
 end
 
 @traitfn function Graphs.reverse(meta_graph::MG) where {MG <: MetaGraph; IsDirected{MG}}

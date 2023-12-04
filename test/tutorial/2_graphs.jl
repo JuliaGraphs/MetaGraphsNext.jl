@@ -134,7 +134,7 @@ haskey(rock_paper_scissors, :scissors, :rock)
 haskey(reverse(rock_paper_scissors), :scissors, :rock)
 @test haskey(reverse(rock_paper_scissors), :scissors, :rock)  #src
 
-# Finally, let us take a subgraph:
+# Let us take a subgraph induced by a subset of vertices:
 
 rock_paper, _ = induced_subgraph(rock_paper_scissors, [1, 2])
 @test @inferred induced_subgraph(rock_paper_scissors, [1, 2])[1] == rock_paper  #src
@@ -147,3 +147,25 @@ haskey(rock_paper, :paper, :rock)
 #-
 haskey(rock_paper, :rock, :scissors)
 @test !haskey(rock_paper, :rock, :scissors)  #src
+
+# Subgraphs can also be induced by a subset of edges.
+
+subtree_edges = collect(edges(rock_paper_scissors))[2:3]
+rock_paper_scissors_subtree, _ = induced_subgraph(rock_paper_scissors, subtree_edges)
+issubset(rock_paper_scissors_subtree, rock_paper_scissors)
+ne(rock_paper_scissors_subtree)
+@test ne(rock_paper_scissors_subtree) == 2  #src
+#-
+nv(rock_paper_scissors_subtree)
+@test nv(rock_paper_scissors_subtree) == 3  #src
+#-
+[rock_paper_scissors_subtree[e...] for e in edge_labels(rock_paper_scissors_subtree)]
+
+# Checking that a graph is a subset of another is not supported yet. For example, an induced subgraph may appear as not a subset of the original graph, if vertex codes were modified.
+
+issubset(rock_paper_scissors_subtree, rock_paper_scissors)
+@test_broken issubset(rock_paper_scissors_subtree, rock_paper_scissors)  #src
+#-
+rock_scissors, _ = induced_subgraph(rock_paper_scissors, [1, 3])
+issubset(rock_scissors, rock_paper_scissors)
+@test_broken issubset(rock_scissors, rock_paper_scissors)  #src

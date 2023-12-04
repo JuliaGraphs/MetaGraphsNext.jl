@@ -269,26 +269,10 @@ function Base.zero(meta_graph::MetaGraph)
 end
 
 function Graphs.induced_subgraph(
-    meta_graph::MetaGraph, vertex_codes::AbstractVector{<:Integer}
+    meta_graph::MetaGraph,
+    vertex_codes_or_edges::AbstractVector{<:Union{Integer,AbstractEdge}},
 )
-    inducedgraph, code_map = induced_subgraph(meta_graph.graph, vertex_codes)
-    new_graph = MetaGraph(
-        inducedgraph,
-        empty(meta_graph.vertex_labels),
-        empty(meta_graph.vertex_properties),
-        empty(meta_graph.edge_data),
-        meta_graph.graph_data,
-        meta_graph.weight_function,
-        meta_graph.default_weight,
-    )
-    _copy_props!(meta_graph, new_graph, code_map)
-    return new_graph, code_map
-end
-
-function Graphs.induced_subgraph(
-    meta_graph::MetaGraph, edge_codes::AbstractVector{<:AbstractEdge}
-)
-    inducedgraph, code_map = induced_subgraph(meta_graph.graph, edge_codes)
+    inducedgraph, code_map = induced_subgraph(meta_graph.graph, vertex_codes_or_edges)
     new_graph = MetaGraph(
         inducedgraph,
         empty(meta_graph.vertex_labels),

@@ -43,6 +43,10 @@ function Graphs.outneighbors(meta_graph::MetaGraph, code::Integer)
     return outneighbors(meta_graph.graph, code)
 end
 
+function Graphs.all_neighbors(meta_graph::MetaGraph, code::Integer)
+    return all_neighbors(meta_graph.graph, code)
+end
+
 function Base.issubset(meta_graph::MetaGraph, h::MetaGraph)
     # no checking of: matching vertex label, or matching edge data
     return issubset(meta_graph.graph, h.graph)
@@ -99,6 +103,16 @@ Iterate through all labels of inneighbors of the vertex `code` with label `label
 function inneighbor_labels(meta_graph::MetaGraph, label)
     code_2 = code_for(meta_graph, label)
     return (label_for(meta_graph, code_1) for code_1 in inneighbors(meta_graph, code_2))
+end
+
+"""
+    all_neighbor_labels(meta_graph, label)
+
+Iterate through all labels of all neighbors of the vertex `code` with label `label`, in the same order as the codes obtained by `all_neighbors(meta_graph, code)`.
+"""
+function all_neighbor_labels(meta_graph::MetaGraph, label)
+    code_1 = code_for(meta_graph, label)
+    return (label_for(meta_graph, code_2) for code_2 in all_neighbors(meta_graph, code_1))
 end
 
 ## Set vertex and edge data

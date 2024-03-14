@@ -11,7 +11,8 @@ using SimpleTraits
 
 export MetaGraph
 export label_for, code_for
-export labels, edge_labels, neighbor_labels, outneighbor_labels, inneighbor_labels
+export labels,
+    edge_labels, neighbor_labels, outneighbor_labels, inneighbor_labels, all_neighbor_labels
 export set_data!
 export weighttype, default_weight, get_weight_function
 export MGFormat, DOTFormat

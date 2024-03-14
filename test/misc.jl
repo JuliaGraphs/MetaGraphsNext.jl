@@ -20,6 +20,8 @@ function test_labels_codes(mg::MetaGraph)
         for label_0 in inneighbor_labels(mg, label_1)
             @test has_edge(mg, code_for(mg, label_0), code_for(mg, label_1))
         end
+        @test collect(all_neighbor_labels(mg, label_1)) ==
+            union(outneighbor_labels(mg, label_1), inneighbor_labels(mg, label_1))
     end
 end
 

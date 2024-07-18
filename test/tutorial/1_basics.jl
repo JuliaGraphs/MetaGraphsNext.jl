@@ -39,7 +39,7 @@ colors[:blue] = (0, 0, 255);
 
 # ### Edges
 
-# Use `setindex!` with two keys to add a new edge between the given labels and containing the given metadata. Beware that this time, nonexistent labels will throw an error.
+# Use `setindex!` with two keys to add a new edge between the given labels and containing the given metadata. Beware that this time, an edge will only be added when both node labels already exist in the graph.
 
 colors[:red, :green] = :yellow;
 colors[:red, :blue] = :magenta;

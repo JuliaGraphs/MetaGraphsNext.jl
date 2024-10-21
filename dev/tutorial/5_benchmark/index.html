@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Benchmark · MetaGraphsNext.jl</title><script data-outdated-warner src="../../assets/warner.js"></script><link rel="canonical" href="https://juliagraphs.org/MetaGraphsNext.jl/dev/tutorial/5_benchmark/"/><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">MetaGraphsNext.jl</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorial</span><ul><li><a class="tocitem" href="../1_basics/">Basics</a></li><li><a class="tocitem" href="../2_graphs/">Graphs.jl  interface</a></li><li><a class="tocitem" href="../3_files/">File storage</a></li><li><a class="tocitem" href="../4_type_stability/">Type stability</a></li><li class="is-active"><a class="tocitem" href>Benchmark</a><ul class="internal"><li><a class="tocitem" href="#Graph-construction"><span>Graph construction</span></a></li><li><a class="tocitem" href="#Graph-exploitation"><span>Graph exploitation</span></a></li></ul></li></ul></li><li><a class="tocitem" href="../../api/">API reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorial</a></li><li class="is-active"><a href>Benchmark</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Benchmark</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/JuliaGraphs/MetaGraphsNext.jl/blob/master/test/tutorial/5_benchmark.jl" title="View on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">View on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Benchmark"><a class="docs-heading-anchor" href="#Benchmark">Benchmark</a><a id="Benchmark-1"></a><a class="docs-heading-anchor-permalink" href="#Benchmark" title="Permalink"></a></h1><p>Here we compare the performance of MetaGraphsNext.jl with its predecessor MetaGraphs.jl.</p><pre><code class="language-julia hljs">using BenchmarkTools
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Benchmark · MetaGraphsNext.jl</title><meta name="title" content="Benchmark · MetaGraphsNext.jl"/><meta property="og:title" content="Benchmark · MetaGraphsNext.jl"/><meta property="twitter:title" content="Benchmark · MetaGraphsNext.jl"/><meta name="description" content="Documentation for MetaGraphsNext.jl."/><meta property="og:description" content="Documentation for MetaGraphsNext.jl."/><meta property="twitter:description" content="Documentation for MetaGraphsNext.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">MetaGraphsNext.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Tutorial</span><ul><li><a class="tocitem" href="../1_basics/">Basics</a></li><li><a class="tocitem" href="../2_graphs/">Graphs.jl  interface</a></li><li><a class="tocitem" href="../3_files/">File storage</a></li><li><a class="tocitem" href="../4_type_stability/">Type stability</a></li><li class="is-active"><a class="tocitem" href>Benchmark</a><ul class="internal"><li><a class="tocitem" href="#Graph-construction"><span>Graph construction</span></a></li><li><a class="tocitem" href="#Graph-exploitation"><span>Graph exploitation</span></a></li></ul></li></ul></li><li><a class="tocitem" href="../../api/">API reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorial</a></li><li class="is-active"><a href>Benchmark</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Benchmark</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaGraphs/MetaGraphsNext.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/JuliaGraphs/MetaGraphsNext.jl/blob/master/test/tutorial/5_benchmark.jl" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Benchmark"><a class="docs-heading-anchor" href="#Benchmark">Benchmark</a><a id="Benchmark-1"></a><a class="docs-heading-anchor-permalink" href="#Benchmark" title="Permalink"></a></h1><p>Here we compare the performance of MetaGraphsNext.jl with its predecessor MetaGraphs.jl.</p><pre><code class="language-julia hljs">using BenchmarkTools
 using Graphs
 using InteractiveUtils
 using MetaGraphs: MetaGraphs
@@ -34,7 +34,7 @@ end;</code></pre><pre><code class="language-julia hljs">function build_metagraph
         MetaGraphs.set_prop!(mg, i, j, :distance, rand(Float64))
     end
     return mg
-end;</code></pre><pre><code class="language-julia hljs">@btime build_incremental_metagraphsnext(100);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  570.456 μs (449 allocations: 744.28 KiB)</code></pre><pre><code class="language-julia hljs">@btime build_bulk_metagraphsnext(100);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  270.075 μs (158 allocations: 1005.39 KiB)</code></pre><pre><code class="language-julia hljs">@btime build_metagraphs(100);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  1.510 ms (46001 allocations: 5.81 MiB)</code></pre><h2 id="Graph-exploitation"><a class="docs-heading-anchor" href="#Graph-exploitation">Graph exploitation</a><a id="Graph-exploitation-1"></a><a class="docs-heading-anchor-permalink" href="#Graph-exploitation" title="Permalink"></a></h2><pre><code class="language-julia hljs">function sum_active_edges_metagraphsnext(mg)
+end;</code></pre><pre><code class="language-julia hljs">@btime build_incremental_metagraphsnext(100);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  498.853 μs (458 allocations: 744.16 KiB)</code></pre><pre><code class="language-julia hljs">@btime build_bulk_metagraphsnext(100);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  257.051 μs (274 allocations: 998.67 KiB)</code></pre><pre><code class="language-julia hljs">@btime build_metagraphs(100);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  1.101 ms (45901 allocations: 5.08 MiB)</code></pre><h2 id="Graph-exploitation"><a class="docs-heading-anchor" href="#Graph-exploitation">Graph exploitation</a><a id="Graph-exploitation-1"></a><a class="docs-heading-anchor-permalink" href="#Graph-exploitation" title="Permalink"></a></h2><pre><code class="language-julia hljs">function sum_active_edges_metagraphsnext(mg)
     S = 0.0
     for (li, lj) in MetaGraphsNext.edge_labels(mg)
         active_i = mg[li]
@@ -58,8 +58,8 @@ end</code></pre><pre class="documenter-example-output"><code class="nohighlight 
     end
     return S
 end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">sum_active_edges_metagraphs (generic function with 1 method)</code></pre><pre><code class="language-julia hljs">mg1 = build_incremental_metagraphsnext(100);
-@btime sum_active_edges_metagraphsnext($mg1);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  173.805 μs (0 allocations: 0 bytes)</code></pre><pre><code class="language-julia hljs">mg2 = build_metagraphs(100);
-@btime sum_active_edges_metagraphs($mg2);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  459.288 μs (1378 allocations: 21.53 KiB)</code></pre><p>The difference in performance can be explained by type instability.</p><pre><code class="language-julia hljs">@code_warntype sum_active_edges_metagraphsnext(mg1);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">MethodInstance for Main.sum_active_edges_metagraphsnext(::MetaGraph{Int64, SimpleGraph{Int64}, Int64, Bool, Float64, Nothing, MetaGraphsNext.var&quot;#11#13&quot;, Float64})
+@btime sum_active_edges_metagraphsnext($mg1);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  174.416 μs (0 allocations: 0 bytes)</code></pre><pre><code class="language-julia hljs">mg2 = build_metagraphs(100);
+@btime sum_active_edges_metagraphs($mg2);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  460.350 μs (1431 allocations: 22.36 KiB)</code></pre><p>The difference in performance can be explained by type instability.</p><pre><code class="language-julia hljs">@code_warntype sum_active_edges_metagraphsnext(mg1);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">MethodInstance for Main.sum_active_edges_metagraphsnext(::MetaGraph{Int64, SimpleGraph{Int64}, Int64, Bool, Float64, Nothing, MetaGraphsNext.var&quot;#11#13&quot;, Float64})
   from sum_active_edges_metagraphsnext(mg) @ Main 5_benchmark.md:87
 Arguments
   #self#::Core.Const(Main.sum_active_edges_metagraphsnext)
@@ -78,29 +78,41 @@ Body::Float64
 │   %2  = MetaGraphsNext.edge_labels::Core.Const(MetaGraphsNext.edge_labels)
 │   %3  = (%2)(mg)::Base.Generator{Graphs.SimpleGraphs.SimpleEdgeIter{SimpleGraph{Int64}}, MetaGraphsNext.var&quot;#22#23&quot;{MetaGraph{Int64, SimpleGraph{Int64}, Int64, Bool, Float64, Nothing, MetaGraphsNext.var&quot;#11#13&quot;, Float64}}}
 │         (@_3 = Base.iterate(%3))
-│   %5  = (@_3 === nothing)::Bool
-│   %6  = Base.not_int(%5)::Bool
-└──       goto #7 if not %6
-2 ┄ %8  = @_3::Tuple{Tuple{Int64, Int64}, Tuple{Int64, Int64}}
-│   %9  = Core.getfield(%8, 1)::Tuple{Int64, Int64}
-│   %10 = Base.indexed_iterate(%9, 1)::Core.PartialStruct(Tuple{Int64, Int64}, Any[Int64, Core.Const(2)])
-│         (li = Core.getfield(%10, 1))
-│         (@_5 = Core.getfield(%10, 2))
-│   %13 = Base.indexed_iterate(%9, 2, @_5::Core.Const(2))::Core.PartialStruct(Tuple{Int64, Int64}, Any[Int64, Core.Const(3)])
-│         (lj = Core.getfield(%13, 1))
-│   %15 = Core.getfield(%8, 2)::Tuple{Int64, Int64}
-│         (active_i = Base.getindex(mg, li))
-│         (active_j = Base.getindex(mg, lj))
-│         (distance_ij = Base.getindex(mg, li, lj))
-└──       goto #5 if not active_i
-3 ─       goto #5 if not active_j
-4 ─       (S = S + distance_ij)
-5 ┄       (@_3 = Base.iterate(%3, %15))
-│   %23 = (@_3 === nothing)::Bool
-│   %24 = Base.not_int(%23)::Bool
-└──       goto #7 if not %24
+│   %5  = @_3::UNION{NOTHING, TUPLE{TUPLE{INT64, INT64}, TUPLE{INT64, INT64}}}
+│   %6  = (%5 === nothing)::Bool
+│   %7  = Base.not_int(%6)::Bool
+└──       goto #7 if not %7
+2 ┄ %9  = @_3::Tuple{Tuple{Int64, Int64}, Tuple{Int64, Int64}}
+│   %10 = Core.getfield(%9, 1)::Tuple{Int64, Int64}
+│   %11 = Base.indexed_iterate(%10, 1)::Core.PartialStruct(Tuple{Int64, Int64}, Any[Int64, Core.Const(2)])
+│         (li = Core.getfield(%11, 1))
+│         (@_5 = Core.getfield(%11, 2))
+│   %14 = @_5::Core.Const(2)
+│   %15 = Base.indexed_iterate(%10, 2, %14)::Core.PartialStruct(Tuple{Int64, Int64}, Any[Int64, Core.Const(3)])
+│         (lj = Core.getfield(%15, 1))
+│   %17 = Core.getfield(%9, 2)::Tuple{Int64, Int64}
+│   %18 = li::Int64
+│         (active_i = Base.getindex(mg, %18))
+│   %20 = lj::Int64
+│         (active_j = Base.getindex(mg, %20))
+│   %22 = li::Int64
+│   %23 = lj::Int64
+│         (distance_ij = Base.getindex(mg, %22, %23))
+│   %25 = active_i::Bool
+└──       goto #5 if not %25
+3 ─ %27 = active_j::Bool
+└──       goto #5 if not %27
+4 ─ %29 = S::Float64
+│   %30 = distance_ij::Float64
+└──       (S = %29 + %30)
+5 ┄       (@_3 = Base.iterate(%3, %17))
+│   %33 = @_3::UNION{NOTHING, TUPLE{TUPLE{INT64, INT64}, TUPLE{INT64, INT64}}}
+│   %34 = (%33 === nothing)::Bool
+│   %35 = Base.not_int(%34)::Bool
+└──       goto #7 if not %35
 6 ─       goto #2
-7 ┄       return S</code></pre><pre><code class="language-julia hljs">@code_warntype sum_active_edges_metagraphs(mg2);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">MethodInstance for Main.sum_active_edges_metagraphs(::MetaGraphs.MetaGraph{Int64, Float64})
+7 ┄ %38 = S::Float64
+└──       return %38</code></pre><pre><code class="language-julia hljs">@code_warntype sum_active_edges_metagraphs(mg2);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">MethodInstance for Main.sum_active_edges_metagraphs(::MetaGraphs.MetaGraph{Int64, Float64})
   from sum_active_edges_metagraphs(mg) @ Main 5_benchmark.md:102
 Arguments
   #self#::Core.Const(Main.sum_active_edges_metagraphs)
@@ -116,34 +128,46 @@ Locals
   i::Int64
 Body::ANY
 1 ─       (S = 0.0)
-│   %2  = Main.edges(mg)::Graphs.SimpleGraphs.SimpleEdgeIter{SimpleGraph{Int64}}
-│         (@_3 = Base.iterate(%2))
-│   %4  = (@_3 === nothing)::Bool
-│   %5  = Base.not_int(%4)::Bool
-└──       goto #7 if not %5
-2 ┄ %7  = @_3::Tuple{Graphs.SimpleGraphs.SimpleEdge{Int64}, Tuple{Int64, Int64}}
-│         (e = Core.getfield(%7, 1))
-│   %9  = Core.getfield(%7, 2)::Tuple{Int64, Int64}
-│   %10 = Main.src(e)::Int64
-│   %11 = Main.dst(e)::Int64
-│         (i = %10)
-│         (j = %11)
-│   %14 = MetaGraphs.get_prop::Core.Const(MetaGraphs.get_prop)
-│   %15 = i::Int64
-│         (active_i = (%14)(mg, %15, :active))
-│   %17 = MetaGraphs.get_prop::Core.Const(MetaGraphs.get_prop)
-│   %18 = j::Int64
-│         (active_j = (%17)(mg, %18, :active))
+│   %2  = Main.edges::Core.Const(Graphs.edges)
+│   %3  = (%2)(mg)::Graphs.SimpleGraphs.SimpleEdgeIter{SimpleGraph{Int64}}
+│         (@_3 = Base.iterate(%3))
+│   %5  = @_3::UNION{NOTHING, TUPLE{GRAPHS.SIMPLEGRAPHS.SIMPLEEDGE{INT64}, TUPLE{INT64, INT64}}}
+│   %6  = (%5 === nothing)::Bool
+│   %7  = Base.not_int(%6)::Bool
+└──       goto #7 if not %7
+2 ┄ %9  = @_3::Tuple{Graphs.SimpleGraphs.SimpleEdge{Int64}, Tuple{Int64, Int64}}
+│         (e = Core.getfield(%9, 1))
+│   %11 = Core.getfield(%9, 2)::Tuple{Int64, Int64}
+│   %12 = Main.src::Core.Const(Graphs.src)
+│   %13 = e::Graphs.SimpleGraphs.SimpleEdge{Int64}
+│   %14 = (%12)(%13)::Int64
+│   %15 = Main.dst::Core.Const(Graphs.dst)
+│   %16 = e::Graphs.SimpleGraphs.SimpleEdge{Int64}
+│   %17 = (%15)(%16)::Int64
+│         (i = %14)
+│         (j = %17)
 │   %20 = MetaGraphs.get_prop::Core.Const(MetaGraphs.get_prop)
 │   %21 = i::Int64
-│   %22 = j::Int64
-│         (distance_ij = (%20)(mg, %21, %22, :distance))
-└──       goto #5 if not active_i
-3 ─       goto #5 if not active_j
-4 ─       (S = S + distance_ij)
-5 ┄       (@_3 = Base.iterate(%2, %9))
-│   %28 = (@_3 === nothing)::Bool
-│   %29 = Base.not_int(%28)::Bool
-└──       goto #7 if not %29
+│         (active_i = (%20)(mg, %21, :active))
+│   %23 = MetaGraphs.get_prop::Core.Const(MetaGraphs.get_prop)
+│   %24 = j::Int64
+│         (active_j = (%23)(mg, %24, :active))
+│   %26 = MetaGraphs.get_prop::Core.Const(MetaGraphs.get_prop)
+│   %27 = i::Int64
+│   %28 = j::Int64
+│         (distance_ij = (%26)(mg, %27, %28, :distance))
+│   %30 = active_i::ANY
+└──       goto #5 if not %30
+3 ─ %32 = active_j::ANY
+└──       goto #5 if not %32
+4 ─ %34 = S::ANY
+│   %35 = distance_ij::ANY
+└──       (S = %34 + %35)
+5 ┄       (@_3 = Base.iterate(%3, %11))
+│   %38 = @_3::UNION{NOTHING, TUPLE{GRAPHS.SIMPLEGRAPHS.SIMPLEEDGE{INT64}, TUPLE{INT64, INT64}}}
+│   %39 = (%38 === nothing)::Bool
+│   %40 = Base.not_int(%39)::Bool
+└──       goto #7 if not %40
 6 ─       goto #2
-7 ┄       return S</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../4_type_stability/">« Type stability</a><a class="docs-footer-nextpage" href="../../api/">API reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Thursday 18 July 2024 07:23">Thursday 18 July 2024</span>. Using Julia version 1.10.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+7 ┄ %43 = S::ANY
+└──       return %43</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../4_type_stability/">« Type stability</a><a class="docs-footer-nextpage" href="../../api/">API reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.7.0 on <span class="colophon-date" title="Monday 21 October 2024 17:31">Monday 21 October 2024</span>. Using Julia version 1.11.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

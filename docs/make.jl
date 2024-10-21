@@ -26,7 +26,8 @@ end
 pages = [
     "Home" => "index.md",
     "Tutorial" => [
-        joinpath("tutorial", file) for file in sort(readdir(TUTORIAL_DIR_MD)) if endswith(file, ".md")
+        joinpath("tutorial", file) for
+        file in sort(readdir(TUTORIAL_DIR_MD)) if endswith(file, ".md")
     ],
     "API reference" => "api.md",
 ]

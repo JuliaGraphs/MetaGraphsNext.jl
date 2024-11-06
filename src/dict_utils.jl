@@ -28,7 +28,7 @@ end
 """
     haskey(meta_graph, label)
 
-Determine whether a meta_graph `meta_graph` contains the vertex `label`.
+Determine whether a MetaGraph `meta_graph` contains the vertex `label`.
 """
 function Base.haskey(meta_graph::MetaGraph, label)
     return haskey(meta_graph.vertex_properties, label)
@@ -37,7 +37,7 @@ end
 """
     haskey(meta_graph, label_1, label_2)
 
-Determine whether a meta_graph `meta_graph` contains an edge from `label_1` to `label_2`.
+Determine whether a MetaGraph `meta_graph` contains an edge from `label_1` to `label_2`.
 
 The order of `label_1` and `label_2` only matters if `meta_graph` is a digraph.
 """

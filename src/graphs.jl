@@ -315,7 +315,9 @@ end
     edge_data = meta_graph.edge_data
     reverse_edge_data = empty(edge_data)
     for (label_1, label_2) in keys(edge_data)
-        reverse_edge_data[(label_2, label_1)] = edge_data[(label_1, label_2)]
+        reverse_edge_data[arrange(meta_graph, label_2, label_1)] = edge_data[arrange(
+            meta_graph, label_1, label_2
+        )]
     end
     return MetaGraph(
         reverse(meta_graph.graph),

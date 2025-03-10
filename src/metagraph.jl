@@ -185,7 +185,7 @@ function MetaGraph(
     end
     edge_data = Dict{Tuple{Label,Label},EdgeData}()
     for ((label_1, label_2), data) in edges_description
-        edge_data[label_1, label_2] = data
+        edge_data[arrange(graph, label_1, label_2)] = data
     end
     return MetaGraph(
         graph,

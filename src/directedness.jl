@@ -17,11 +17,15 @@ to be robust to vertex re-coding, so the labels need to support `<`.
 """
 function arrange end
 
-@traitfn function arrange(::MG, label_1, label_2) where {MG <: MetaGraph; IsDirected{MG}}
+@traitfn function arrange(
+    ::MG, label_1, label_2
+) where {MG <: AbstractGraph; IsDirected{MG}}
     return label_1, label_2
 end
 
-@traitfn function arrange(::MG, label_1, label_2) where {MG <: MetaGraph; !IsDirected{MG}}
+@traitfn function arrange(
+    ::MG, label_1, label_2
+) where {MG <: AbstractGraph; !IsDirected{MG}}
     if label_1 < label_2
         (label_1, label_2)
     else

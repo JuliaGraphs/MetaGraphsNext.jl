@@ -72,3 +72,13 @@ end
     # compare
     @test mg == mg2
 end
+
+@testset "Undirected edges" begin
+    graph = MetaGraph(
+        complete_graph(2), ["3" => nothing, "2" => nothing], [("3", "2") => 1]
+    )
+    @test haskey(graph, "2", "3")
+    @test haskey(graph, "3", "2")
+    (from, to) = first(edge_labels(graph))
+    @test graph[from, to] === 1
+end

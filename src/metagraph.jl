@@ -248,3 +248,7 @@ This can be useful to interpret the results of methods inherited from `Graphs`. 
 function label_for(meta_graph::MetaGraph, code::Integer)
     return meta_graph.vertex_labels[code]
 end
+
+function Graphs.transitiveclosure!(meta_graph::MetaGraph, selflooped=false)
+    throw(ArgumentError("transitiveclosure! not implemented for type MetaGraph"))
+end

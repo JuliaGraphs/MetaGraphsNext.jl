@@ -82,3 +82,10 @@ end
     (from, to) = first(edge_labels(graph))
     @test graph[from, to] === 1
 end
+
+@testset "No transitiveclosure! for MetaGraph" begin
+    graph = MetaGraph(
+        complete_graph(2), ["3" => nothing, "2" => nothing], [("3", "2") => 1]
+    )
+    @test_throws ArgumentError transitiveclosure!(graph)
+end

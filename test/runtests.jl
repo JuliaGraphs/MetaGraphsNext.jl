@@ -1,7 +1,6 @@
 using Aqua
 using Documenter
 using Graphs
-using JuliaFormatter
 using MetaGraphsNext
 using Test
 

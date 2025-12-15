@@ -34,7 +34,7 @@ end;</code></pre><pre><code class="language-julia hljs">function build_metagraph
         MetaGraphs.set_prop!(mg, i, j, :distance, rand(Float64))
     end
     return mg
-end;</code></pre><pre><code class="language-julia hljs">@btime build_incremental_metagraphsnext(100);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  497.738 μs (458 allocations: 744.27 KiB)</code></pre><pre><code class="language-julia hljs">@btime build_bulk_metagraphsnext(100);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  238.535 μs (274 allocations: 998.82 KiB)</code></pre><pre><code class="language-julia hljs">@btime build_metagraphs(100);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  1.101 ms (45901 allocations: 5.08 MiB)</code></pre><h2 id="Graph-exploitation"><a class="docs-heading-anchor" href="#Graph-exploitation">Graph exploitation</a><a id="Graph-exploitation-1"></a><a class="docs-heading-anchor-permalink" href="#Graph-exploitation" title="Permalink"></a></h2><pre><code class="language-julia hljs">function sum_active_edges_metagraphsnext(mg)
+end;</code></pre><pre><code class="language-julia hljs">@btime build_incremental_metagraphsnext(100);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  446.972 μs (561 allocations: 711.19 KiB)</code></pre><pre><code class="language-julia hljs">@btime build_bulk_metagraphsnext(100);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  209.269 μs (275 allocations: 908.51 KiB)</code></pre><pre><code class="language-julia hljs">@btime build_metagraphs(100);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  962.219 μs (45901 allocations: 5.08 MiB)</code></pre><h2 id="Graph-exploitation"><a class="docs-heading-anchor" href="#Graph-exploitation">Graph exploitation</a><a id="Graph-exploitation-1"></a><a class="docs-heading-anchor-permalink" href="#Graph-exploitation" title="Permalink"></a></h2><pre><code class="language-julia hljs">function sum_active_edges_metagraphsnext(mg)
     S = 0.0
     for (li, lj) in MetaGraphsNext.edge_labels(mg)
         active_i = mg[li]
@@ -58,12 +58,12 @@ end</code></pre><pre class="documenter-example-output"><code class="nohighlight 
     end
     return S
 end</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">sum_active_edges_metagraphs (generic function with 1 method)</code></pre><pre><code class="language-julia hljs">mg1 = build_incremental_metagraphsnext(100);
-@btime sum_active_edges_metagraphsnext($mg1);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  176.630 μs (0 allocations: 0 bytes)</code></pre><pre><code class="language-julia hljs">mg2 = build_metagraphs(100);
-@btime sum_active_edges_metagraphs($mg2);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  446.513 μs (1176 allocations: 18.38 KiB)</code></pre><p>The difference in performance can be explained by type instability.</p><pre><code class="language-julia hljs">@code_warntype sum_active_edges_metagraphsnext(mg1);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">MethodInstance for Main.sum_active_edges_metagraphsnext(::MetaGraph{Int64, SimpleGraph{Int64}, Int64, Bool, Float64, Nothing, MetaGraphsNext.var&quot;#11#13&quot;, Float64})
+@btime sum_active_edges_metagraphsnext($mg1);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  148.937 μs (0 allocations: 0 bytes)</code></pre><pre><code class="language-julia hljs">mg2 = build_metagraphs(100);
+@btime sum_active_edges_metagraphs($mg2);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  442.523 μs (1378 allocations: 21.53 KiB)</code></pre><p>The difference in performance can be explained by type instability.</p><pre><code class="language-julia hljs">@code_warntype sum_active_edges_metagraphsnext(mg1);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">MethodInstance for Main.sum_active_edges_metagraphsnext(::MetaGraph{Int64, SimpleGraph{Int64}, Int64, Bool, Float64, Nothing, MetaGraphsNext.var&quot;#MetaGraph##10#MetaGraph##11&quot;, Float64})
   from sum_active_edges_metagraphsnext(mg) @ Main 5_benchmark.md:87
 Arguments
   #self#::Core.Const(Main.sum_active_edges_metagraphsnext)
-  mg::MetaGraph{Int64, SimpleGraph{Int64}, Int64, Bool, Float64, Nothing, MetaGraphsNext.var&quot;#11#13&quot;, Float64}
+  mg::MetaGraph{Int64, SimpleGraph{Int64}, Int64, Bool, Float64, Nothing, MetaGraphsNext.var&quot;#MetaGraph##10#MetaGraph##11&quot;, Float64}
 Locals
   @_3::UNION{NOTHING, TUPLE{TUPLE{INT64, INT64}, TUPLE{INT64, INT64}}}
   S::Float64
@@ -75,44 +75,46 @@ Locals
   active_i::Bool
 Body::Float64
 1 ─       (S = 0.0)
-│   %2  = MetaGraphsNext.edge_labels::Core.Const(MetaGraphsNext.edge_labels)
-│   %3  = (%2)(mg)::Base.Generator{Graphs.SimpleGraphs.SimpleEdgeIter{SimpleGraph{Int64}}, MetaGraphsNext.var&quot;#22#23&quot;{MetaGraph{Int64, SimpleGraph{Int64}, Int64, Bool, Float64, Nothing, MetaGraphsNext.var&quot;#11#13&quot;, Float64}}}
-│         (@_3 = Base.iterate(%3))
-│   %5  = @_3::UNION{NOTHING, TUPLE{TUPLE{INT64, INT64}, TUPLE{INT64, INT64}}}
-│   %6  = (%5 === nothing)::Bool
-│   %7  = Base.not_int(%6)::Bool
-└──       goto #7 if not %7
-2 ┄ %9  = @_3::Tuple{Tuple{Int64, Int64}, Tuple{Int64, Int64}}
-│   %10 = Core.getfield(%9, 1)::Tuple{Int64, Int64}
-│   %11 = Base.indexed_iterate(%10, 1)::Core.PartialStruct(Tuple{Int64, Int64}, Any[Int64, Core.Const(2)])
-│         (li = Core.getfield(%11, 1))
-│         (@_5 = Core.getfield(%11, 2))
-│   %14 = @_5::Core.Const(2)
-│   %15 = Base.indexed_iterate(%10, 2, %14)::Core.PartialStruct(Tuple{Int64, Int64}, Any[Int64, Core.Const(3)])
-│         (lj = Core.getfield(%15, 1))
-│   %17 = Core.getfield(%9, 2)::Tuple{Int64, Int64}
-│   %18 = li::Int64
-│         (active_i = Base.getindex(mg, %18))
-│   %20 = lj::Int64
-│         (active_j = Base.getindex(mg, %20))
-│   %22 = li::Int64
-│   %23 = lj::Int64
-│         (distance_ij = Base.getindex(mg, %22, %23))
-│   %25 = active_i::Bool
-└──       goto #5 if not %25
-3 ─ %27 = active_j::Bool
-└──       goto #5 if not %27
-4 ─ %29 = S::Float64
-│   %30 = distance_ij::Float64
-└──       (S = %29 + %30)
-5 ┄       (@_3 = Base.iterate(%3, %17))
-│   %33 = @_3::UNION{NOTHING, TUPLE{TUPLE{INT64, INT64}, TUPLE{INT64, INT64}}}
-│   %34 = (%33 === nothing)::Bool
-│   %35 = Base.not_int(%34)::Bool
-└──       goto #7 if not %35
+│   %2  = Main.MetaGraphsNext::Core.Const(MetaGraphsNext)
+│   %3  = Base.getproperty(%2, :edge_labels)::Core.Const(MetaGraphsNext.edge_labels)
+│   %4  = (%3)(mg)::Base.Generator{Graphs.SimpleGraphs.SimpleEdgeIter{SimpleGraph{Int64}}, MetaGraphsNext.var&quot;#edge_labels##0#edge_labels##1&quot;{MetaGraph{Int64, SimpleGraph{Int64}, Int64, Bool, Float64, Nothing, MetaGraphsNext.var&quot;#MetaGraph##10#MetaGraph##11&quot;, Float64}}}
+│         (@_3 = Base.iterate(%4))
+│   %6  = @_3::UNION{NOTHING, TUPLE{TUPLE{INT64, INT64}, TUPLE{INT64, INT64}}}
+│   %7  = (%6 === nothing)::Bool
+│   %8  = Base.not_int(%7)::Bool
+└──       goto #7 if not %8
+2 ┄ %10 = @_3::Tuple{Tuple{Int64, Int64}, Tuple{Int64, Int64}}
+│   %11 = Core.getfield(%10, 1)::Tuple{Int64, Int64}
+│   %12 = Base.indexed_iterate(%11, 1)::Core.PartialStruct(Tuple{Int64, Int64}, Any[Int64, Core.Const(2)])
+│         (li = Core.getfield(%12, 1))
+│         (@_5 = Core.getfield(%12, 2))
+│   %15 = @_5::Core.Const(2)
+│   %16 = Base.indexed_iterate(%11, 2, %15)::Core.PartialStruct(Tuple{Int64, Int64}, Any[Int64, Core.Const(3)])
+│         (lj = Core.getfield(%16, 1))
+│   %18 = Core.getfield(%10, 2)::Tuple{Int64, Int64}
+│   %19 = li::Int64
+│         (active_i = Base.getindex(mg, %19))
+│   %21 = lj::Int64
+│         (active_j = Base.getindex(mg, %21))
+│   %23 = li::Int64
+│   %24 = lj::Int64
+│         (distance_ij = Base.getindex(mg, %23, %24))
+│   %26 = active_i::Bool
+└──       goto #5 if not %26
+3 ─ %28 = active_j::Bool
+└──       goto #5 if not %28
+4 ─ %30 = Main.:+::Core.Const(+)
+│   %31 = S::Float64
+│   %32 = distance_ij::Float64
+└──       (S = (%30)(%31, %32))
+5 ┄       (@_3 = Base.iterate(%4, %18))
+│   %35 = @_3::UNION{NOTHING, TUPLE{TUPLE{INT64, INT64}, TUPLE{INT64, INT64}}}
+│   %36 = (%35 === nothing)::Bool
+│   %37 = Base.not_int(%36)::Bool
+└──       goto #7 if not %37
 6 ─       goto #2
-7 ┄ %38 = S::Float64
-└──       return %38</code></pre><pre><code class="language-julia hljs">@code_warntype sum_active_edges_metagraphs(mg2);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">MethodInstance for Main.sum_active_edges_metagraphs(::MetaGraphs.MetaGraph{Int64, Float64})
+7 ┄ %40 = S::Float64
+└──       return %40</code></pre><pre><code class="language-julia hljs">@code_warntype sum_active_edges_metagraphs(mg2);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">MethodInstance for Main.sum_active_edges_metagraphs(::MetaGraphs.MetaGraph{Int64, Float64})
   from sum_active_edges_metagraphs(mg) @ Main 5_benchmark.md:102
 Arguments
   #self#::Core.Const(Main.sum_active_edges_metagraphs)
@@ -146,28 +148,32 @@ Body::ANY
 │   %17 = (%15)(%16)::Int64
 │         (i = %14)
 │         (j = %17)
-│   %20 = MetaGraphs.get_prop::Core.Const(MetaGraphs.get_prop)
-│   %21 = i::Int64
-│         (active_i = (%20)(mg, %21, :active))
-│   %23 = MetaGraphs.get_prop::Core.Const(MetaGraphs.get_prop)
-│   %24 = j::Int64
-│         (active_j = (%23)(mg, %24, :active))
-│   %26 = MetaGraphs.get_prop::Core.Const(MetaGraphs.get_prop)
-│   %27 = i::Int64
-│   %28 = j::Int64
-│         (distance_ij = (%26)(mg, %27, %28, :distance))
-│   %30 = active_i::ANY
-└──       goto #5 if not %30
-3 ─ %32 = active_j::ANY
-└──       goto #5 if not %32
-4 ─ %34 = S::ANY
-│   %35 = distance_ij::ANY
-└──       (S = %34 + %35)
+│   %20 = Main.MetaGraphs::Core.Const(MetaGraphs)
+│   %21 = Base.getproperty(%20, :get_prop)::Core.Const(MetaGraphs.get_prop)
+│   %22 = i::Int64
+│         (active_i = (%21)(mg, %22, :active))
+│   %24 = Main.MetaGraphs::Core.Const(MetaGraphs)
+│   %25 = Base.getproperty(%24, :get_prop)::Core.Const(MetaGraphs.get_prop)
+│   %26 = j::Int64
+│         (active_j = (%25)(mg, %26, :active))
+│   %28 = Main.MetaGraphs::Core.Const(MetaGraphs)
+│   %29 = Base.getproperty(%28, :get_prop)::Core.Const(MetaGraphs.get_prop)
+│   %30 = i::Int64
+│   %31 = j::Int64
+│         (distance_ij = (%29)(mg, %30, %31, :distance))
+│   %33 = active_i::ANY
+└──       goto #5 if not %33
+3 ─ %35 = active_j::ANY
+└──       goto #5 if not %35
+4 ─ %37 = Main.:+::Core.Const(+)
+│   %38 = S::ANY
+│   %39 = distance_ij::ANY
+└──       (S = (%37)(%38, %39))
 5 ┄       (@_3 = Base.iterate(%3, %11))
-│   %38 = @_3::UNION{NOTHING, TUPLE{GRAPHS.SIMPLEGRAPHS.SIMPLEEDGE{INT64}, TUPLE{INT64, INT64}}}
-│   %39 = (%38 === nothing)::Bool
-│   %40 = Base.not_int(%39)::Bool
-└──       goto #7 if not %40
+│   %42 = @_3::UNION{NOTHING, TUPLE{GRAPHS.SIMPLEGRAPHS.SIMPLEEDGE{INT64}, TUPLE{INT64, INT64}}}
+│   %43 = (%42 === nothing)::Bool
+│   %44 = Base.not_int(%43)::Bool
+└──       goto #7 if not %44
 6 ─       goto #2
-7 ┄ %43 = S::ANY
-└──       return %43</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../4_type_stability/">« Type stability</a><a class="docs-footer-nextpage" href="../../api/">API reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.14.1 on <span class="colophon-date" title="Thursday 28 August 2025 12:53">Thursday 28 August 2025</span>. Using Julia version 1.11.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+7 ┄ %47 = S::ANY
+└──       return %47</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../4_type_stability/">« Type stability</a><a class="docs-footer-nextpage" href="../../api/">API reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Monday 15 December 2025 09:13">Monday 15 December 2025</span>. Using Julia version 1.12.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

@@ -3,3 +3,4 @@ docs/build/
 .vscode/settings.json
 docs/src/tutorial/*.md
 docs/Manifest.toml
+test/Manifest.toml

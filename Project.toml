@@ -8,28 +8,7 @@ JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 SimpleTraits = "699a6c99-e7fa-54fc-8d76-47d257e15c1d"
 
 [compat]
-Aqua = "0.8"
-BenchmarkTools = "1"
-Documenter = "1"
 Graphs = "1.4.1"
-InteractiveUtils = "1"
 JLD2 = "0.1.11, 0.2, 0.3, 0.4, 0.5, 0.6"
-JuliaFormatter = "1"
-MetaGraphs = "0.7, 0.8"
 SimpleTraits = "0.9"
-Test = "1"
 julia = "1.6"
-
-[extras]
-Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
-BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
-Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
-InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
-JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
-MetaGraphs = "626554b9-1ddb-594c-aa3c-2596fe9399a5"
-SimpleTraits = "699a6c99-e7fa-54fc-8d76-47d257e15c1d"
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[targets]
-test = ["Aqua", "BenchmarkTools", "Documenter", "Graphs", "InteractiveUtils", "JuliaFormatter", "MetaGraphs", "SimpleTraits", "Test"]

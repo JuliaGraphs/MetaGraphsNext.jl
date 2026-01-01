@@ -9,3 +9,4 @@ MetaGraphsNext = "fa8bd995-216d-47f1-8a91-f3b68fbeb377"
 
 [compat]
 Documenter = "1"
+Graphs = "1.13.3"

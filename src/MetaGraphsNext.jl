@@ -5,7 +5,6 @@ A package for graphs with vertex labels and metadata in Julia. Its main export i
 """
 module MetaGraphsNext
 
-using JLD2
 using Graphs
 using SimpleTraits
 
@@ -23,5 +22,26 @@ include("graphs.jl")
 include("dict_utils.jl")
 include("weights.jl")
 include("persistence.jl")
+
+function __init__()
+    # Register error hint for the `loadmg` and `savemg`
+    if isdefined(Base.Experimental, :register_error_hint)
+        Base.Experimental.register_error_hint(MethodError) do io, exc, _, _
+            if exc.f === loadmg
+                print(
+                    io,
+                    "\n\nIn order to load meta graphs from binary files, you need to load \
+                    the JLD2.jl package.",
+                )
+            elseif exc.f === savemg
+                print(
+                    io,
+                    "\n\nIn order to save meta graphs to binary files, you need to load \
+                    the JLD2.jl package.",
+                )
+            end
+        end
+    end
+end
 
 end # module

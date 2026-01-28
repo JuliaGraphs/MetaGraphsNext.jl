@@ -1,5 +1,3 @@
-# Metagraphs files are simply JLD2 files.
-
 """
     struct MGFormat <: AbstractGraphFormat end
 
@@ -7,25 +5,18 @@ You can save `MetaGraph`s in a `MGFormat`, currently based on `JLD2`.
 """
 struct MGFormat <: Graphs.AbstractGraphFormat end
 
+function loadmg end
+function savemg end
+
+Graphs.loadgraph(file::AbstractString, ::String, ::MGFormat) = loadmg(file)
+Graphs.savegraph(file::AbstractString, meta_graph::MetaGraph) = savemg(file, meta_graph)
+
 """
     struct DOTFormat <: AbstractGraphFormat end
 
 If all metadata types support `pairs` or are `Nothing`, you can save `MetaGraph`s in `DOTFormat`.
 """
 struct DOTFormat <: Graphs.AbstractGraphFormat end
-
-function loadmg(file::AbstractString)
-    @load file meta_graph
-    return meta_graph
-end
-
-function savemg(file::AbstractString, meta_graph::MetaGraph)
-    @save file meta_graph
-    return 1
-end
-
-Graphs.loadgraph(file::AbstractString, ::String, ::MGFormat) = loadmg(file)
-Graphs.savegraph(file::AbstractString, meta_graph::MetaGraph) = savemg(file, meta_graph)
 
 function show_meta_list(io::IO, meta)
     if meta !== nothing && length(meta) > 0

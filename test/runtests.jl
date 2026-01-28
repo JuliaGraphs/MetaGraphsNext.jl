@@ -1,6 +1,7 @@
 using Aqua
 using Documenter
 using Graphs
+using JLD2
 using MetaGraphsNext
 using Test
 

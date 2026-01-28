@@ -7,7 +7,9 @@ using Test  #src
 # ## MGFormat
 
 # MetaGraphsNext.jl overloads `Graphs.savegraph` to write graphs in a custom format called `MGFormat`, which is based on JLD2.
-# It is not very readable, but it does give the right result when we load it back.
+# It is not very readable, but it does give the right result when we load it back. This requires JLD2 to be loaded as well.
+
+using JLD2
 
 example = MetaGraph(Graph(), Symbol);
 

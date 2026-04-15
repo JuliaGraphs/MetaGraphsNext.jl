@@ -9,6 +9,7 @@ MetaGraphs = "626554b9-1ddb-594c-aa3c-2596fe9399a5"
 MetaGraphsNext = "fa8bd995-216d-47f1-8a91-f3b68fbeb377"
 
 [compat]
+BenchmarkTools = "1.8.0"
 Documenter = "1"
 Graphs = "1.13.3"
 JLD2 = "0.6"
